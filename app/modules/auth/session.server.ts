@@ -1,4 +1,5 @@
 import { createCookieSessionStorage, redirect } from "@remix-run/node";
+import { createThemeSessionResolver } from "remix-themes";
 
 import {
 	getCurrentPath,
@@ -32,6 +33,8 @@ const sessionStorage = createCookieSessionStorage({
 		secure: NODE_ENV === "production",
 	},
 });
+
+export const themeSessionResolver = createThemeSessionResolver(sessionStorage);
 
 export async function createAuthSession({
 	request,

@@ -1,28 +1,36 @@
-import type { User } from "~/database";
+import { z } from "zod";
 import { db } from "~/database";
-import type { AuthSession } from "~/modules/auth";
+import { users } from "~/database/schema";
+import { createInsertSchema } from "drizzle-zod";
 import {
 	createEmailAuthAccount,
 	signInWithEmail,
 	deleteAuthAccount,
 } from "~/modules/auth";
+import type { AuthSession } from "~/modules/auth";
+import { eq } from "drizzle-orm";
 
-export async function getUserByEmail(email: User["email"]) {
-	return db.user.findUnique({ where: { email: email.toLowerCase() } });
+export const userSchema = createInsertSchema(users);
+
+export async function getUserByEmail(email: string) {
+	return db.query.users.findFirst({
+		where: eq(users.email, email.toLowerCase()),
+	});
 }
 
 async function createUser({
 	email,
 	userId,
 }: Pick<AuthSession, "userId" | "email">) {
-	return db.user
-		.create({
-			data: {
-				email,
-				id: userId,
-			},
-		})
-		.then((user) => user)
+	const userData = userSchema.parse({
+		email,
+		id: userId,
+	});
+
+	return db
+		.insert(users)
+		.values(userData)
+		.returning()
 		.catch(() => null);
 }
 

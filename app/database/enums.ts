@@ -17,15 +17,15 @@ export enum TRANSITIONS {
 }
 
 export enum VIDEO_TYPES {
-	VIDEO = "Video",
-	SHORT = "Short",
+	VIDEO = "video",
+	SHORT = "short",
 }
 
 export enum VOICEMODELS {
-	ONYX = "Onyx",
-	NOVA = "Nova",
-	SHIMMER = "Shimmer",
-	ECHO = "Echo",
-	FABLE = "Fable",
-	ALLOY = "Alloy",
+	ONYX = "onyx",
+	NOVA = "nova",
+	SHIMMER = "shimmer",
+	ECHO = "echo",
+	FABLE = "fable",
+	ALLOY = "alloy",
 }

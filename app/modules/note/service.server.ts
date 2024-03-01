@@ -1,23 +1,44 @@
-import type { Note, User } from "~/database";
 import { db } from "~/database";
+import { notes, users } from "~/database/schema";
+import { createSelectSchema, createInsertSchema } from "drizzle-zod";
+import { z } from "zod";
+import { eq, and, desc } from "drizzle-orm";
+import { userSchema } from "../user";
 
-export async function getNote({
-	userId,
-	id,
-}: Pick<Note, "id"> & {
-	userId: User["id"];
-}) {
-	return db.note.findFirst({
-		select: { id: true, body: true, title: true },
-		where: { id, userId },
-	});
+const noteSchema = createSelectSchema(notes);
+
+const noteInsertSchema = createInsertSchema(notes).pick({
+	title: true,
+	body: true,
+	userId: true,
+});
+
+export async function getNote({ userId, id }: z.infer<typeof noteSchema>) {
+	if (!id || !userId) return null;
+	return db
+		.select({
+			id: notes.id,
+			title: notes.title,
+		})
+		.from(notes)
+		.where(and(eq(notes.id, id), eq(notes.userId, userId)));
 }
 
-export async function getNotes({ userId }: { userId: User["id"] }) {
-	return db.note.findMany({
-		where: { userId },
-		select: { id: true, title: true },
-		orderBy: { updatedAt: "desc" },
+export async function getNotes({
+	userId,
+}: {
+	userId: z.infer<typeof userSchema>["id"];
+}) {
+	if (!userId) return null;
+
+	return db.query.notes.findMany({
+		columns: {
+			id: true,
+			title: true,
+			updatedAt: true,
+		},
+		where: eq(notes.userId, userId),
+		orderBy: desc(notes.updatedAt),
 	});
 }
 
@@ -25,27 +46,28 @@ export async function createNote({
 	title,
 	body,
 	userId,
-}: Pick<Note, "body" | "title"> & {
-	userId: User["id"];
-}) {
-	return db.note.create({
-		data: {
+}: z.infer<typeof noteInsertSchema>) {
+	return db
+		.insert(notes)
+		.values({
 			title,
 			body,
-			user: {
-				connect: {
-					id: userId,
-				},
-			},
-		},
-	});
+			userId,
+		})
+		.returning();
 }
+
+const noteDeleteSchema = createInsertSchema(notes).pick({
+	id: true,
+	userId: true,
+});
 
 export async function deleteNote({
 	id,
 	userId,
-}: Pick<Note, "id"> & { userId: User["id"] }) {
-	return db.note.deleteMany({
-		where: { id, userId },
-	});
+}: z.infer<typeof noteDeleteSchema>) {
+	if (!id || !userId) return null;
+	return db
+		.delete(notes)
+		.where(and(eq(notes.id, id), eq(notes.userId, userId)));
 }
