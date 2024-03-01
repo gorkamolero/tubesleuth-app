@@ -1,27 +1,10 @@
-import { PrismaClient } from "@prisma/client";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
+import { users, notes, channels, videos, images, imageMaps } from "./schema";
 
-import { NODE_ENV } from "../utils/env";
-export type { Note, User } from "@prisma/client";
-
-let db: PrismaClient;
-
-declare global {
-	// eslint-disable-next-line no-var
-	var __db__: PrismaClient;
-}
-
-// this is needed because in development we don't want to restart
-// the server with every change, but we want to make sure we don't
-// create a new connection to the DB with every change either.
-// in production, we'll have a single connection to the DB.
-if (NODE_ENV === "production") {
-	db = new PrismaClient();
-} else {
-	if (!global.__db__) {
-		global.__db__ = new PrismaClient();
-	}
-	db = global.__db__;
-	db.$connect();
-}
-
-export { db };
+const connectionString = process.env.DATABASE_URL || "";
+const client = postgres(connectionString, {
+	prepare: false,
+});
+export const db = drizzle(client);
+export { users, notes, channels, videos, images, imageMaps };

@@ -6,4 +6,6 @@ module.exports = {
 	serverModuleFormat: "cjs",
 	watchPaths: ["./tailwind.config.ts"],
 	serverPlatform: "node",
+	tailwind: true,
+	postcss: true,
 };

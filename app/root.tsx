@@ -13,21 +13,31 @@ import {
 	ScrollRestoration,
 	useLoaderData,
 } from "@remix-run/react";
+import clsx from "clsx";
+import {
+	PreventFlashOnWrongTheme,
+	ThemeProvider,
+	useTheme,
+} from "remix-themes";
 import { useTranslation } from "react-i18next";
 import { useChangeLanguage } from "remix-i18next";
 
 import { i18nextServer } from "~/integrations/i18n";
 
-import tailwindStylesheetUrl from "./styles/tailwind.css";
+import tailwindStylesheetUrl from "./tailwind.css";
 import { getBrowserEnv } from "./utils/env";
 
 export const links: LinksFunction = () => [
-	{ rel: "stylesheet preload prefetch", href: tailwindStylesheetUrl, as: "style" },
+	{
+		rel: "stylesheet preload prefetch",
+		href: tailwindStylesheetUrl,
+		as: "style",
+	},
 ];
 
 export const meta: MetaFunction = () => [
-	{ title: "Remix Notes" },
-	{ name: "description", content: "Remix Notes App" },
+	{ title: "Tubesleuth" },
+	{ name: "description", content: "Create videos" },
 ];
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -38,8 +48,8 @@ export const loader: LoaderFunction = async ({ request }) => {
 	});
 };
 
-export default function App() {
-	const { env, locale } = useLoaderData<typeof loader>();
+export function App() {
+	const { env, locale, theme: datatheme } = useLoaderData<typeof loader>();
 	const { i18n } = useTranslation();
 
 	useChangeLanguage(locale);
@@ -53,6 +63,7 @@ export default function App() {
 					content="width=device-width,initial-scale=1.0,maximum-scale=1.0"
 				/>
 				<Meta />
+				<PreventFlashOnWrongTheme ssrTheme={Boolean(datatheme)} />
 				<Links />
 			</head>
 			<body className="h-full">
@@ -67,5 +78,17 @@ export default function App() {
 				<LiveReload />
 			</body>
 		</html>
+	);
+}
+
+export default function AppWithProviders() {
+	const data = useLoaderData<typeof loader>();
+	return (
+		<ThemeProvider
+			specifiedTheme={data.theme}
+			themeAction="/action/set-theme"
+		>
+			<App />
+		</ThemeProvider>
 	);
 }

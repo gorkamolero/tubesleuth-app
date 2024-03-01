@@ -78,7 +78,7 @@ async function main({ rootDirectory, packageManager, isTypeScript }) {
 		? dockerfile.replace(
 				new RegExp(escapeRegExp("ADD package.json"), "g"),
 				`ADD package.json ${lockfile}`,
-		  )
+			)
 		: dockerfile;
 
 	await Promise.all([
