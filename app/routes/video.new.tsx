@@ -53,7 +53,7 @@ export const action: ActionFunction = async ({ request }) => {
 
 	const { channelId, description } = result.data;
 	const video = await createVideo({
-		input: description, // Assuming 'input' is used for the video description
+		description, // Assuming 'input' is used for the video description
 		channelId,
 		userId: authSession.userId,
 	});

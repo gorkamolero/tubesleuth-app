@@ -41,7 +41,6 @@ export async function getChannel({
 	});
 }
 
-// Function to get all channels for a user
 export async function getChannels({ userId }: { userId: string }) {
 	return db.query.channels.findMany({
 		where: eq(channels.userId, userId),

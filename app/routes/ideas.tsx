@@ -3,30 +3,30 @@ import { useLoaderData, Link } from "@remix-run/react";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import { LogoutButton, requireAuthSession } from "~/modules/auth";
-import { getVideos } from "~/modules/videos";
+import { getIdeas } from "~/modules/ideas";
 import { notFound } from "~/utils";
 
 export async function loader({ request }: LoaderFunctionArgs) {
 	const { userId, email } = await requireAuthSession(request);
 
-	const videos = await getVideos({ userId });
+	const ideas = await getIdeas({ userId });
 
-	if (!videos) {
-		throw notFound(`No videos found for user with id ${userId}`);
+	if (!ideas) {
+		throw notFound(`No ideas found for user with id ${userId}`);
 	}
 
-	return json({ email, videos });
+	return json({ email, ideas });
 }
 
-export default function VideosPage() {
+export default function IdeasPage() {
 	const data = useLoaderData<typeof loader>();
 
-	if (data.videos.length === 0) {
+	if (data.ideas.length === 0) {
 		return (
 			<div className="flex h-full min-h-screen flex-col">
 				<header className="flex items-center justify-between bg-slate-800 p-4 text-white">
 					<h1 className="text-3xl font-bold">
-						<Link to=".">Videos</Link>
+						<Link to=".">Ideas</Link>
 					</h1>
 					<p>{data.email}</p>
 					<LogoutButton />
@@ -35,10 +35,10 @@ export default function VideosPage() {
 					<div className="h-full w-80 border-r bg-gray-50">
 						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
 							<Card>
-								<CardHeader>No videos yet</CardHeader>
+								<CardHeader>No ideas yet</CardHeader>
 								<CardContent>
 									<Button asChild>
-										<Link to="/videos/new">Create new</Link>
+										<Link to="/ideas/new">Create new</Link>
 									</Button>
 								</CardContent>
 							</Card>
@@ -50,16 +50,16 @@ export default function VideosPage() {
 	}
 	return (
 		<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
-			{data.videos.map((video) => (
-				<Card key={video.id}>
-					<CardHeader>{video.title}</CardHeader>
+			{data.ideas.map((idea) => (
+				<Card key={idea.id}>
+					<CardHeader>{idea.title}</CardHeader>
 					<CardContent>
-						<p>{video.description}</p>
+						<p>{idea.description}</p>
 						<Link
-							to={`/video/${video.id}`}
+							to={`/idea/${idea.id}`}
 							className="text-blue-500 hover:underline"
 						>
-							View Video
+							View Idea
 						</Link>
 					</CardContent>
 				</Card>

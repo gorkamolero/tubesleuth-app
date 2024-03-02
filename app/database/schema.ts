@@ -17,10 +17,10 @@ export const users = pgTable("users", {
 	updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export const notes = pgTable("notes", {
+export const ideas = pgTable("ideas", {
 	id: uuid("id").primaryKey(),
 	title: text("title"),
-	body: text("body"),
+	description: text("description"),
 	createdAt: timestamp("created_at").defaultNow(),
 	updatedAt: timestamp("updated_at").defaultNow(),
 	userId: uuid("user_id").references(() => users.id),
@@ -58,18 +58,19 @@ export const videoType = pgEnum(
 
 export const videos = pgTable("videos", {
 	id: uuid("id").primaryKey(),
-	input: text("input"),
 	title: text("title"),
 	description: text("description"),
 	tags: text("tags"),
 	script: text("script"),
 	voiceover: text("voiceover"),
+	draft: boolean("draft").default(true),
 	uploaded: boolean("uploaded").default(false),
 	videofile: text("videofile"),
-	notes: text("notes"),
-	channelId: uuid("channel_id").references(() => channels.id),
-	userId: uuid("user_id").references(() => users.id),
 	type: videoType("short"),
+	channelId: uuid("channel_id").references(() => channels.id),
+	notes: text("notes"),
+	ideaId: uuid("idea_id").references(() => ideas.id),
+	userId: uuid("user_id").references(() => users.id),
 	createdAt: timestamp("created_at").defaultNow(),
 	updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -92,16 +93,13 @@ export const channels = pgTable("channels", {
 });
 
 export const usersRelations = relations(users, ({ many }) => ({
-	notes: many(notes),
 	videos: many(videos),
 	channels: many(channels),
+	ideas: many(ideas),
 }));
 
-export const notesRelations = relations(notes, ({ one }) => ({
-	user: one(users, {
-		fields: [notes.userId],
-		references: [users.id],
-	}),
+export const ideasRelations = relations(ideas, ({ one, many }) => ({
+	videos: many(videos),
 }));
 
 export const imageMapsRelations = relations(imageMaps, ({ one }) => ({
@@ -127,6 +125,10 @@ export const videosRelations = relations(videos, ({ one }) => ({
 	imageMaps: one(imageMaps, {
 		fields: [videos.id],
 		references: [imageMaps.videoId],
+	}),
+	idea: one(ideas, {
+		fields: [videos.ideaId],
+		references: [ideas.id],
 	}),
 }));
 

@@ -16,8 +16,8 @@ export default function Home() {
 				</Card>
 				<Card className="min-h-72 transform transition duration-500 hover:scale-102 hover:shadow-xl">
 					<Button asChild>
-						<Link className="p-4 h-full" to="/video/new">
-							Create new short
+						<Link className="p-4 h-full" to="/idea/new">
+							Create new idea
 						</Link>
 					</Button>
 				</Card>

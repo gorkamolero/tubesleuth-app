@@ -11,7 +11,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- CREATE TYPE "video_type" AS ENUM('Video', 'Short');
+ CREATE TYPE "video_type" AS ENUM('video', 'short');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -29,6 +29,15 @@ CREATE TABLE IF NOT EXISTS "channels" (
 	"writing_style" text,
 	"onyx" "voicemodel",
 	"image_style" text,
+	"created_at" timestamp DEFAULT now(),
+	"updated_at" timestamp DEFAULT now(),
+	"user_id" uuid
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "ideas" (
+	"id" uuid PRIMARY KEY NOT NULL,
+	"title" text,
+	"description" text,
 	"created_at" timestamp DEFAULT now(),
 	"updated_at" timestamp DEFAULT now(),
 	"user_id" uuid
@@ -52,15 +61,6 @@ CREATE TABLE IF NOT EXISTS "images" (
 	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "notes" (
-	"id" uuid PRIMARY KEY NOT NULL,
-	"title" text,
-	"body" text,
-	"created_at" timestamp DEFAULT now(),
-	"updated_at" timestamp DEFAULT now(),
-	"user_id" uuid
-);
---> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "users" (
 	"id" uuid PRIMARY KEY NOT NULL,
 	"email" text,
@@ -71,24 +71,31 @@ CREATE TABLE IF NOT EXISTS "users" (
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "videos" (
 	"id" uuid PRIMARY KEY NOT NULL,
-	"input" text,
 	"title" text,
 	"description" text,
 	"tags" text,
 	"script" text,
 	"voiceover" text,
+	"draft" boolean DEFAULT true,
 	"uploaded" boolean DEFAULT false,
 	"videofile" text,
-	"notes" text,
-	"channel_id" uuid,
-	"user_id" uuid,
 	"short" "video_type",
+	"channel_id" uuid,
+	"notes" text,
+	"idea_id" uuid,
+	"user_id" uuid,
 	"created_at" timestamp DEFAULT now(),
 	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "channels" ADD CONSTRAINT "channels_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "ideas" ADD CONSTRAINT "ideas_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -106,13 +113,13 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "notes" ADD CONSTRAINT "notes_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "videos" ADD CONSTRAINT "videos_channel_id_channels_id_fk" FOREIGN KEY ("channel_id") REFERENCES "channels"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "videos" ADD CONSTRAINT "videos_channel_id_channels_id_fk" FOREIGN KEY ("channel_id") REFERENCES "channels"("id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "videos" ADD CONSTRAINT "videos_idea_id_ideas_id_fk" FOREIGN KEY ("idea_id") REFERENCES "ideas"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
