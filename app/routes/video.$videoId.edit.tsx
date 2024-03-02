@@ -155,13 +155,13 @@ export default function VideoDetailsPage() {
 						type="submit"
 						name="update"
 						disabled={disabled}
-						variant="ghost"
+						variant="outline"
 					>
 						Save
 					</Button>
 
 					<Button asChild>
-						<Link to={`/video/${video.id}/images`}>Next</Link>
+						<Link to={`/video/${video.id}/voiceover`}>OK</Link>
 					</Button>
 				</div>
 			</Form>

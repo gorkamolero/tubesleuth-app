@@ -1,12 +1,14 @@
 import { db } from "~/database";
 import { videos } from "~/database/schema";
-import { getChannel } from "../channel";
 import { json } from "@remix-run/node";
-import { askAssistant } from "~/utils/openai";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { and, eq } from "drizzle-orm";
 import { uuid } from "uuidv4";
+import { VOICEMODELS } from "~/database/enums";
+import createVoiceover from "~/utils/createVoiceover";
+import { getSupabaseAdmin, supabaseClient } from "~/integrations/supabase";
+import transcribeAudioFull from "~/utils/transcribeAudioFull";
 
 export const videoSchema = createInsertSchema(videos);
 export type vidSchema = z.infer<typeof videoSchema>;
@@ -99,3 +101,92 @@ export async function updateVideo({
 		.set(data)
 		.where(and(eq(videos.id, id), eq(videos.userId, userId)));
 }
+
+const voiceOverEnum = z.nativeEnum(VOICEMODELS);
+export const voiceOverSchema = z.object({
+	userId: z.string().uuid(),
+	model: voiceOverEnum,
+	videoId: z.string(),
+});
+
+export const generateVoiceover = async ({
+	userId,
+	videoId,
+	model,
+}: z.infer<typeof voiceOverSchema>) => {
+	if (!userId) {
+		return json({ error: "userId is required" }, { status: 400 });
+	}
+	if (!videoId || !model) {
+		return json(
+			{ error: "videoId and model are required" },
+			{ status: 400 },
+		);
+	}
+
+	try {
+		const client = getSupabaseAdmin();
+
+		const video = await getVideo({ id: videoId });
+
+		if (!video || !video.script) {
+			return json({ error: "Video not found" }, { status: 404 });
+		}
+
+		const voiceoverBuffer = await createVoiceover({
+			script: video.script,
+			model,
+		});
+
+		const vurl = `${userId}/voiceover-${videoId}.mp3`;
+
+		const voiceoverUploadResult = await client.storage
+			.from(`voiceovers`)
+			.upload(vurl, voiceoverBuffer, {
+				cacheControl: "3600",
+				upsert: true,
+			});
+
+		if (voiceoverUploadResult.error) {
+			throw voiceoverUploadResult.error;
+		}
+
+		const {
+			data: { publicUrl: voiceoverURL },
+		} = supabaseClient.storage.from("voiceovers").getPublicUrl(vurl);
+
+		const transcript = await transcribeAudioFull({
+			voiceoverUrl: voiceoverURL,
+		});
+
+		const turl = `/${userId}/transcript-${videoId}.json`;
+		const transcriptUploadResult = await client.storage
+			.from("transcripts")
+			.upload(turl, JSON.stringify(transcript), {
+				cacheControl: "3600",
+				upsert: true,
+			});
+
+		if (transcriptUploadResult.error) {
+			throw transcriptUploadResult.error;
+		}
+
+		const {
+			data: { publicUrl: transcriptURL },
+		} = supabaseClient.storage.from("transcripts").getPublicUrl(turl);
+
+		await updateVideo({
+			userId,
+			id: videoId,
+			data: {
+				voiceover: voiceoverURL,
+				transcript: transcriptURL,
+			},
+		});
+
+		return voiceoverURL;
+	} catch (error) {
+		console.error("Error in voiceover generation:", error);
+		throw error;
+	}
+};

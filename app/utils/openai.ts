@@ -10,7 +10,7 @@ import("parse-json")
 	});
 
 const openai = new OpenAI({
-	apiKey: "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",
+	apiKey: "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",
 	organization: process.env.OPENAI_ORG_ID,
 });
 
@@ -119,5 +119,26 @@ export const askAssistant = async ({
 		console.error("ERROR ASKING ASSISTANT" + error.error.message);
 	}
 };
+
+export const promptAssistant = async ({
+	assistant_id,
+	prompt,
+	isJSON,
+}: {
+	assistant_id: string;
+	prompt: string;
+	isJSON: boolean;
+}) => {
+	const thread = await openai.beta.threads.create();
+	const { result: answer } = await sendAndAwaitResponse({
+		thread,
+		message: prompt,
+		assistant_id,
+		isJSON,
+	});
+
+	return answer;
+};
+
 export default openai;
 export { lemon };

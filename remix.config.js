@@ -8,4 +8,5 @@ module.exports = {
 	serverPlatform: "node",
 	tailwind: true,
 	postcss: true,
+	serverDependenciesToBundle: ["pretty-ms"],
 };

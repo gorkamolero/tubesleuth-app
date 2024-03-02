@@ -5,6 +5,7 @@ import type {
 } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import {
+	Link,
 	Links,
 	LiveReload,
 	Meta,
@@ -26,6 +27,7 @@ import { i18nextServer } from "~/integrations/i18n";
 
 import tailwindStylesheetUrl from "./tailwind.css";
 import { getBrowserEnv } from "./utils/env";
+import { StarIcon } from "lucide-react";
 
 export const links: LinksFunction = () => [
 	{
@@ -67,6 +69,42 @@ export function App() {
 				<Links />
 			</head>
 			<body className="h-full">
+				<div className="border-b">
+					<div className="flex h-16 items-center px-4">
+						<div className="flex gap-6 md:gap-10">
+							<Link
+								to="/"
+								className="flex items-center space-x-2"
+							>
+								<StarIcon className="h-6 w-6" />
+								<span className="inline-block font-bold">
+									Tubesleuth
+								</span>
+							</Link>
+							<nav className="flex items-center space-x-4 lg:space-x-6">
+								<Link
+									to="/ideas"
+									className="text-sm font-medium transition-colors hover:text-primary"
+								>
+									Ideas
+								</Link>
+								<Link
+									to="/videos"
+									className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+								>
+									Videos
+								</Link>
+								<Link
+									to="/channels"
+									className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+								>
+									Channels
+								</Link>
+							</nav>
+						</div>
+						<div className="ml-auto flex items-center space-x-4"></div>
+					</div>
+				</div>
 				<Outlet />
 				<ScrollRestoration />
 				<script

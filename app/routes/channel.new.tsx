@@ -4,14 +4,6 @@ import { Label } from "~/components/ui/label";
 import { Input } from "~/components/ui/input";
 import { Form } from "@remix-run/react";
 import { createChannel } from "~/modules/channel";
-
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectValue,
-	SelectTrigger,
-} from "~/components/ui/select";
 import { Button } from "~/components/ui/button";
 import { commitAuthSession, requireAuthSession } from "~/modules/auth";
 
@@ -20,6 +12,7 @@ import { assertIsPost, isFormProcessing } from "~/utils";
 import { parseFormAny, useZorm } from "react-zorm";
 
 import { VOICEMODELS } from "~/database/enums";
+import { VoiceOverSelect } from "~/components/VoiceoverSelect";
 
 export const NewChannelFormSchema = z.object({
 	name: z.string().min(1, "Channel name is required"),
@@ -100,24 +93,9 @@ export default function NewChannel() {
 						name={zo.fields.writingStyle()}
 					/>
 				</div>
-				<div>
-					<Label htmlFor="voicemodel" className="mb-2 block">
-						Voice Model
-					</Label>
-					<Select name={zo.fields.voicemodel()}>
-						<SelectTrigger className="w-[180px]">
-							<SelectValue placeholder="Voice model" />
-						</SelectTrigger>
 
-						<SelectContent>
-							{Object.entries(VOICEMODELS).map(([key, value]) => (
-								<SelectItem key={key} value={value}>
-									{key}
-								</SelectItem>
-							))}
-						</SelectContent>
-					</Select>
-				</div>
+				<VoiceOverSelect name={zo.fields.voicemodel()} />
+
 				<div>
 					<Label htmlFor="imageStyle">Image Style</Label>
 					<Input

@@ -35,20 +35,31 @@ export const transition = pgEnum(
 
 export const images = pgTable("images", {
 	id: uuid("id").primaryKey(),
+	title: text("title"),
 	description: text("description"),
 	prompt: text("prompt"),
+	fx: fx("MoveAround"),
+	transition: transition("Fade"),
+	start: integer("start"),
+	end: integer("end"),
 	createdAt: timestamp("created_at").defaultNow(),
 	updatedAt: timestamp("updated_at").defaultNow(),
+	userId: uuid("user_id").references(() => users.id),
+	videoId: uuid("video_id").references(() => videos.id),
+	src: text("src"),
+	generations: integer("generations"),
 });
 
 export const imageMaps = pgTable("image_maps", {
 	id: uuid("id").primaryKey(),
+	title: text("title"),
 	imageId: uuid("image_id").references(() => images.id),
 	start: integer("start"),
 	end: integer("end"),
 	videoId: uuid("video_id").references(() => videos.id),
 	fx: fx("MoveAround"),
 	transition: transition("Fade"),
+	description: text("description"),
 });
 
 export const videoType = pgEnum(
@@ -63,6 +74,7 @@ export const videos = pgTable("videos", {
 	tags: text("tags"),
 	script: text("script"),
 	voiceover: text("voiceover"),
+	transcript: text("transcript"),
 	draft: boolean("draft").default(true),
 	uploaded: boolean("uploaded").default(false),
 	videofile: text("videofile"),
@@ -73,6 +85,7 @@ export const videos = pgTable("videos", {
 	userId: uuid("user_id").references(() => users.id),
 	createdAt: timestamp("created_at").defaultNow(),
 	updatedAt: timestamp("updated_at").defaultNow(),
+	imageMap: text("image_map"),
 });
 
 export const voiceModel = pgEnum(
