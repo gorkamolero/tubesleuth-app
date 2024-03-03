@@ -8,12 +8,12 @@ import {
 import { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { createIdea } from "~/modules/ideas";
 import { requireAuthSession } from "~/modules/auth";
-import { Textarea } from "~/components/ui/textarea";
+import { Textarea } from "~/components/ui/textarea-gradient";
 import { Button } from "~/components/ui/button";
 import { z } from "zod";
 import { parseFormAny, useZorm } from "react-zorm";
 import { assertIsPost, isFormProcessing, notFound } from "~/utils";
-import { Input } from "~/components/ui/input";
+import { DialogDrawer } from "~/components/DialogDrawer";
 
 export async function loader({ request }: LoaderFunctionArgs) {
 	const { email } = await requireAuthSession(request);
@@ -43,7 +43,7 @@ export const action: ActionFunction = async ({ request }) => {
 		userId: authSession.userId,
 	});
 
-	return redirect(`/idea/${idea.id}`);
+	return redirect(`/ideas`);
 };
 
 export default function NewIdea() {
@@ -52,24 +52,21 @@ export default function NewIdea() {
 	const disabled = isFormProcessing(navigation.state);
 
 	return (
-		<div className="flex flex-col items-center justify-center h-screen">
-			<h1 className="text-2xl font-bold mb-4">Create a New Idea</h1>
+		<DialogDrawer open>
 			<Form
 				ref={zo.ref}
 				method="post"
 				className="space-y-6 w-full max-w-md"
 			>
-				<div>
-					<Textarea
-						id="description"
-						name={zo.fields.description()}
-						placeholder="Describe your idea, in much detail as possible"
-					/>
-				</div>
+				<Textarea
+					id="description"
+					name={zo.fields.description()}
+					placeholder="Describe your idea, in much detail as possible"
+				/>
 				<Button type="submit" disabled={disabled}>
 					Create Idea
 				</Button>
 			</Form>
-		</div>
+		</DialogDrawer>
 	);
 }

@@ -1,4 +1,6 @@
 import type { Config } from "tailwindcss";
+// import colors from "tailwindcss/colors";
+import flattenColorPalette from "tailwindcss/lib/util/flattenColorPalette";
 
 const config = {
 	darkMode: ["class"],
@@ -22,11 +24,18 @@ const config = {
 				'"Inter var", ui-sans-serif, system-ui',
 				{
 					fontFeatureSettings: '"cv02","cv03","cv04","cv11"',
-					fontVariationSettings: '"opsz" 32',
 				},
 			],
 
 			body: ["Inter", "ui-sans-serif", "system-ui"],
+		},
+		letterSpacing: {
+			tighter: "-0.05em",
+			tight: "-0.025em",
+			normal: "0.005em",
+			wide: "0.025em",
+			wider: "0.05em",
+			widest: "0.1em",
 		},
 		extend: {
 			fontFamily: {
@@ -86,9 +95,23 @@ const config = {
 				"accordion-down": "accordion-down 0.2s ease-out",
 				"accordion-up": "accordion-up 0.2s ease-out",
 			},
+			boxShadow: {
+				input: `0px 2px 3px -1px rgba(0,0,0,0.1), 0px 1px 0px 0px rgba(25,28,33,0.02), 0px 0px 0px 1px rgba(25,28,33,0.08)`,
+			},
 		},
 	},
-	plugins: [require("tailwindcss-animate")],
+	plugins: [require("tailwindcss-animate"), addVariablesForColors],
 } satisfies Config;
+
+function addVariablesForColors({ addBase, theme }: any) {
+	let allColors = flattenColorPalette(theme("colors"));
+	let newVars = Object.fromEntries(
+		Object.entries(allColors).map(([key, val]) => [`--${key}`, val]),
+	);
+
+	addBase({
+		":root": newVars,
+	});
+}
 
 export default config;

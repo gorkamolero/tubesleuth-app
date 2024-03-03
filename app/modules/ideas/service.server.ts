@@ -16,6 +16,7 @@ export const createIdeaSchema = insertIdeaSchema.pick({
 	description: true,
 	userId: true,
 	videoIds: true,
+	title: true,
 });
 
 export async function createIdea({
@@ -46,16 +47,16 @@ export async function getIdeas({ userId }: { userId: string }) {
 
 export const deleteIdeaSchema = z.object({
 	userId: z.string().uuid(),
-	videoId: z.string().uuid(),
+	id: z.string().uuid(),
 });
 
 export async function deleteIdea({
 	userId,
-	videoId,
+	id,
 }: z.infer<typeof deleteIdeaSchema>) {
 	return db
 		.delete(ideas)
-		.where(and(eq(ideas.id, videoId), eq(ideas.userId, userId)));
+		.where(and(eq(ideas.id, id), eq(ideas.userId, userId)));
 }
 
 export const updateIdeaPartialSchema = createIdeaSchema.partial();
@@ -80,6 +81,7 @@ export const generateScriptSchema = z.object({
 	ideaId: z.string().uuid(),
 	channelId: z.string().uuid(),
 	userId: z.string(),
+	title: z.string(),
 	description: z.string(),
 });
 

@@ -25,10 +25,13 @@ import { Label } from "~/components/ui/label";
 import { Button } from "./ui/button";
 
 interface DialogDrawerProps {
-	trigger: React.ReactNode;
+	trigger?: React.ReactNode;
 	title?: string;
 	description?: string;
 	children?: React.ReactNode;
+	open?: boolean;
+	className?: string;
+	fullScreen?: boolean;
 }
 
 export function DialogDrawer({
@@ -36,14 +39,32 @@ export function DialogDrawer({
 	title,
 	description,
 	children = <ProfileForm />,
+	open: openDefault = false,
+	className,
+	fullScreen,
 }: DialogDrawerProps) {
-	const [open, setOpen] = React.useState(false);
+	const [open, setOpen] = React.useState(openDefault);
 	const isDesktop = useMediaQuery("(min-width: 768px)");
 
 	return isDesktop ? (
 		<Dialog open={open} onOpenChange={setOpen}>
-			<DialogTrigger asChild>{trigger}</DialogTrigger>
-			<DialogContent className="sm:max-w-[425px]">
+			{trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
+			<DialogContent
+				className={cn(
+					"sm:max-w-[425px]",
+					className,
+					fullScreen &&
+						"w-screen h-screen sm:max-w-none overflow-y-scroll",
+				)}
+				style={
+					fullScreen
+						? {
+								height: "calc(100vh - 3.5rem)",
+								width: "calc(100vw - 3.5rem)",
+							}
+						: {}
+				}
+			>
 				<DialogHeader>
 					<DialogTitle>{title}</DialogTitle>
 					<DialogDescription>{description}</DialogDescription>
@@ -53,7 +74,8 @@ export function DialogDrawer({
 		</Dialog>
 	) : (
 		<Drawer open={open} onOpenChange={setOpen}>
-			<DrawerTrigger asChild>{trigger}</DrawerTrigger>
+			{trigger && <DrawerTrigger asChild>{trigger}</DrawerTrigger>}
+
 			<DrawerContent>
 				<DrawerHeader className="text-left">
 					<DrawerTitle>{title}</DrawerTitle>

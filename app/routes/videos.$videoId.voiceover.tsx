@@ -1,11 +1,12 @@
 import type { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { redirect, json } from "@remix-run/node";
 import { Form, Link, useLoaderData, useNavigation } from "@remix-run/react";
-import { LucideArrowLeftCircle } from "lucide-react";
 import { useZorm } from "react-zorm";
 import { z } from "zod";
+import { DialogDrawer } from "~/components/DialogDrawer";
 import { VoiceOverSelect } from "~/components/VoiceoverSelect";
 import { Button } from "~/components/ui/button";
+import Stepper from "~/components/ui/stepper";
 import { VOICEMODELS } from "~/database/enums";
 
 import { requireAuthSession, commitAuthSession } from "~/modules/auth";
@@ -35,7 +36,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 		model,
 	});
 
-	return redirect(`/video/${videoId}/transcript`, {
+	return redirect(`/videos/${videoId}/transcript`, {
 		headers: {
 			"Set-Cookie": await commitAuthSession(request, { authSession }),
 		},
@@ -62,22 +63,13 @@ export default function VideoDetailsPage() {
 	);
 
 	return (
-		<div className="flex flex-col items-center justify-center h-screen">
+		<DialogDrawer open>
+			<Stepper steps={8} currentStep={3} title="Create a voice-over" />
 			<Form
 				method="post"
 				ref={createVoiceOver.ref}
 				className="space-y-6 w-full max-w-md flex flex-col items-stretch"
 			>
-				<div className="flex flex-col items-start space-y-2">
-					<Button variant="ghost" className="space-x-2">
-						<LucideArrowLeftCircle />
-						<Link to={`/videos/${video.id}/edit`}>Back</Link>
-					</Button>
-					<h1 className="text-2xl font-bold mb-4">
-						Create Voiceover
-					</h1>
-				</div>
-
 				<VoiceOverSelect name={createVoiceOver.fields.model()} />
 
 				<input
@@ -98,11 +90,13 @@ export default function VideoDetailsPage() {
 
 					{hasVoiceover && (
 						<Button asChild>
-							<Link to={`/video/${video.id}/transcript`}>OK</Link>
+							<Link to={`/videos/${video.id}/transcript`}>
+								OK
+							</Link>
 						</Button>
 					)}
 				</div>
 			</Form>
-		</div>
+		</DialogDrawer>
 	);
 }

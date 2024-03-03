@@ -50,7 +50,7 @@ export const TranscriptDisplay: React.FC<Props> = ({ transcript, src }) => {
 	}, [activeWordIndex]);
 
 	return (
-		<>
+		<div className="grid gap-6">
 			<div className="flex flex-wrap">
 				{transcript.words.map((word, i) => (
 					<span
@@ -66,6 +66,6 @@ export const TranscriptDisplay: React.FC<Props> = ({ transcript, src }) => {
 			<div>
 				<audio controls src={src} ref={playerRef} className="w-full" />
 			</div>
-		</>
+		</div>
 	);
 };

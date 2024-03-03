@@ -4,7 +4,7 @@ import {
 	LoaderFunction,
 	redirect,
 } from "@remix-run/node";
-import { Form, useLoaderData, useNavigation } from "@remix-run/react";
+import { Form, Link, useLoaderData, useNavigation } from "@remix-run/react";
 import {
 	generateImage,
 	getImagesByVideoId,
@@ -17,7 +17,15 @@ import { SparklesIcon } from "lucide-react";
 import { Card, CardFooter } from "~/components/ui/card";
 import { assertIsPost, isFormProcessing } from "~/utils";
 import { useState } from "react";
-import { Textarea } from "~/components/ui/textarea";
+import { Textarea } from "~/components/ui/textarea-gradient";
+import { DialogDrawer } from "~/components/DialogDrawer";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+} from "~/components/ui/tooltip";
+import Stepper from "~/components/ui/stepper";
+import { LoadingSpinner } from "~/components/ui/loading-spinner";
 
 export const loader: LoaderFunction = async ({ params, request }) => {
 	const { userId } = await requireAuthSession(request);
@@ -31,7 +39,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 			...image,
 		}))
 		.sort((a, b) => a.start! - b.start!);
-	return json({ images });
+	return json({ images, videoId });
 };
 
 export const action: ActionFunction = async ({ params, request }) => {
@@ -49,29 +57,57 @@ export const action: ActionFunction = async ({ params, request }) => {
 		description,
 	});
 
-	return redirect(`/video/${videoId}/images`);
+	return redirect(`/videos/${videoId}/images`);
 };
 
 export default function VideoImages() {
-	const { images } = useLoaderData<{ images: imageSchema[] }>();
+	const { images, videoId } = useLoaderData<{
+		images: imageSchema[];
+		videoId: string;
+	}>();
 
 	if (images.length === 0) {
 		return <div>No images found for this video.</div>;
 	}
 
-	return (
-		<div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
-			{images.map((image) => {
-				return (
-					<ImageCard key={image.id} image={image as imageSchema} />
-				);
-			})}
+	const allImagesGenerated = images.every((image) => image.src);
 
-			<Button className="fixed bottom-4 right-4">
-				<SparklesIcon className="mr-2" />
-				Generate all
-			</Button>
-		</div>
+	return (
+		<>
+			<DialogDrawer open fullScreen>
+				<Stepper steps={8} currentStep={6} title="Generate images" />
+				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
+					{images.map((image) => {
+						return (
+							<ImageCard
+								key={image.id}
+								image={image as imageSchema}
+							/>
+						);
+					})}
+				</div>
+				{allImagesGenerated && (
+					<div className="fixed bottom-0 right-0 p-6">
+						<Button size="lg" asChild style={{ zoom: 1.2 }}>
+							<Link to={`/videos/${videoId}/generate`}>
+								<SparklesIcon className="mr-2" />
+								<p className="text-md">Generate video!</p>
+							</Link>
+						</Button>
+					</div>
+				)}
+			</DialogDrawer>
+
+			<Tooltip>
+				<TooltipTrigger asChild>
+					<Button className="fixed bottom-4 right-4">
+						<SparklesIcon className="mr-2" />
+						Generate all
+					</Button>
+				</TooltipTrigger>
+				<TooltipContent>Coming soon!</TooltipContent>
+			</Tooltip>
+		</>
 	);
 }
 
@@ -79,7 +115,6 @@ const ImageCard = ({ image }: { image: imageSchema }) => {
 	const navigation = useNavigation();
 	const disabled = isFormProcessing(navigation.state);
 	const [description, setDescription] = useState(image.description || "");
-	const hasEdited = description !== image.description;
 
 	return (
 		<Card>
@@ -90,18 +125,25 @@ const ImageCard = ({ image }: { image: imageSchema }) => {
 						src={image.src}
 						alt={image.description || "Image"}
 						className="w-full h-auto object-cover"
-						style={{ aspectRatio: "9 / 16" }} // Ensuring the image maintains a 9:16 aspect ratio
+						style={{ aspectRatio: "9 / 16" }}
 					/>
 				) : (
 					<div
-						className="w-full bg-gray-300 flex items-center justify-center"
-						style={{ paddingTop: "177.77%" }} // Placeholder maintaining a 9:16 aspect ratio
+						className="w-full bg-zinc/80 flex items-center justify-center"
+						style={{ aspectRatio: "9 / 16" }}
 					>
-						<span className="text-gray-500">No Image</span>
+						{disabled ? (
+							<LoadingSpinner className="h-12 w-12" />
+						) : (
+							<span className="text-gray-500">
+								No image found
+							</span>
+						)}
 					</div>
 				)}
 
 				<Textarea
+					disabled={disabled}
 					name="description"
 					id="description"
 					value={description}
@@ -119,15 +161,18 @@ const ImageCard = ({ image }: { image: imageSchema }) => {
 						)}
 						<div className="flex justify-end space-x-2">
 							<Button
-								disabled={
-									(disabled || !hasEdited) &&
-									image.src !== null
-								}
+								disabled={disabled}
 								size="sm"
 								type="submit"
 								className="cursor-pointer"
 							>
-								<SparklesIcon className="h-4 w-4 mr-2" />
+								<div className="mr-2">
+									{disabled ? (
+										<LoadingSpinner />
+									) : (
+										<SparklesIcon className="h-4 w-4" />
+									)}
+								</div>
 								Generate
 							</Button>
 						</div>

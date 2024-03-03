@@ -5,6 +5,7 @@ import { ArrowRight } from "lucide-react";
 import { useRef } from "react";
 import { parseFormAny } from "react-zorm";
 import { z } from "zod";
+import { Appbar } from "~/components/Appbar";
 import { DialogDrawer } from "~/components/DialogDrawer";
 import { HoverGrid } from "~/components/HoverGrid";
 import { Button } from "~/components/ui/button";
@@ -34,7 +35,7 @@ import {
 	channelSchema,
 	deleteChannel,
 	createChannel,
-} from "~/modules/channel"; // Adjust this import based on your actual module
+} from "~/modules/channel";
 import { isFormProcessing } from "~/utils";
 import { assertIsPost, notFound } from "~/utils/http.server";
 
@@ -142,50 +143,55 @@ export default function ChannelsPage() {
 	const data = useLoaderData<typeof loader>();
 
 	return (
-		<ScrollArea className="w-full h-full">
-			<HoverGrid>
-				{data.channels.map((channel) => (
-					<Card key={channel.id}>
-						<CardTitle>{channel.name}</CardTitle>
-						<CardDescription>{channel.cta}</CardDescription>
+		<>
+			<Appbar title="Channels" />
+			<ScrollArea className="w-full h-full">
+				<HoverGrid>
+					{data.channels.map((channel) => (
+						<Card key={channel.id}>
+							<CardTitle>{channel.name}</CardTitle>
+							<CardDescription>{channel.cta}</CardDescription>
+							<CardActions>
+								<DialogDrawer
+									trigger={
+										<Button variant="outline">
+											<ArrowRight className="h-4 w-4 mr-2" />
+											Edit
+										</Button>
+									}
+									title="Channel Details"
+								>
+									<ChannelForm
+										channel={
+											channel as z.infer<
+												typeof channelSchema
+											>
+										}
+									/>
+								</DialogDrawer>
+							</CardActions>
+						</Card>
+					))}
+
+					<Card>
+						<CardTitle>Create new channel</CardTitle>
 						<CardActions>
 							<DialogDrawer
 								trigger={
 									<Button variant="outline">
 										<ArrowRight className="h-4 w-4 mr-2" />
-										Edit
+										Create
 									</Button>
 								}
-								title="Channel Details"
+								title="Create Channel"
 							>
-								<ChannelForm
-									channel={
-										channel as z.infer<typeof channelSchema>
-									}
-								/>
+								<ChannelForm isNewChannel />
 							</DialogDrawer>
 						</CardActions>
 					</Card>
-				))}
-
-				<Card>
-					<CardTitle>Create new channel</CardTitle>
-					<CardActions>
-						<DialogDrawer
-							trigger={
-								<Button variant="outline">
-									<ArrowRight className="h-4 w-4 mr-2" />
-									Create
-								</Button>
-							}
-							title="Create Channel"
-						>
-							<ChannelForm isNewChannel />
-						</DialogDrawer>
-					</CardActions>
-				</Card>
-			</HoverGrid>
-		</ScrollArea>
+				</HoverGrid>
+			</ScrollArea>
+		</>
 	);
 }
 
@@ -198,10 +204,6 @@ const ChannelForm = ({
 }) => {
 	const navigation = useNavigation();
 	const disabled = isFormProcessing(navigation.state);
-	const deleteButtonRef = useRef<HTMLButtonElement>(null);
-	const clickDeleteButton = () => {
-		deleteButtonRef.current?.click();
-	};
 	return (
 		<>
 			<Form
@@ -272,9 +274,9 @@ const ChannelForm = ({
 							<Button
 								variant="destructive"
 								disabled={disabled}
-								onClick={clickDeleteButton}
 								name="intent"
 								value="delete"
+								type="submit"
 							>
 								Delete
 							</Button>

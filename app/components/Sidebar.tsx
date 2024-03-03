@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Archive, Video, Users, Sparkle } from "lucide-react";
+import { Lightbulb, Video, Users, Sparkle, Play } from "lucide-react";
 import { Account } from "./Account";
 import { Nav } from "./Nav";
 import { Separator } from "~/components/ui/separator";
@@ -37,21 +37,21 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed }) => {
 					{
 						title: "Ideas",
 						label: "",
-						icon: Archive, // Replace with appropriate icon
+						icon: Lightbulb,
 						variant: "ghost",
 						to: "/ideas",
 					},
 					{
 						title: "Videos",
 						label: "",
-						icon: Video, // Replace with appropriate icon
+						icon: Video,
 						variant: "ghost",
 						to: "/videos",
 					},
 					{
 						title: "Channels",
 						label: "",
-						icon: Users, // Replace with appropriate icon
+						icon: Play,
 						variant: "ghost",
 						to: "/channels",
 					},

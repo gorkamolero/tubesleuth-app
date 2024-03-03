@@ -1,14 +1,14 @@
 import type { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { redirect, json } from "@remix-run/node";
 import { Form, Link, useLoaderData, useNavigation } from "@remix-run/react";
-import { LucideArrowLeftCircle } from "lucide-react";
 import { useState } from "react";
 import { parseFormAny, useZorm } from "react-zorm";
 import { z } from "zod";
 import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
+import { Input } from "~/components/ui/input-gradient";
 import { Label } from "~/components/ui/label";
-import { Textarea } from "~/components/ui/textarea";
+import Stepper from "~/components/ui/stepper";
+import { Textarea } from "~/components/ui/textarea-gradient";
 
 import { requireAuthSession, commitAuthSession } from "~/modules/auth";
 import {
@@ -61,7 +61,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 		data: result.data,
 	});
 
-	return redirect(`/video/${videoId}/images`, {
+	return redirect(`/videos/${videoId}/images`, {
 		headers: {
 			"Set-Cookie": await commitAuthSession(request, { authSession }),
 		},
@@ -82,31 +82,23 @@ export default function VideoDetailsPage() {
 	const navigation = useNavigation();
 	const disabled = isFormProcessing(navigation.state);
 
-	const [formData, setFormData] = useState({
+	const [formData] = useState({
 		title: video.title || "",
 		description: video.description || "",
 		tags: video.tags || "",
 		script: video.script || "",
 	});
 
-	const handleChange = (
-		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-	) => {
-		const { name, value } = e.target;
-		setFormData((prevState) => ({ ...prevState, [name]: value }));
-	};
-
 	const update = useZorm("update", partialUpdateSchema);
 
 	return (
-		<div className="flex flex-col items-center justify-center">
+		<div className="h-screen">
 			<Form
 				method="post"
 				ref={update.ref}
 				className="space-y-6 w-full flex flex-col items-stretch"
 			>
-				<h1 className="text-2xl font-bold mb-4">Edit Script</h1>
-				<div className="flex flex-col space-y-4">
+				<div className="grid gap-2">
 					<Label htmlFor="title">Title</Label>
 					<Input
 						type="text"
@@ -115,7 +107,7 @@ export default function VideoDetailsPage() {
 					/>
 				</div>
 
-				<div className="flex flex-col space-y-4">
+				<div className="grid gap-2">
 					<Label htmlFor="description">Description</Label>
 					<Textarea
 						id="description"
@@ -124,7 +116,7 @@ export default function VideoDetailsPage() {
 					/>
 				</div>
 
-				<div className="flex flex-col space-y-4">
+				<div className="grid gap-2">
 					<Label htmlFor="tags">Tags</Label>
 					<Input
 						type="text"
@@ -134,7 +126,7 @@ export default function VideoDetailsPage() {
 					/>
 				</div>
 
-				<div className="flex flex-col space-y-4">
+				<div className="grid gap-2">
 					<Label htmlFor="script">Script</Label>
 					<Textarea
 						id="script"
@@ -151,11 +143,11 @@ export default function VideoDetailsPage() {
 						disabled={disabled}
 						variant="outline"
 					>
-						Save
+						Save changes
 					</Button>
 
 					<Button asChild>
-						<Link to={`/video/${video.id}/voiceover`}>OK</Link>
+						<Link to={`/videos/${video.id}/voiceover`}>OK</Link>
 					</Button>
 				</div>
 			</Form>

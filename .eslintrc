@@ -1,5 +1,5 @@
 {
-	"plugins": ["tailwindcss"],
+	"plugins": ["tailwindcss", "@remotion"],
 	"extends": [
 		"@remix-run/eslint-config",
 		"@remix-run/eslint-config/node",
@@ -64,8 +64,10 @@
 				"./app/root.tsx",
 				"./app/entry.client.tsx",
 				"./app/entry.server.tsx",
-				"./app/routes/**/*.tsx"
+				"./app/routes/**/*.tsx",
+				"remotion/*.{ts,tsx}"
 			],
+			"extends": ["plugin:@remotion/recommended"],
 			"rules": {
 				"import/no-default-export": "off"
 			}

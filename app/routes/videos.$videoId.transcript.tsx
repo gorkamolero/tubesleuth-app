@@ -1,8 +1,10 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
+import { DialogDrawer } from "~/components/DialogDrawer";
 import { TranscriptDisplay } from "~/components/TranscriptDisplay";
 import { Button } from "~/components/ui/button";
+import Stepper from "~/components/ui/stepper";
 import { supabaseClient } from "~/integrations/supabase";
 
 import { requireAuthSession } from "~/modules/auth";
@@ -44,18 +46,23 @@ export default function VideoDetailsPage() {
 		throw new Error("Video not found");
 
 	return (
-		<div className="flex flex-col items-center justify-center h-screen">
-			<div className="space-y-6 w-full max-w-md flex flex-col items-stretch">
-				<h1 className="text-3xl font-bold">{video.title}</h1>
+		<DialogDrawer open className="sm:max-w-[640px]">
+			<Stepper steps={8} currentStep={4} title="Review your transcript" />
+			<div className="flex flex-col items-center justify-center">
+				<div className="space-y-6 w-full flex flex-col items-stretch">
+					<h1 className="text-3xl font-bold">{video.title}</h1>
 
-				<TranscriptDisplay src={url} transcript={transcript} />
+					<TranscriptDisplay src={url} transcript={transcript} />
 
-				<div className="flex space-x-4 justify-end">
-					<Button asChild>
-						<Link to={`/video/${video.id}/imagemap`}>Next</Link>
-					</Button>
+					<div className="flex space-x-4 justify-end">
+						<Button asChild>
+							<Link to={`/videos/${video.id}/imagemap`}>
+								Next
+							</Link>
+						</Button>
+					</div>
 				</div>
 			</div>
-		</div>
+		</DialogDrawer>
 	);
 }
