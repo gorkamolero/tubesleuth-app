@@ -13,21 +13,18 @@ export const insertIdeaSchema = createInsertSchema(ideas);
 export type ideaSchema = z.infer<typeof insertIdeaSchema>;
 
 export const createIdeaSchema = insertIdeaSchema.pick({
-	title: true,
 	description: true,
 	userId: true,
 	videoIds: true,
 });
 
 export async function createIdea({
-	title,
 	description,
 	userId,
 }: z.infer<typeof createIdeaSchema>) {
 	const id = uuid();
 	const idea = insertIdeaSchema.parse({
 		id,
-		title,
 		description,
 		userId,
 	});

@@ -8,5 +8,8 @@ module.exports = {
 	serverPlatform: "node",
 	tailwind: true,
 	postcss: true,
-	serverDependenciesToBundle: ["pretty-ms"],
+	serverDependenciesToBundle: [
+		/^@ts-particles\/react.*/,
+		/^@ts-particles\/slim.*/,
+	],
 };

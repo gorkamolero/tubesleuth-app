@@ -28,7 +28,7 @@ export default function Video() {
 				/>
 			</div>
 			<Separator />
-			<div className="p-6">
+			<div className="p-6 border-box">
 				<Outlet />
 			</div>
 		</>

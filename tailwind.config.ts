@@ -17,7 +17,21 @@ const config = {
 				"2xl": "1400px",
 			},
 		},
+		fontFamily: {
+			sans: [
+				'"Inter var", ui-sans-serif, system-ui',
+				{
+					fontFeatureSettings: '"cv02","cv03","cv04","cv11"',
+					fontVariationSettings: '"opsz" 32',
+				},
+			],
+
+			body: ["Inter", "ui-sans-serif", "system-ui"],
+		},
 		extend: {
+			fontFamily: {
+				inter: ["Inter", "sans-serif"],
+			},
 			colors: {
 				border: "hsl(var(--border))",
 				input: "hsl(var(--input))",

@@ -16,6 +16,7 @@ const partialChannelSchema = channelSchema.pick({
 	imageStyle: true,
 	userId: true,
 });
+
 export async function createChannel(
 	input: z.infer<typeof partialChannelSchema>,
 ) {
@@ -56,6 +57,24 @@ export async function getChannelNames({ userId }: { userId: string }) {
 		.from(channels)
 		.where(eq(channels.userId, userId));
 }
+
+export const updateChannelPartialSchema = channelSchema.partial();
+export const updateChannelSchema = z.object({
+	id: z.string(),
+	userId: z.string(),
+	data: updateChannelPartialSchema,
+});
+
+export const updateChannel = async ({
+	userId,
+	id,
+	data,
+}: z.infer<typeof updateChannelSchema>) => {
+	return db
+		.update(channels)
+		.set(data)
+		.where(and(eq(channels.id, id), eq(channels.userId, userId)));
+};
 
 export async function deleteChannel({
 	userId,

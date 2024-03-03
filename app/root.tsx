@@ -14,7 +14,11 @@ import {
 	ScrollRestoration,
 	useLoaderData,
 } from "@remix-run/react";
-import { PreventFlashOnWrongTheme, ThemeProvider } from "remix-themes";
+import {
+	PreventFlashOnWrongTheme,
+	ThemeProvider,
+	useTheme,
+} from "remix-themes";
 import { useTranslation } from "react-i18next";
 import { useChangeLanguage } from "remix-i18next";
 
@@ -31,12 +35,27 @@ import { Sidebar } from "./components/Sidebar";
 import { cn } from "~/lib/utils";
 import useLocalStorage from "./hooks/use-local-storage";
 import { TooltipProvider } from "./components/ui/tooltip";
+import { themeSessionResolver } from "./modules/auth/session.server";
+import { clsx } from "clsx";
 
 export const links: LinksFunction = () => [
 	{
 		rel: "stylesheet preload prefetch",
 		href: tailwindStylesheetUrl,
 		as: "style",
+	},
+	{
+		rel: "preconnect",
+		href: "https://fonts.googleapis.com",
+	},
+	{
+		rel: "preconnect",
+		href: "https://fonts.gstatic.com",
+		crossOrigin: "anonymous",
+	},
+	{
+		rel: "stylesheet",
+		href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap",
 	},
 ];
 
@@ -47,9 +66,11 @@ export const meta: MetaFunction = () => [
 
 export const loader: LoaderFunction = async ({ request }) => {
 	const locale = await i18nextServer.getLocale(request);
+	const { getTheme } = await themeSessionResolver(request);
 
 	return json({
 		locale,
+		theme: getTheme(),
 		env: getBrowserEnv(),
 	});
 };
@@ -59,6 +80,7 @@ const defaultCollapsed = false;
 
 export function App() {
 	const { env, locale, theme: datatheme } = useLoaderData<typeof loader>();
+	const [theme] = useTheme();
 
 	const { i18n } = useTranslation();
 	const [isCollapsed, setIsCollapsed] = useLocalStorage(
@@ -75,7 +97,7 @@ export function App() {
 	useChangeLanguage(locale);
 
 	return (
-		<html lang={locale} dir={i18n.dir()} className="h-full">
+		<html lang={locale} dir={i18n.dir()} className={clsx(theme, "h-full")}>
 			<head>
 				<meta charSet="utf-8" />
 				<meta
@@ -92,7 +114,6 @@ export function App() {
 						direction="horizontal"
 						onLayout={(sizes: number[]) => {
 							setPanelSizes(sizes);
-							console.log(sizes);
 						}}
 						className="flex h-full items-stretch"
 					>
@@ -125,6 +146,7 @@ export function App() {
 							<div className="flex flex-col flex-1 h-screen">
 								<Outlet />
 								<ScrollRestoration />
+								<LiveReload />
 							</div>
 						</ResizablePanel>
 					</ResizablePanelGroup>
@@ -135,7 +157,6 @@ export function App() {
 					}}
 				/>
 				<Scripts />
-				<LiveReload />
 			</body>
 		</html>
 	);

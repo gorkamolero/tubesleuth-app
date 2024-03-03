@@ -1,5 +1,6 @@
 import { VOICEMODELS } from "~/database/enums";
-import { Label } from "./ui/label";
+import { Label } from "~/components/ui/label";
+import { capitalize } from "~/lib/utils";
 
 import {
 	Select,
@@ -11,19 +12,19 @@ import {
 
 export const VoiceOverSelect = ({ name }: { name: string }) => {
 	return (
-		<div>
+		<div className="grid gap-2 w-full">
 			<Label htmlFor="voicemodel" className="mb-2 block">
 				Voice Model
 			</Label>
 			<Select name={name}>
-				<SelectTrigger className="w-[180px]">
+				<SelectTrigger className="min-w-[180px] w-full">
 					<SelectValue placeholder="Voice model" />
 				</SelectTrigger>
 
 				<SelectContent>
 					{Object.entries(VOICEMODELS).map(([key, value]) => (
 						<SelectItem key={key} value={value}>
-							{key}
+							{capitalize(value)}
 						</SelectItem>
 					))}
 				</SelectContent>

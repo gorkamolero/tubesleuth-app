@@ -6,6 +6,8 @@ import { Separator } from "~/components/ui/separator";
 import { Button } from "./ui/button";
 import { Link } from "@remix-run/react";
 import { cn } from "~/lib/utils";
+import { ModeToggle } from "./mode-toggle";
+import { NavLink } from "./NavLink";
 
 interface SidebarProps {
 	isCollapsed: boolean;
@@ -13,28 +15,20 @@ interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed }) => {
 	return (
-		<>
+		<div className="flex flex-col h-full">
 			<div
 				className={`flex h-[52px] items-center justify-start ${
 					isCollapsed ? "h-[52px] justify-center" : "px-2"
 				}`}
 			>
-				<Button
-					asChild
-					className={cn(
-						"flex items-center gap-2",
-						isCollapsed && "h-9 w-9 shrink-0 justify-center p-0",
-					)}
-					aria-label="Account information"
-					variant="ghost"
-				>
+				<NavLink isCollapsed={isCollapsed}>
 					<Link to="/account">
 						<Sparkle className="h-4 w-4" />
 						<h1 className={cn("text-sm", isCollapsed && "hidden")}>
 							Tubesleuth
 						</h1>
 					</Link>
-				</Button>
+				</NavLink>
 			</div>
 			<Separator />
 			<Nav
@@ -63,6 +57,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed }) => {
 					},
 				]}
 			/>
-		</>
+			<div className="mt-auto flex p-2">
+				<ModeToggle isCollapsed={isCollapsed} />
+			</div>
+		</div>
 	);
 };

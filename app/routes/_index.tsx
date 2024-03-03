@@ -1,80 +1,54 @@
-import type { LoaderFunctionArgs } from "@remix-run/node";
-import { json } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
-import { useTranslation } from "react-i18next";
-import { ModeToggle } from "~/components/mode-toggle";
+import { Link } from "@remix-run/react";
+import { Welcome } from "~/components/Welcome";
+import { BackgroundGradient } from "~/components/ui/background-gradient";
+import { Button } from "~/components/ui/button";
+import { Card } from "~/components/ui/card";
+import { Separator } from "~/components/ui/separator";
 
-import { LogoutButton, getAuthSession } from "~/modules/auth";
-
-export async function loader({ request }: LoaderFunctionArgs) {
-	const { email } = (await getAuthSession(request)) || {};
-
-	return json({ email });
-}
-
-export default function Index() {
-	const { email } = useLoaderData<typeof loader>();
-	const { t } = useTranslation(["common", "auth"]);
+export default function Home() {
 	return (
-		<main className="relative min-h-screen bg-background sm:flex sm:items-center sm:justify-center">
-			<ModeToggle />
-			<div className="relative sm:pb-16 sm:pt-8">
-				<div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-					<div className="relative shadow-xl sm:overflow-hidden sm:rounded-2xl">
-						<div className="absolute inset-0">
-							<img
-								className="h-full w-full object-cover"
-								src="https://plus.unsplash.com/premium_photo-1678990345549-6a35a77883d5?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-								alt="Sonic Youth On Stage"
-							/>
-							<div className="absolute inset-0 bg-[color:rgba(254,204,27,0.5)] mix-blend-multiply" />
-						</div>
-						<div className="relative bg-black/50 px-4 pb-8 pt-16 sm:px-6 sm:pb-14 sm:pt-24 lg:px-8 lg:pb-20 lg:pt-32">
-							<h1 className="space-x-8 text-center text-6xl font-extrabold tracking-tight sm:text-8xl lg:text-9xl">
-								<span className="uppercase text-yellow-500 drop-shadow-md">
-									Tubesleuth
-								</span>
-							</h1>
-							<div className="mx-auto mt-10 max-w-sm sm:flex sm:max-w-none sm:justify-center">
-								{email ? (
-									<div className="flex space-x-4 items-center">
-										<Link
-											to="/home"
-											className="flex items-center justify-center rounded-md border border-transparent bg-white px-4 py-3 text-base font-medium text-yellow-700 shadow-sm hover:bg-yellow-50 sm:px-8"
-										>
-											Come in
-										</Link>
-										<LogoutButton />
-									</div>
-								) : (
-									<div className="space-y-4">
-										<div className="space-y-4 sm:mx-auto sm:inline-grid sm:grid-cols-2 sm:gap-5 sm:space-y-0">
-											<Link
-												data-test-id="join"
-												to="/join"
-												className="flex items-center justify-center rounded-md border border-transparent bg-white px-4 py-3 text-base font-medium text-yellow-700 shadow-sm hover:bg-yellow-50 sm:px-8"
-											>
-												{t("register.action", {
-													ns: "auth",
-												})}
-											</Link>
-											<Link
-												data-test-id="login"
-												to="/login"
-												className="flex items-center justify-center rounded-md bg-yellow-500 px-4 py-3 font-medium text-white hover:bg-yellow-600  "
-											>
-												{t("login.action", {
-													ns: "auth",
-												})}
-											</Link>
-										</div>
-									</div>
-								)}
-							</div>
-						</div>
+		<div className="flex h-screen flex-col items-center justify-center space-y-16">
+			<h1 className="md:text-4xl text-2xl lg:text-6xl font-bold text-center relative z-20">
+				Welcome to Tubesleuth
+			</h1>
+			<div className="flex gap-8">
+				<BackgroundGradient className="rounded-[22px] max-w-sm p-4 sm:p-10 bg-white dark:bg-zinc-900">
+					<div className="flex flex-col space-y-4 h-full">
+						<p className="text-base sm:text-xl text-black mt-4 mb-2 dark:text-neutral-200">
+							Create new channel
+						</p>
+						<p className="text-sm text-neutral-600 dark:text-neutral-400">
+							Channels are the backbone of your content. They
+							define the personality and direction of your videos
+						</p>
+						<Separator />
+						<Button asChild className="mt-auto" variant="outline">
+							<Link className="p-4 h-full" to="/channel/new">
+								Create new channel
+							</Link>
+						</Button>
 					</div>
-				</div>
+				</BackgroundGradient>
+
+				<BackgroundGradient className="rounded-[22px] max-w-sm p-4 sm:p-10 bg-white dark:bg-zinc-900">
+					<div className="flex flex-col space-y-4 h-full">
+						<p className="text-base sm:text-xl text-black mt-4 mb-2 dark:text-neutral-200">
+							Create new idea
+						</p>
+						<p className="text-sm text-neutral-600 dark:text-neutral-400">
+							Quickly sketch out an idea. Ideas are the seed of
+							your future videos. Treat them as notes and come
+							back to them later
+						</p>
+						<Separator />
+						<Button asChild className="mt-auto" variant="outline">
+							<Link className="p-4 h-full" to="/idea/new">
+								Create new idea
+							</Link>
+						</Button>
+					</div>
+				</BackgroundGradient>
 			</div>
-		</main>
+		</div>
 	);
 }

@@ -22,7 +22,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export const NewIdeaFormSchema = z.object({
-	title: z.string().min(1, "Title is required"),
 	description: z.string().min(1, "Description is required"),
 });
 
@@ -38,10 +37,9 @@ export const action: ActionFunction = async ({ request }) => {
 		return json({ errors: result.error }, { status: 400 });
 	}
 
-	const { title, description } = result.data;
+	const { description } = result.data;
 	const idea = await createIdea({
-		description, // Assuming 'input' is used for the idea description
-		title,
+		description,
 		userId: authSession.userId,
 	});
 
@@ -62,17 +60,10 @@ export default function NewIdea() {
 				className="space-y-6 w-full max-w-md"
 			>
 				<div>
-					<Input
-						id="title"
-						name={zo.fields.title()}
-						placeholder="Give it a title"
-					/>
-				</div>
-				<div>
 					<Textarea
 						id="description"
 						name={zo.fields.description()}
-						placeholder="And a quick or detailed description"
+						placeholder="Describe your idea, in much detail as possible"
 					/>
 				</div>
 				<Button type="submit" disabled={disabled}>
