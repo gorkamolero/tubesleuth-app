@@ -6,6 +6,7 @@ export enum FX {
 	PanUp = "PanUp",
 	PanDown = "PanDown",
 	MoveAround = "MoveAround",
+	MoveAbout = "MoveAbout",
 }
 
 export enum TRANSITIONS {

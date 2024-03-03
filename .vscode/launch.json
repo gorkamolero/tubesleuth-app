@@ -7,7 +7,14 @@
 	"configurations": [
 		{
 			"command": "npm run dev",
-			"name": "Run npm run dev",
+			"name": "Dev Tubesleuth",
+			"request": "launch",
+			"type": "node-terminal",
+			"cwd": "${workspaceFolder}"
+		},
+		{
+			"command": "npm run video",
+			"name": "Video Tubesleuth",
 			"request": "launch",
 			"type": "node-terminal",
 			"cwd": "${workspaceFolder}"

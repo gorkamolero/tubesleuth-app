@@ -5,7 +5,7 @@ import { Separator } from "~/components/ui/separator";
 export default function Video() {
 	return (
 		<>
-			<div className="h-[52px] px-2 gap-2 yolo w-full align-center flex">
+			<div className="h-[52px] px-2 gap-2 w-full align-center flex">
 				<MainNav
 					items={[
 						{

@@ -126,7 +126,8 @@ export const imageMapsRelations = relations(imageMaps, ({ one }) => ({
 	}),
 }));
 
-export const videosRelations = relations(videos, ({ one }) => ({
+export const videosRelations = relations(videos, ({ one, many }) => ({
+	images: many(images),
 	channel: one(channels, {
 		fields: [videos.channelId],
 		references: [channels.id],

@@ -1,17 +1,21 @@
 import React from "react";
 import { Composition } from "remotion";
-import { MyComposition } from "./Composition";
+import { Tubesleuth, TubesleuthProps } from "./Composition";
+import mockData from "./mockData";
+import { FPS, height, width } from "../../lib/constants";
 
 export const RemotionRoot: React.FC = () => {
+	const duration = Math.min(mockData.transcript.audio_duration + 2, 60) * FPS;
 	return (
 		<>
 			<Composition
-				id="Empty"
-				component={MyComposition}
-				durationInFrames={60}
-				fps={30}
-				width={1280}
-				height={720}
+				component={Tubesleuth}
+				durationInFrames={duration}
+				width={width}
+				height={height}
+				fps={FPS}
+				id="tubesleuth"
+				defaultProps={mockData as any as TubesleuthProps}
 			/>
 		</>
 	);

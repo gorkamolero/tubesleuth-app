@@ -1,65 +1,53 @@
 import type { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { redirect, json } from "@remix-run/node";
-import { Form, Link, useLoaderData, useNavigation } from "@remix-run/react";
-import { useState } from "react";
-import { parseFormAny, useZorm } from "react-zorm";
-import { z } from "zod";
-import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input-gradient";
-import { Label } from "~/components/ui/label";
+import { useLoaderData, useNavigation } from "@remix-run/react";
+import { Player } from "@remotion/player";
+import { DialogDrawer } from "~/components/DialogDrawer";
 import Stepper from "~/components/ui/stepper";
-import { Textarea } from "~/components/ui/textarea-gradient";
+import {
+	CompositionProps,
+	Tubesleuth,
+	TubesleuthProps,
+} from "~/integrations/remotion/Composition";
+import { FPS } from "~/lib/constants";
+import { convertSecondsToFrames } from "~/lib/utils";
 
 import { requireAuthSession, commitAuthSession } from "~/modules/auth";
-import {
-	getVideo,
-	updateVideo,
-	updateVideoPartialSchema,
-	vidSchema,
-} from "~/modules/videos";
+import { getImagesByVideoId, imageSchema } from "~/modules/images";
+import { getVideo, vidSchema } from "~/modules/videos";
 import { assertIsPost, getRequiredParam, isFormProcessing } from "~/utils";
 
-export async function loader({ params }: LoaderFunctionArgs) {
+export async function loader({ request, params }: LoaderFunctionArgs) {
+	const { userId } = await requireAuthSession(request);
 	const videoId = getRequiredParam(params, "videoId");
 
 	const video = (await getVideo({ id: videoId })) as vidSchema;
 	if (!video) {
 		throw new Response("Not Found", { status: 404 });
 	}
-	return json({ video });
+
+	if (!video.transcript) {
+		throw new Response("Transcript not found", { status: 404 });
+	}
+	const transcriptRequest = await fetch(video.transcript);
+	const transcript = await transcriptRequest.json();
+
+	const imagesForVideo = await getImagesByVideoId({
+		videoId,
+		userId: userId,
+	});
+
+	return json({
+		video,
+		transcript,
+		images: imagesForVideo as imageSchema[],
+	});
 }
 
 export const action: ActionFunction = async ({ request, params }) => {
 	assertIsPost(request);
-	const formData = await request.formData();
 	const videoId = getRequiredParam(params, "videoId");
 	const authSession = await requireAuthSession(request);
-
-	const result = await updateVideoPartialSchema.safeParseAsync(
-		parseFormAny(formData),
-	);
-
-	if (!result.success) {
-		return json(
-			{
-				errors: result.error,
-			},
-			{
-				status: 400,
-				headers: {
-					"Set-Cookie": await commitAuthSession(request, {
-						authSession,
-					}),
-				},
-			},
-		);
-	}
-
-	await updateVideo({
-		userId: authSession.userId,
-		id: videoId,
-		data: result.data,
-	});
 
 	return redirect(`/videos/${videoId}/images`, {
 		headers: {
@@ -68,89 +56,46 @@ export const action: ActionFunction = async ({ request, params }) => {
 	});
 };
 
-const partialUpdateSchema = z.object({
-	title: z.string().min(1, "Title is required"),
-	description: z.string().min(1, "Description is required"),
-	tags: z.string().min(1, "Tags are required"),
-	script: z.string().min(1, "Script is required"),
-});
-
 export default function VideoDetailsPage() {
-	const { video } = useLoaderData<typeof loader>();
-	if (!video) throw new Error("Video not found");
+	const { video, transcript, images } = useLoaderData<typeof loader>();
+	if (!video || !transcript) throw new Error("Video not found");
 
-	const navigation = useNavigation();
-	const disabled = isFormProcessing(navigation.state);
+	const duration = Math.min(transcript.audio_duration + 2, 60);
 
-	const [formData] = useState({
-		title: video.title || "",
-		description: video.description || "",
-		tags: video.tags || "",
-		script: video.script || "",
-	});
+	const durationInFrames = convertSecondsToFrames(duration, FPS);
 
-	const update = useZorm("update", partialUpdateSchema);
+	const inputProps: TubesleuthProps = {
+		videoId: video.id,
+		fps: FPS,
+		script: video.script as string,
+		transcript,
+		images: images as imageSchema[],
+		mood: "deep",
+		voiceover: video.voiceover,
+		duration,
+	};
+
+	const x = inputProps;
 
 	return (
-		<div className="h-screen">
-			<Form
-				method="post"
-				ref={update.ref}
-				className="space-y-6 w-full flex flex-col items-stretch"
-			>
-				<div className="grid gap-2">
-					<Label htmlFor="title">Title</Label>
-					<Input
-						type="text"
-						name="title"
-						defaultValue={formData.title}
-					/>
-				</div>
+		<DialogDrawer open title="Your video">
+			<Stepper steps={8} currentStep={8} title="Play your video!" />
 
-				<div className="grid gap-2">
-					<Label htmlFor="description">Description</Label>
-					<Textarea
-						id="description"
-						name="description"
-						defaultValue={formData.description}
-					/>
-				</div>
-
-				<div className="grid gap-2">
-					<Label htmlFor="tags">Tags</Label>
-					<Input
-						type="text"
-						id="tags"
-						name="tags"
-						defaultValue={formData.tags}
-					/>
-				</div>
-
-				<div className="grid gap-2">
-					<Label htmlFor="script">Script</Label>
-					<Textarea
-						id="script"
-						name="script"
-						className="min-h-64"
-						defaultValue={formData.script}
-					/>
-				</div>
-
-				<div className="flex space-x-4 justify-end">
-					<Button
-						type="submit"
-						name="update"
-						disabled={disabled}
-						variant="outline"
-					>
-						Save changes
-					</Button>
-
-					<Button asChild>
-						<Link to={`/videos/${video.id}/voiceover`}>OK</Link>
-					</Button>
-				</div>
-			</Form>
-		</div>
+			<div>
+				<Player
+					component={Tubesleuth}
+					inputProps={inputProps}
+					durationInFrames={durationInFrames}
+					compositionWidth={1080}
+					compositionHeight={1920}
+					fps={FPS}
+					style={{
+						width: "100%",
+						aspectRatio: "9/16",
+					}}
+					controls
+				/>
+			</div>
+		</DialogDrawer>
 	);
 }

@@ -65,6 +65,17 @@ export async function getVideo({ id }: z.infer<typeof getVideoSchema>) {
 	});
 }
 
+export async function getVideoWithImages({
+	id,
+}: z.infer<typeof getVideoSchema>) {
+	return db.query.videos.findFirst({
+		where: eq(videos.id, id),
+		with: {
+			images: true,
+		},
+	});
+}
+
 export async function getVideos({ userId }: { userId: string }) {
 	return db.query.videos.findMany({
 		where: eq(videos.userId, userId),
