@@ -99,20 +99,14 @@ export default function VideoDetailsPage() {
 	const update = useZorm("update", partialUpdateSchema);
 
 	return (
-		<div className="flex flex-col items-center justify-center h-screen">
+		<div className="flex flex-col items-center justify-center">
 			<Form
 				method="post"
 				ref={update.ref}
-				className="space-y-6 w-full max-w-md flex flex-col items-stretch"
+				className="space-y-6 w-full flex flex-col items-stretch"
 			>
-				<div className="flex flex-col items-start space-y-2">
-					<Button variant="ghost" className="space-x-2">
-						<LucideArrowLeftCircle />
-						<Link to={`/videos/${video.id}`}>Back</Link>
-					</Button>
-					<h1 className="text-2xl font-bold mb-4">Edit Script</h1>
-				</div>
-				<div>
+				<h1 className="text-2xl font-bold mb-4">Edit Script</h1>
+				<div className="flex flex-col space-y-4">
 					<Label htmlFor="title">Title</Label>
 					<Input
 						type="text"
@@ -121,7 +115,7 @@ export default function VideoDetailsPage() {
 					/>
 				</div>
 
-				<div>
+				<div className="flex flex-col space-y-4">
 					<Label htmlFor="description">Description</Label>
 					<Textarea
 						id="description"
@@ -130,7 +124,7 @@ export default function VideoDetailsPage() {
 					/>
 				</div>
 
-				<div>
+				<div className="flex flex-col space-y-4">
 					<Label htmlFor="tags">Tags</Label>
 					<Input
 						type="text"
@@ -140,7 +134,7 @@ export default function VideoDetailsPage() {
 					/>
 				</div>
 
-				<div>
+				<div className="flex flex-col space-y-4">
 					<Label htmlFor="script">Script</Label>
 					<Textarea
 						id="script"

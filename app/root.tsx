@@ -14,12 +14,7 @@ import {
 	ScrollRestoration,
 	useLoaderData,
 } from "@remix-run/react";
-import clsx from "clsx";
-import {
-	PreventFlashOnWrongTheme,
-	ThemeProvider,
-	useTheme,
-} from "remix-themes";
+import { PreventFlashOnWrongTheme, ThemeProvider } from "remix-themes";
 import { useTranslation } from "react-i18next";
 import { useChangeLanguage } from "remix-i18next";
 
@@ -27,7 +22,15 @@ import { i18nextServer } from "~/integrations/i18n";
 
 import tailwindStylesheetUrl from "./tailwind.css";
 import { getBrowserEnv } from "./utils/env";
-import { StarIcon } from "lucide-react";
+import {
+	ResizableHandle,
+	ResizablePanel,
+	ResizablePanelGroup,
+} from "~/components/ui/resizable";
+import { Sidebar } from "./components/Sidebar";
+import { cn } from "~/lib/utils";
+import useLocalStorage from "./hooks/use-local-storage";
+import { TooltipProvider } from "./components/ui/tooltip";
 
 export const links: LinksFunction = () => [
 	{
@@ -44,15 +47,30 @@ export const meta: MetaFunction = () => [
 
 export const loader: LoaderFunction = async ({ request }) => {
 	const locale = await i18nextServer.getLocale(request);
+
 	return json({
 		locale,
 		env: getBrowserEnv(),
 	});
 };
 
+const defaultLayout = [245, 800];
+const defaultCollapsed = false;
+
 export function App() {
 	const { env, locale, theme: datatheme } = useLoaderData<typeof loader>();
+
 	const { i18n } = useTranslation();
+	const [isCollapsed, setIsCollapsed] = useLocalStorage(
+		"collapsed",
+		defaultCollapsed,
+	);
+	const [panelSizes, setPanelSizes] = useLocalStorage(
+		"panelSizes",
+		defaultLayout,
+	);
+	const sidebarPanelSizes = panelSizes[0];
+	const mainPanelSizes = panelSizes[1];
 
 	useChangeLanguage(locale);
 
@@ -68,45 +86,49 @@ export function App() {
 				<PreventFlashOnWrongTheme ssrTheme={Boolean(datatheme)} />
 				<Links />
 			</head>
-			<body className="h-full">
-				<div className="border-b">
-					<div className="flex h-16 items-center px-4">
-						<div className="flex gap-6 md:gap-10">
-							<Link
-								to="/"
-								className="flex items-center space-x-2"
-							>
-								<StarIcon className="h-6 w-6" />
-								<span className="inline-block font-bold">
-									Tubesleuth
-								</span>
-							</Link>
-							<nav className="flex items-center space-x-4 lg:space-x-6">
-								<Link
-									to="/ideas"
-									className="text-sm font-medium transition-colors hover:text-primary"
-								>
-									Ideas
-								</Link>
-								<Link
-									to="/videos"
-									className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-								>
-									Videos
-								</Link>
-								<Link
-									to="/channels"
-									className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-								>
-									Channels
-								</Link>
-							</nav>
-						</div>
-						<div className="ml-auto flex items-center space-x-4"></div>
-					</div>
-				</div>
-				<Outlet />
-				<ScrollRestoration />
+			<body className="flex h-full">
+				<TooltipProvider>
+					<ResizablePanelGroup
+						direction="horizontal"
+						onLayout={(sizes: number[]) => {
+							setPanelSizes(sizes);
+							console.log(sizes);
+						}}
+						className="flex h-full items-stretch"
+					>
+						<ResizablePanel
+							defaultSize={sidebarPanelSizes}
+							collapsedSize={4}
+							collapsible={true}
+							minSize={15}
+							maxSize={20}
+							onCollapse={() => {
+								setIsCollapsed(true);
+							}}
+							onExpand={() => {
+								setIsCollapsed(false);
+							}}
+							className={cn(
+								isCollapsed &&
+									"min-w-[50px] transition-all duration-300 ease-in-out",
+							)}
+						>
+							<Sidebar isCollapsed={isCollapsed} />
+						</ResizablePanel>
+
+						<ResizableHandle withHandle />
+
+						<ResizablePanel
+							minSize={30}
+							defaultSize={mainPanelSizes}
+						>
+							<div className="flex flex-col flex-1 h-screen">
+								<Outlet />
+								<ScrollRestoration />
+							</div>
+						</ResizablePanel>
+					</ResizablePanelGroup>
+				</TooltipProvider>
 				<script
 					dangerouslySetInnerHTML={{
 						__html: `window.env = ${JSON.stringify(env)}`,
