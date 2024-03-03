@@ -15,15 +15,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed }) => {
 	return (
 		<>
 			<div
-				className={`flex h-[52px] items-center justify-center ${
-					isCollapsed ? "h-[52px]" : "px-2"
+				className={`flex h-[52px] items-center justify-start ${
+					isCollapsed ? "h-[52px] justify-center" : "px-2"
 				}`}
 			>
 				<Button
 					asChild
 					className={cn(
 						"flex items-center gap-2",
-						isCollapsed && "h-9 w-9 shrink-0 justify-center",
+						isCollapsed && "h-9 w-9 shrink-0 justify-center p-0",
 					)}
 					aria-label="Account information"
 					variant="ghost"
