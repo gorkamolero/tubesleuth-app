@@ -138,7 +138,7 @@ export default function Join() {
 						/>
 						{zo.errors.email()?.message && (
 							<div
-								className="pt-1 text-red-700 text-sm text-sm"
+								className="pt-1 text-red-700 text-sm"
 								id="email-error"
 							>
 								{zo.errors.email()?.message}
