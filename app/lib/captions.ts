@@ -13,7 +13,7 @@ export const width = 1080;
 export const fontFamily = "Montserrat"; // important to change channel style
 export const textTransform = "uppercase"; // change if you don't want all caps... you crazy person
 export const fontWeight = "800"; // that's super bold. regular is 400
-export const fontSize = "8vh"; // experiment, I think 2 - 6 is good but 5+ cuts words
+export const fontSize = process.env.NODE_ENV === "development" ? "8vh" : "6vh";
 export const fontColor = `rgba(243,206,50,1)`; // main color of the word being spoken
 export const yPadding = "10 vmin"; // use this to center
 

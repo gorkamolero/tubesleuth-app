@@ -14,7 +14,7 @@ interface word {
 	end: number;
 }
 
-type subtitles = word[];
+type subtitlesType = word[];
 
 const WordCaption = ({
 	from,
@@ -87,13 +87,19 @@ export const TranscriptionCaptions = ({
 	subtitles,
 	fps,
 }: {
-	subtitles: subtitles;
+	subtitles: subtitlesType;
 	fps: number;
 }) => {
+	let subs;
+	if (process.env.NODE_ENV === "development") {
+		subs = subtitles;
+	} else {
+		subs = getFullInputProps().subtitles as subtitlesType;
+	}
 	return (
 		<AbsoluteFill>
-			{subtitles &&
-				subtitles?.map((word, index) => {
+			{subs &&
+				subs?.map((word: word, index: number) => {
 					const from = convertMsToFrames(word.start, fps);
 					let durationInFrames =
 						convertMsToFrames(word.end, fps) - from;

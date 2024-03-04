@@ -1,4 +1,4 @@
-import { VOICEMODELS } from "~/database/enums";
+import { VOICEMODELS } from "../database/enums";
 import { capitalize } from "./utils";
 
 export const MAX_IMAGE_GENERATIONS = 3;

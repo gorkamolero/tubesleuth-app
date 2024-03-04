@@ -169,7 +169,7 @@ export async function generateImage({
 	const imageLocalRequest = await fetch(url);
 	const imageLocal = await imageLocalRequest.blob();
 
-	const iurl = `${userId}/image-${imageId}.mp3`;
+	const iurl = `${userId}/image-${imageId}.png`;
 
 	const client = getSupabaseAdmin();
 

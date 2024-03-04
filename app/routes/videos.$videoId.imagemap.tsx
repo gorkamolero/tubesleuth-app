@@ -26,7 +26,8 @@ export async function loader({ params }: LoaderFunctionArgs) {
 		throw new Response("Not Found", { status: 404 });
 	}
 
-	const imagesGenerated = video.images.some((image) => image.src !== null);
+	const imagesGenerated =
+		video.images && video.images.some((image) => image.src !== null);
 
 	if (imagesGenerated) {
 		return redirect(`/videos/${videoId}/images`);

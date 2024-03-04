@@ -5,7 +5,7 @@ import { linearTiming, TransitionSeries } from "@remotion/transitions";
 import { fade } from "@remotion/transitions/fade";
 import { imageSchema } from "../../modules/images";
 import { generateEffectFilter, getDurationInFrames } from "../../lib/utils";
-import { FX } from "~/database/enums";
+import { FX } from "../../database/enums";
 import { TranscriptionCaptions } from "./TranscriptionCaptions";
 
 export interface CompositionProps {

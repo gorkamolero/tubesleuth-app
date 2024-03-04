@@ -128,14 +128,9 @@ export default function VideosPage() {
 							Create new video
 						</CardTitle>
 						<CardActions>
-							<DialogDrawer
-								trigger={
-									<Button variant="outline">Create</Button>
-								}
-								title="Create Video"
-							>
-								<VideoForm isNewVideo />
-							</DialogDrawer>
+							<Button asChild variant="outline">
+								<Link to="/ideas/new">Create new video</Link>
+							</Button>
 						</CardActions>
 					</Card>
 					{data.videos.map((video) => (

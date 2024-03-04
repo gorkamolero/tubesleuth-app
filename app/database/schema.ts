@@ -47,6 +47,7 @@ export const images = pgTable("images", {
 	userId: uuid("user_id").references(() => users.id),
 	videoId: uuid("video_id").references(() => videos.id),
 	src: text("src"),
+	tmpSrc: text("tmp_src"),
 	generations: integer("generations"),
 });
 

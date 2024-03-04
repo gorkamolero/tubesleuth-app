@@ -37,7 +37,7 @@ export default function Home() {
 						</p>
 						<Separator className="mt-auto" />
 						<Button asChild variant="outline">
-							<Link className="p-4" to="/idea/new">
+							<Link className="p-4" to="/ideas/new">
 								Create new idea
 							</Link>
 						</Button>
