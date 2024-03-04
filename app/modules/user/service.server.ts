@@ -71,10 +71,13 @@ export async function tryCreateUser({
 	return user;
 }
 
-export async function createUserAccount(
-	email: string,
-	password: string,
-): Promise<AuthSession | null> {
+export async function createUserAccount({
+	email,
+	password,
+}: {
+	email: string;
+	password: string;
+}): Promise<AuthSession | null> {
 	const authAccount = await createEmailAuthAccount(email, password);
 
 	// ok, no user account created

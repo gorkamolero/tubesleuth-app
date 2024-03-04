@@ -11,7 +11,7 @@ const client = postgres(connectionString, {
 
 export const db = drizzle(client, { schema });
 
-const doMigrate = true;
+const doMigrate = false;
 
 /**
  * Migrate the database on startup. prevent call multiple times.

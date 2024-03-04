@@ -39,9 +39,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
 const LoginFormSchema = z.object({
 	email: z
 		.string()
-		.email("invalid-email")
+		.email("Invalid email")
 		.transform((email) => email.toLowerCase()),
-	password: z.string().min(8, "password-too-short"),
+	password: z.string().min(8, "Password is too short"),
 	redirectTo: z.string().optional(),
 });
 
@@ -65,7 +65,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
 	if (!authSession) {
 		return json(
-			{ errors: { email: "invalid-email-password", password: null } },
+			{ errors: { email: "Invalid email-password", password: null } },
 			{ status: 400 },
 		);
 	}
@@ -120,7 +120,10 @@ export default function LoginPage() {
 							placeholder="projectmayhem@fc.com"
 						/>
 						{zo.errors.email()?.message && (
-							<div className="pt-1 text-red-700" id="email-error">
+							<div
+								className="pt-1 text-red-700 text-sm"
+								id="email-error"
+							>
 								{zo.errors.email()?.message}
 							</div>
 						)}
@@ -140,7 +143,7 @@ export default function LoginPage() {
 						/>
 						{zo.errors.password()?.message && (
 							<div
-								className="pt-1 text-red-700"
+								className="pt-1 text-red-700 text-sm"
 								id="password-error"
 							>
 								{zo.errors.password()?.message}

@@ -12,18 +12,15 @@ import { parseFormAny, useZorm } from "react-zorm";
 import { z } from "zod";
 
 import { i18nextServer } from "~/integrations/i18n";
-import {
-	createAuthSession,
-	getAuthSession,
-	ContinueWithEmailForm,
-} from "~/modules/auth";
+import { createAuthSession, getAuthSession } from "~/modules/auth";
 import { getUserByEmail, createUserAccount } from "~/modules/user";
 import { assertIsPost, isFormProcessing } from "~/utils";
 import { LabelInputContainer } from "~/components/LabelInputContainer";
 import { Label } from "~/components/ui/label-gradient";
 import { Input } from "~/components/ui/input-gradient";
 import { BottomGradient } from "~/components/ui/bottom-gradient";
-import { GradientSeparator } from "~/components/ui/gradient-separator";
+import { getInvitation } from "~/modules/invitations";
+import { jsonWithError } from "remix-toast";
 
 export async function loader({ request }: LoaderFunctionArgs) {
 	const authSession = await getAuthSession(request);
@@ -36,19 +33,29 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 const JoinFormSchema = z.object({
-	firstName: z.string().min(2, "first-name-too-short"),
-	lastName: z.string().min(2, "last-name-too-short"),
+	firstName: z.string().min(2, "First name is too short"),
+	lastName: z.string().min(2, "Last name is too short"),
 	email: z
 		.string()
-		.email("invalid-email")
+		.email("Invalid email")
 		.transform((email) => email.toLowerCase()),
-	password: z.string().min(8, "password-too-short"),
+	password: z.string().min(8, "Password is too short"),
 	redirectTo: z.string().optional(),
 });
 
 export async function action({ request }: ActionFunctionArgs) {
 	assertIsPost(request);
 	const formData = await request.formData();
+	const emailFromForm = formData.get("email") as string;
+
+	const invitation = await getInvitation(emailFromForm);
+	if (!invitation) {
+		return jsonWithError(null, {
+			message: "Invitation only!",
+			description: "The app is still in alpha. Contact us",
+		});
+	}
+
 	const result = await JoinFormSchema.safeParseAsync(parseFormAny(formData));
 
 	if (!result.success) {
@@ -60,23 +67,25 @@ export async function action({ request }: ActionFunctionArgs) {
 		);
 	}
 
-	const { email, password, redirectTo } = result.data;
+	const { firstName, lastName, email, password, redirectTo } = result.data;
 
 	const existingUser = await getUserByEmail(email);
 
 	if (existingUser) {
-		return json(
-			{ errors: { email: "user-already-exist", password: null } },
-			{ status: 400 },
-		);
+		return jsonWithError(null, "User already exists");
 	}
 
-	const authSession = await createUserAccount(email, password);
+	const authSession = await createUserAccount({
+		email,
+		password,
+	});
 
 	if (!authSession) {
-		return json(
-			{ errors: { email: "unable-to-create-account", password: null } },
-			{ status: 500 },
+		return jsonWithError(
+			{
+				type: "error",
+			},
+			"Unable to create user",
 		);
 	}
 
@@ -114,33 +123,6 @@ export default function Join() {
 					className="my-8 space-y-6"
 					replace
 				>
-					<div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
-						<LabelInputContainer>
-							<Label htmlFor={zo.fields.firstName()}>
-								First name
-							</Label>
-							<Input
-								name={zo.fields.firstName()}
-								autoComplete="given-name"
-								autoFocus={true}
-								placeholder="Tyler"
-								type="text"
-								required
-							/>
-						</LabelInputContainer>
-
-						<LabelInputContainer>
-							<Label htmlFor={zo.fields.lastName()}>
-								Last name
-							</Label>
-							<Input
-								name={zo.fields.lastName()}
-								autoComplete="family-name"
-								placeholder="Durden"
-								type="text"
-							/>
-						</LabelInputContainer>
-					</div>
 					<LabelInputContainer className="mb-4">
 						<Label htmlFor={zo.fields.email()}>
 							{t("register.email")}
@@ -155,7 +137,10 @@ export default function Join() {
 							disabled={disabled}
 						/>
 						{zo.errors.email()?.message && (
-							<div className="pt-1 text-red-700" id="email-error">
+							<div
+								className="pt-1 text-red-700 text-sm text-sm"
+								id="email-error"
+							>
 								{zo.errors.email()?.message}
 							</div>
 						)}
@@ -174,7 +159,7 @@ export default function Join() {
 						/>
 						{zo.errors.password()?.message && (
 							<div
-								className="pt-1 text-red-700"
+								className="pt-1 text-red-700 text-sm"
 								id="password-error"
 							>
 								{zo.errors.password()?.message}
@@ -213,12 +198,6 @@ export default function Join() {
 						</div>
 					</div>
 				</Form>
-				<div className="mt-6">
-					<GradientSeparator />
-					<div className="mt-6">
-						<ContinueWithEmailForm />
-					</div>
-				</div>
 			</div>
 		</div>
 	);

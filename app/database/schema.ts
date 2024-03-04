@@ -10,6 +10,15 @@ import {
 } from "drizzle-orm/pg-core";
 import { FX, TRANSITIONS, VIDEO_TYPES, VOICEMODELS } from "./enums";
 
+export const invitations = pgTable("invitations", {
+	id: uuid("id").primaryKey(),
+	email: text("email"),
+	createdAt: timestamp("created_at").defaultNow(),
+	updatedAt: timestamp("updated_at").defaultNow(),
+	accepted: boolean("accepted").default(false),
+	userId: uuid("user_id").references(() => users.id),
+});
+
 export const users = pgTable("users", {
 	id: uuid("id").primaryKey(),
 	email: text("email").unique(),

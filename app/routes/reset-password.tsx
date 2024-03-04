@@ -29,8 +29,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 const ResetPasswordSchema = z
 	.object({
-		password: z.string().min(8, "password-too-short"),
-		confirmPassword: z.string().min(8, "password-too-short"),
+		password: z.string().min(8, "Password is too short"),
+		confirmPassword: z.string().min(8, "Password is too short"),
 		refreshToken: z.string(),
 	})
 	.superRefine(({ password, confirmPassword, refreshToken }, ctx) => {
@@ -148,7 +148,7 @@ export default function ResetPassword() {
 							/>
 							{zo.errors.password()?.message && (
 								<div
-									className="pt-1 text-red-700"
+									className="pt-1 text-red-700 text-sm"
 									id="password-error"
 								>
 									{zo.errors.password()?.message}
@@ -174,7 +174,7 @@ export default function ResetPassword() {
 							/>
 							{zo.errors.confirmPassword()?.message && (
 								<div
-									className="pt-1 text-red-700"
+									className="pt-1 text-red-700 text-sm"
 									id="password-error"
 								>
 									{zo.errors.confirmPassword()?.message}

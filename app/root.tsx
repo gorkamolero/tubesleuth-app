@@ -20,6 +20,10 @@ import {
 } from "remix-themes";
 import { useTranslation } from "react-i18next";
 import { useChangeLanguage } from "remix-i18next";
+import { getToast } from "remix-toast";
+import { clsx } from "clsx";
+import { Toaster, toast as notify } from "sonner";
+import { useEffect } from "react";
 
 import { i18nextServer } from "~/integrations/i18n";
 
@@ -38,7 +42,6 @@ import {
 	getAuthSession,
 	themeSessionResolver,
 } from "./modules/auth/session.server";
-import { clsx } from "clsx";
 
 export const links: LinksFunction = () => [
 	{
@@ -69,16 +72,24 @@ export const meta: MetaFunction = () => [
 export const loader: LoaderFunction = async ({ request }) => {
 	const locale = await i18nextServer.getLocale(request);
 	const { getTheme } = await themeSessionResolver(request);
-	const authSession = await getAuthSession(request); // Get the auth session
+	const authSession = await getAuthSession(request);
+
+	const { toast, headers } = await getToast(request);
 
 	const isLoggedIn = !!authSession;
 
-	return json({
-		isLoggedIn,
-		locale,
-		theme: getTheme(),
-		env: getBrowserEnv(),
-	});
+	return json(
+		{
+			toast,
+			isLoggedIn,
+			locale,
+			theme: getTheme(),
+			env: getBrowserEnv(),
+		},
+		{
+			headers,
+		},
+	);
 };
 
 const defaultLayout = [245, 800];
@@ -90,6 +101,7 @@ export function App() {
 		env,
 		locale,
 		theme: datatheme,
+		toast,
 	} = useLoaderData<typeof loader>();
 	const [theme] = useTheme();
 
@@ -107,6 +119,15 @@ export function App() {
 
 	useChangeLanguage(locale);
 
+	useEffect(() => {
+		if (toast?.type === "error") {
+			notify.error(toast.message);
+		}
+		if (toast?.type === "success") {
+			notify.success(toast.message);
+		}
+	}, [toast]);
+
 	return (
 		<html lang={locale} dir={i18n.dir()} className={clsx(theme, "h-full")}>
 			<head>
@@ -121,6 +142,7 @@ export function App() {
 			</head>
 			<body className="flex h-full">
 				<TooltipProvider>
+					<Toaster richColors />
 					{!isLoggedIn ? (
 						<div className="h-screen w-screen flex items-center justify-center">
 							<Outlet />

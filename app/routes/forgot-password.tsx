@@ -1,8 +1,10 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { Form, useActionData, useNavigation } from "@remix-run/react";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { parseFormAny, useZorm } from "react-zorm";
+import { toast } from "sonner";
 import { z } from "zod";
 import { LabelInputContainer } from "~/components/LabelInputContainer";
 import { BottomGradient } from "~/components/ui/bottom-gradient";
@@ -26,7 +28,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 const ForgotPasswordSchema = z.object({
 	email: z
 		.string()
-		.email("invalid-email")
+		.email("Invalid email")
 		.transform((email) => email.toLowerCase()),
 });
 
@@ -70,63 +72,60 @@ export default function ForgotPassword() {
 	const navigation = useNavigation();
 	const disabled = isFormProcessing(navigation.state);
 
+	useEffect(() => {
+		if (actionData?.message) {
+			toast.success(t("register.checkEmail"));
+		} else {
+			toast.error(
+				"Unable to send reset password link. Please try again.",
+			);
+		}
+	}, [actionData]);
+
 	return (
 		<div className="flex min-h-full w-full flex-col justify-center">
 			<div className="max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
 				<h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200">
 					Recover your password
 				</h2>
-				{!actionData ? (
-					<Form
-						ref={zo.ref}
-						method="post"
-						className="space-y-6 mt-8"
-						replace
-					>
-						<LabelInputContainer className="mb-4">
-							<Label htmlFor={zo.fields.email()}>
-								{t("register.email")}
-							</Label>
-							<Input
-								data-test-id="email"
-								name={zo.fields.email()}
-								type="email"
-								autoComplete="email"
-								disabled={disabled}
-							/>
-							{zo.errors.email()?.message && (
-								<div
-									className="pt-1 text-red-700"
-									id="password-error"
-								>
-									{zo.errors.email()?.message}
-								</div>
-							)}
-						</LabelInputContainer>
-
-						<button
-							data-test-id="send-password-reset-link"
-							type="submit"
-							className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
+				<Form
+					ref={zo.ref}
+					method="post"
+					className="space-y-6 mt-8"
+					replace
+				>
+					<LabelInputContainer className="mb-4">
+						<Label htmlFor={zo.fields.email()}>
+							{t("register.email")}
+						</Label>
+						<Input
+							data-test-id="email"
+							name={zo.fields.email()}
+							type="email"
+							autoComplete="email"
 							disabled={disabled}
-						>
-							{t("register.sendLink")}
-
-							<BottomGradient />
-						</button>
-					</Form>
-				) : (
-					<div
-						className={tw(
-							`mb-2 h-6 text-center`,
-							actionData.message
-								? "text-red-600"
-								: "text-green-600",
+						/>
+						{zo.errors.email()?.message && (
+							<div
+								className="pt-1 text-red-700 text-sm"
+								id="password-error"
+							>
+								{zo.errors.email()?.message}
+							</div>
 						)}
+					</LabelInputContainer>
+
+					<button
+						data-test-id="send-password-reset-link"
+						type="submit"
+						className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
+						disabled={disabled}
 					>
-						{actionData.message || t("register.checkEmail")}
-					</div>
-				)}
+						{t("register.sendLink")}
+
+						<BottomGradient />
+					</button>
+				</Form>
 			</div>
 		</div>
 	);
