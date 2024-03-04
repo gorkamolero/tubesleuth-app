@@ -57,7 +57,7 @@ export const action: ActionFunction = async ({ request }) => {
 		userId: authSession.userId,
 	});
 
-	return redirect(`/channel/${channel.id}`, {
+	return redirect(`/channels/`, {
 		headers: {
 			"Set-Cookie": await commitAuthSession(request, { authSession }),
 		},

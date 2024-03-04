@@ -44,7 +44,7 @@ export const action: ActionFunction = async ({ request }) => {
 		userId: authSession.userId,
 	});
 
-	return redirect(`/ideas`);
+	return redirect(`/ideas/`);
 };
 
 export default function NewIdea() {

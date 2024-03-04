@@ -1,16 +1,8 @@
 import OpenAI from "openai";
-let parseJson: (input: string) => any;
-import("parse-json")
-	.then((module) => {
-		parseJson = module.default;
-		// Use parseJson here
-	})
-	.catch((error) => {
-		console.error("Failed to load parse-json module", error);
-	});
 
+const apiKey = process.env.OPENAI_API_KEY;
 const openai = new OpenAI({
-	apiKey: "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",
+	apiKey: apiKey,
 	organization: process.env.OPENAI_ORG_ID,
 });
 
@@ -59,9 +51,11 @@ const sendAndAwaitResponse = async ({
 		throw new Error("No messages found");
 	}
 
+	// assistant messages
+	const aM = messages.filter((message) => message.role === "assistant");
+
 	// @ts-ignore
-	const answer = messages.filter((message) => message.role === "assistant")[0]
-		.content[0].text.value;
+	const answer = aM[0].content[0].text.value;
 
 	if (isJSON) {
 		let jsonBlock;
@@ -72,7 +66,7 @@ const sendAndAwaitResponse = async ({
 		}
 		let jsonObject = jsonBlock;
 		try {
-			jsonObject = parseJson(jsonBlock);
+			jsonObject = JSON.parse(jsonBlock);
 		} catch (error) {
 			console.error(`🛑 ERROR PARSING JSON`, error, jsonBlock);
 		}
