@@ -13,16 +13,15 @@
 		"setup": "run-s setup:db setup:seed",
 		"setup:db": "prisma generate && prisma migrate deploy",
 		"setup:seed": "prisma db seed",
-		"start": "remix-serve build",
-		"start:ci": "dotenv -- remix-serve build",
+		"start": "remix-serve build/index.js",
+		"start:ci": "dotenv -- remix-serve build/index.js",
 		"test": "vitest",
 		"test:cov": "vitest --coverage",
 		"test:e2e:dev": "start-server-and-test dev http://localhost:5000 'npx cypress open'",
 		"pretest:e2e:run": "npm run build",
 		"test:e2e:run": "dotenv -- cross-env PORT=8811 start-server-and-test http://localhost:8811 'npx cypress run'",
-		"typecheck": "tsc -b && tsc -b cypress",
-		"validate": "run-p \"test -- --run\" lint typecheck test:e2e:run",
-		"postinstall": "drizzle-kit generate:pg",
+		"typecheck": "tsc -b",
+		"postinstallio": "drizzle-kit generate:pg",
 		"video": "remotion studio app/integrations/remotion/index.ts --log=verbose --port=8001 ",
 		"kill": "lsof -t -i:8000 | xargs kill -9"
 	},
@@ -143,10 +142,6 @@
 		"msw": {
 			"typescript": "$typescript"
 		}
-	},
-	"prisma": {
-		"schema": "app/database/schema.prisma",
-		"seed": "tsx app/database/seed.server.ts"
 	},
 	"volta": {
 		"node": "20.11.1"

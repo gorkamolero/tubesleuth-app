@@ -15,6 +15,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 		// and make a HEAD request to ourselves, then we're good.
 		await Promise.all([
 			db.select({ value: count() }).from(users),
+
 			fetch(url.toString(), { method: "HEAD" }).then((r) => {
 				if (!r.ok) return Promise.reject(r);
 			}),

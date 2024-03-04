@@ -1,9 +1,9 @@
 import { z } from "zod";
-import { db } from "~/database"; // Adjust the import path as necessary
-import { channels } from "~/database/schema";
+import { db } from "~/database";
 import { and, eq } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { uuid } from "uuidv4";
+import { channels } from "~/database/schema";
 
 export const channelSchema = createInsertSchema(channels);
 

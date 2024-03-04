@@ -1,7 +1,6 @@
-import { Channel } from "@prisma/client";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { redirect, json } from "@remix-run/node";
-import { Form, useLoaderData, useRouteError } from "@remix-run/react";
+import { Form, useLoaderData } from "@remix-run/react";
 
 import { requireAuthSession, commitAuthSession } from "~/modules/auth";
 import { getChannel, deleteChannel } from "~/modules/channel";

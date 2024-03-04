@@ -1,4 +1,4 @@
-app = "tubesleuth-app-6330"
+app = "bravura-staging"
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = [ ]

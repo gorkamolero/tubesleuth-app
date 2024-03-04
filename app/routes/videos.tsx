@@ -7,6 +7,7 @@ import {
 	useNavigation,
 	Outlet,
 } from "@remix-run/react";
+import { Lightbulb } from "lucide-react";
 import { parseFormAny } from "react-zorm";
 import { z } from "zod";
 import { Appbar } from "~/components/Appbar";
@@ -128,8 +129,11 @@ export default function VideosPage() {
 							Create new video
 						</CardTitle>
 						<CardActions>
-							<Button asChild variant="outline">
-								<Link to="/ideas/new">Create new video</Link>
+							<Button asChild>
+								<Link to="/ideas/new">
+									<Lightbulb className="w-4 h-4 mr-2" />
+									Create new video
+								</Link>
 							</Button>
 						</CardActions>
 					</Card>

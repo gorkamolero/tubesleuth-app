@@ -4,7 +4,7 @@ import { BackgroundGradient } from "~/components/ui/background-gradient";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
 import { requireAuthSession } from "~/modules/auth";
-import { getCompleteUserByEmail } from "~/modules/user";
+import { getCompleteUserByEmail, userHealthCheck } from "~/modules/user";
 
 export async function loader({ request }: LoaderFunctionArgs) {
 	const authSession = await requireAuthSession(request);

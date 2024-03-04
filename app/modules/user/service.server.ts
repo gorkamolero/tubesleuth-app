@@ -8,12 +8,16 @@ import {
 	deleteAuthAccount,
 } from "~/modules/auth";
 import type { AuthSession } from "~/modules/auth";
-import { eq } from "drizzle-orm";
+import { count, eq } from "drizzle-orm";
 import { getIdeas } from "../ideas";
 import { getChannelNames } from "../channel";
 import { getVideos } from "../videos";
 
 export const userSchema = createInsertSchema(users);
+
+export async function userHealthCheck() {
+	return db.select({ value: count() }).from(users);
+}
 
 export async function getUserByEmail(email: string) {
 	return db.query.users.findFirst({

@@ -20,6 +20,13 @@
 			"cwd": "${workspaceFolder}"
 		},
 		{
+			"command": "npm run test:e2e:dev",
+			"name": "E2E tests",
+			"request": "launch",
+			"type": "node-terminal",
+			"cwd": "${workspaceFolder}"
+		},
+		{
 			"name": "Attach by Process ID",
 			"processId": "${command:PickProcess}",
 			"request": "attach",

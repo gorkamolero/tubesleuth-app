@@ -21,7 +21,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed }) => {
 				}`}
 			>
 				<NavLink isCollapsed={isCollapsed}>
-					<Link to="/account">
+					<Link to="/">
 						<Sparkle className="h-4 w-4" />
 						<h1 className={cn("text-sm", isCollapsed && "hidden")}>
 							Tubesleuth
