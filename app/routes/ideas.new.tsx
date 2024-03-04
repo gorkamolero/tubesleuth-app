@@ -14,6 +14,7 @@ import { z } from "zod";
 import { parseFormAny, useZorm } from "react-zorm";
 import { assertIsPost, isFormProcessing, notFound } from "~/utils";
 import { DialogDrawer } from "~/components/DialogDrawer";
+import { LightbulbIcon } from "lucide-react";
 
 export async function loader({ request }: LoaderFunctionArgs) {
 	const { email } = await requireAuthSession(request);
@@ -63,9 +64,13 @@ export default function NewIdea() {
 					name={zo.fields.description()}
 					placeholder="Describe your idea, in much detail as possible"
 				/>
-				<Button type="submit" disabled={disabled}>
-					Create Idea
-				</Button>
+
+				<div className="flex justify-end">
+					<Button type="submit" disabled={disabled}>
+						<LightbulbIcon className="w-4 h-4 mr-2" />
+						Create Idea
+					</Button>
+				</div>
 			</Form>
 		</DialogDrawer>
 	);
