@@ -1,6 +1,6 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData, useNavigate } from "@remix-run/react";
 import { DialogDrawer } from "~/components/DialogDrawer";
 import { TranscriptDisplay } from "~/components/TranscriptDisplay";
 import { Button } from "~/components/ui/button";
@@ -45,8 +45,14 @@ export default function VideoDetailsPage() {
 	if (!video || !video.title || !video.voiceover || !video.description)
 		throw new Error("Video not found");
 
+	const navigate = useNavigate();
+
 	return (
-		<DialogDrawer open className="sm:max-w-[640px]">
+		<DialogDrawer
+			open
+			className="sm:max-w-[640px]"
+			onClose={() => navigate("/videos/")}
+		>
 			<Stepper steps={8} currentStep={4} title="Review your transcript" />
 			<div className="flex flex-col items-center justify-center">
 				<div className="space-y-6 w-full flex flex-col items-stretch">

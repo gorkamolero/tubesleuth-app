@@ -1,6 +1,12 @@
 import type { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { redirect, json } from "@remix-run/node";
-import { Form, Link, useLoaderData, useNavigation } from "@remix-run/react";
+import {
+	Form,
+	Link,
+	useLoaderData,
+	useNavigate,
+	useNavigation,
+} from "@remix-run/react";
 import { useState } from "react";
 import { parseFormAny, useZorm } from "react-zorm";
 import { z } from "zod";
@@ -92,8 +98,14 @@ export default function VideoDetailsPage() {
 
 	const update = useZorm("update", partialUpdateSchema);
 
+	const navigate = useNavigate();
+
 	return (
-		<DialogDrawer open>
+		<DialogDrawer
+			open
+			onClose={() => navigate(`/videos/`)}
+			className="sm:max-w-[640px]"
+		>
 			<Stepper steps={8} currentStep={2} title="Review your script" />
 			<Form
 				method="post"

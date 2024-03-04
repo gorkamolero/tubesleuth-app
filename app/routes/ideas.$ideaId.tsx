@@ -1,12 +1,20 @@
 import type { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
-import { redirect, json } from "@remix-run/node";
-import { Form, useLoaderData, useNavigation } from "@remix-run/react";
+import { json } from "@remix-run/node";
+import {
+	Form,
+	useLoaderData,
+	useNavigate,
+	useNavigation,
+} from "@remix-run/react";
 import { useState } from "react";
 import { useZorm } from "react-zorm";
+import { jsonWithError, redirectWithSuccess } from "remix-toast";
+import { toast } from "sonner";
 import { DialogDrawer } from "~/components/DialogDrawer";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input-gradient";
 import { Label } from "~/components/ui/label";
+import { LoadingSpinner } from "~/components/ui/loading-spinner";
 import {
 	Select,
 	SelectContent,
@@ -52,6 +60,13 @@ export const action: ActionFunction = async ({ request, params }) => {
 	const description = formData.get("description") as string;
 	const title = formData.get("title") as string;
 
+	if (!channelId) {
+		return jsonWithError(
+			{ channelId: "Channel is required" },
+			"Please select a channel",
+		);
+	}
+
 	await updateIdea({
 		userId: authSession.userId,
 		id: ideaId,
@@ -70,7 +85,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 	});
 
 	const { id } = video as vidSchema;
-	return redirect(`/videos/${id}/script`, {
+	return redirectWithSuccess(`/videos/${id}/script`, `Script generated!`, {
 		headers: {
 			"Set-Cookie": await commitAuthSession(request, { authSession }),
 		},
@@ -90,8 +105,10 @@ export default function IdeaDetailsPage() {
 	const [title, setTitle] = useState(idea.title || "");
 	const [description, setDescription] = useState(idea.description || "");
 
+	const navigate = useNavigate();
+
 	return (
-		<DialogDrawer open>
+		<DialogDrawer open onClose={() => navigate("/ideas/")}>
 			<Stepper steps={8} currentStep={1} title="Prepare your idea" />
 			<Form
 				ref={gen.ref}
@@ -142,7 +159,13 @@ export default function IdeaDetailsPage() {
 						name="generate"
 						variant="default"
 						disabled={disabled}
+						onClick={() =>
+							toast.info(
+								"Generating script. This will take a while...",
+							)
+						}
 					>
+						{disabled && <LoadingSpinner className="mr-2" />}
 						Write script
 					</Button>
 				</div>

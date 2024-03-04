@@ -32,6 +32,7 @@ interface DialogDrawerProps {
 	open?: boolean;
 	className?: string;
 	fullScreen?: boolean;
+	onClose?: () => void;
 }
 
 export function DialogDrawer({
@@ -42,9 +43,16 @@ export function DialogDrawer({
 	open: openDefault = false,
 	className,
 	fullScreen,
+	onClose,
 }: DialogDrawerProps) {
 	const [open, setOpen] = React.useState(openDefault);
 	const isDesktop = useMediaQuery("(min-width: 768px)");
+
+	React.useEffect(() => {
+		if (!open) {
+			onClose && onClose();
+		}
+	}, [open]);
 
 	return isDesktop ? (
 		<Dialog open={open} onOpenChange={setOpen}>

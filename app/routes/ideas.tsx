@@ -63,7 +63,7 @@ export const action: ActionFunction = async ({ request }) => {
 			id,
 		});
 
-		return redirect(`/ideas`, {
+		return redirect(`/ideas/`, {
 			headers: {
 				"Set-Cookie": await commitAuthSession(request, { authSession }),
 			},
@@ -76,7 +76,7 @@ export const action: ActionFunction = async ({ request }) => {
 			description,
 		});
 
-		return redirect(`/ideas`, {
+		return redirect(`/ideas/`, {
 			headers: {
 				"Set-Cookie": await commitAuthSession(request, { authSession }),
 			},
@@ -109,7 +109,7 @@ export const action: ActionFunction = async ({ request }) => {
 			data: result.data,
 		});
 
-		return redirect(`/ideas`, {
+		return redirect(`/ideas/`, {
 			headers: {
 				"Set-Cookie": await commitAuthSession(request, { authSession }),
 			},

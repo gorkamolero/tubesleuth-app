@@ -1,10 +1,19 @@
 import type { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
-import { redirect, json } from "@remix-run/node";
-import { Form, Link, useLoaderData, useNavigation } from "@remix-run/react";
+import { json } from "@remix-run/node";
+import {
+	Form,
+	Link,
+	useLoaderData,
+	useNavigate,
+	useNavigation,
+} from "@remix-run/react";
+import { redirectWithSuccess } from "remix-toast";
+import { toast } from "sonner";
 import { z } from "zod";
 import { AudioSelector } from "~/components/AudioSelector";
 import { DialogDrawer } from "~/components/DialogDrawer";
 import { Button } from "~/components/ui/button";
+import { LoadingSpinner } from "~/components/ui/loading-spinner";
 import Stepper from "~/components/ui/stepper";
 import { VOICEMODELS } from "~/database/enums";
 import { voicemodelAudios } from "~/lib/constants";
@@ -49,11 +58,15 @@ export const action: ActionFunction = async ({ request, params }) => {
 		model,
 	});
 
-	return redirect(`/videos/${videoId}/transcript`, {
-		headers: {
-			"Set-Cookie": await commitAuthSession(request, { authSession }),
+	return redirectWithSuccess(
+		`/videos/${videoId}/transcript`,
+		"Voice-over generated!",
+		{
+			headers: {
+				"Set-Cookie": await commitAuthSession(request, { authSession }),
+			},
 		},
-	});
+	);
 };
 
 const voiceOverEnum = z.nativeEnum(VOICEMODELS);
@@ -73,8 +86,10 @@ export default function VideoDetailsPage() {
 		video?.voiceover && video.voiceover.length > 0,
 	);
 
+	const navigate = useNavigate();
+
 	return (
-		<DialogDrawer open>
+		<DialogDrawer open onClose={() => navigate(`/videos/`)}>
 			<Stepper steps={8} currentStep={3} title="Create a voice-over" />
 			<Form
 				method="post"
@@ -88,13 +103,16 @@ export default function VideoDetailsPage() {
 						type="submit"
 						name="createVoiceOver"
 						disabled={disabled}
-						variant="outline"
+						onClick={() => {
+							toast.info("Generating voice-over...");
+						}}
 					>
+						{disabled && <LoadingSpinner className="mr-2" />}
 						Create Voiceover
 					</Button>
 
 					{hasVoiceover && (
-						<Button asChild>
+						<Button asChild variant="outline">
 							<Link to={`/videos/${video.id}/transcript`}>
 								Skip
 							</Link>

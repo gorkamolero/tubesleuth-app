@@ -4,7 +4,13 @@ import {
 	LoaderFunction,
 	redirect,
 } from "@remix-run/node";
-import { Form, Link, useLoaderData, useNavigation } from "@remix-run/react";
+import {
+	Form,
+	Link,
+	useLoaderData,
+	useNavigate,
+	useNavigation,
+} from "@remix-run/react";
 import {
 	generateImage,
 	getImagesByVideoId,
@@ -72,9 +78,11 @@ export default function VideoImages() {
 
 	const allImagesGenerated = images.every((image) => image.src);
 
+	const navigate = useNavigate();
+
 	return (
 		<>
-			<DialogDrawer open fullScreen>
+			<DialogDrawer open fullScreen onClose={() => navigate("/videos/")}>
 				<Stepper steps={8} currentStep={6} title="Generate images" />
 				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
 					{images.map((image) => {

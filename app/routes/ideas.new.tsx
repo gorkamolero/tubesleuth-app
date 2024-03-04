@@ -4,6 +4,7 @@ import {
 	redirect,
 	Form,
 	useNavigation,
+	useNavigate,
 } from "@remix-run/react";
 import { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { createIdea } from "~/modules/ideas";
@@ -39,7 +40,7 @@ export const action: ActionFunction = async ({ request }) => {
 	}
 
 	const { description } = result.data;
-	const idea = await createIdea({
+	await createIdea({
 		description,
 		userId: authSession.userId,
 	});
@@ -52,8 +53,10 @@ export default function NewIdea() {
 	const navigation = useNavigation();
 	const disabled = isFormProcessing(navigation.state);
 
+	const navigate = useNavigate();
+
 	return (
-		<DialogDrawer open>
+		<DialogDrawer open onClose={() => navigate("/ideas/")}>
 			<Form
 				ref={zo.ref}
 				method="post"

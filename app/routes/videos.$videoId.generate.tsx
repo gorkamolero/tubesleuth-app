@@ -1,6 +1,6 @@
 import type { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { redirect, json } from "@remix-run/node";
-import { useLoaderData, useNavigation } from "@remix-run/react";
+import { useLoaderData, useNavigate, useNavigation } from "@remix-run/react";
 import { Player } from "@remotion/player";
 import { DialogDrawer } from "~/components/DialogDrawer";
 import Stepper from "~/components/ui/stepper";
@@ -86,8 +86,14 @@ export default function VideoDetailsPage() {
 		duration,
 	};
 
+	const navigate = useNavigate();
+
 	return (
-		<DialogDrawer open title="Your video">
+		<DialogDrawer
+			open
+			title="Your video"
+			onClose={() => navigate("/videos/")}
+		>
 			<Stepper steps={8} currentStep={8} title="Play your video!" />
 
 			<div>

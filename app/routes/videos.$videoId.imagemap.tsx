@@ -1,9 +1,15 @@
 import type { LoaderFunctionArgs, ActionFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { Form, useLoaderData, useNavigation } from "@remix-run/react";
+import {
+	Form,
+	useLoaderData,
+	useNavigate,
+	useNavigation,
+} from "@remix-run/react";
 import { LucidePlus, LucideX, Sparkles } from "lucide-react";
 import { useState } from "react";
-import { z } from "zod";
+import { redirectWithSuccess } from "remix-toast";
+import { toast } from "sonner";
 import { DialogDrawer } from "~/components/DialogDrawer";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -30,7 +36,10 @@ export async function loader({ params }: LoaderFunctionArgs) {
 		video.images && video.images.some((image) => image.src !== null);
 
 	if (imagesGenerated) {
-		return redirect(`/videos/${videoId}/images`);
+		return redirectWithSuccess(
+			`/videos/${videoId}/images`,
+			"Image map generated!",
+		);
 	}
 
 	return json({
@@ -68,8 +77,10 @@ export default function ImagesDescriptionPage() {
 
 	const hasNoImages = imageFields.length < 1;
 
+	const navigate = useNavigate();
+
 	return (
-		<DialogDrawer title="Add Images" open className="sm:max-w-6xl">
+		<DialogDrawer open fullScreen onClose={() => navigate("/videos/")}>
 			<Stepper steps={8} currentStep={5} title="Add images" />
 			<div className="flex w-full">
 				<div className="w-1/3 flex flex-col items-center justify-center">
@@ -148,19 +159,20 @@ export default function ImagesDescriptionPage() {
 								name="generate-images"
 								disabled={disabled}
 								size="lg"
+								onClick={() => {
+									toast.info("Generating image map...");
+								}}
 							>
 								<div className="flex items-center gap-2">
-									<Sparkles />
-									{disabled && <LoadingSpinner />}
-									<span className="text-lg">
-										{hasNoImages
-											? "Auto-generate"
-											: "Generate"}
-									</span>
+									{disabled ? (
+										<LoadingSpinner />
+									) : (
+										<Sparkles />
+									)}
+									{hasNoImages ? "Auto-generate" : "Generate"}
 								</div>
 							</Button>
 						</div>
-						{disabled && <p>Generating images takes a while...</p>}
 					</Form>
 				</div>
 			</div>

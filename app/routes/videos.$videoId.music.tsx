@@ -1,6 +1,12 @@
 import type { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { redirect, json } from "@remix-run/node";
-import { Form, Link, useLoaderData, useNavigation } from "@remix-run/react";
+import {
+	Form,
+	Link,
+	useLoaderData,
+	useNavigate,
+	useNavigation,
+} from "@remix-run/react";
 import { SparklesIcon } from "lucide-react";
 import { z } from "zod";
 import { AudioSelector } from "~/components/AudioSelector";
@@ -63,10 +69,12 @@ export default function VideoDetailsPage() {
 	const navigation = useNavigation();
 	const disabled = isFormProcessing(navigation.state);
 
-	const hasMusic = Boolean(video?.music && video.music.length > 0);
+	const hasMusic = !!(video?.music && video.music.length > 0);
+
+	const navigate = useNavigate();
 
 	return (
-		<DialogDrawer open>
+		<DialogDrawer open onClose={() => navigate("/videos/")}>
 			<Stepper steps={8} currentStep={7} title="Choose your music" />
 			<Form
 				method="post"
