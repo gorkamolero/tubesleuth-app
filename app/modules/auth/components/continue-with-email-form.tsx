@@ -4,6 +4,8 @@ import { useFetcher } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
 import type { action } from "~/routes/send-magic-link";
+import { Input } from "~/components/ui/input-gradient";
+import { BottomGradient } from "~/components/ui/bottom-gradient";
 
 export function ContinueWithEmailForm() {
 	const ref = React.useRef<HTMLFormElement>(null);
@@ -24,11 +26,11 @@ export function ContinueWithEmailForm() {
 
 	return (
 		<sendMagicLink.Form method="post" action="/send-magic-link" ref={ref}>
-			<input
+			<Input
+				placeholder="Or continue with magic link"
 				type="email"
 				name="email"
 				id="magic-link"
-				className="mb-1 w-full rounded border border-gray-500 px-2 py-1 text-lg"
 				disabled={isLoading}
 			/>
 			<div
@@ -41,9 +43,10 @@ export function ContinueWithEmailForm() {
 			<button
 				type="submit"
 				disabled={isLoading}
-				className="flex w-full items-center justify-center rounded-md bg-green-500 px-4 py-3 font-medium text-white hover:bg-green-600  "
+				className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
 			>
 				{buttonLabel}
+				<BottomGradient />
 			</button>
 		</sendMagicLink.Form>
 	);

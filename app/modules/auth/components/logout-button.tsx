@@ -1,18 +1,29 @@
 import { Form } from "@remix-run/react";
+import { LogOut } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Button } from "~/components/ui/button";
+import { cn } from "~/lib/utils";
 
-export function LogoutButton() {
+// TODO: CHECK THIS FOR ACTIONS
+export function LogoutButton({ isCollapsed }: { isCollapsed?: boolean }) {
 	const { t } = useTranslation("auth");
 
 	return (
-		<Form action="/logout" method="post">
-			<button
+		<Form action="/logout" method="post" className="w-full">
+			<Button
 				data-test-id="logout"
 				type="submit"
-				className="rounded bg-slate-600 py-2 px-4 text-blue-100 hover:bg-blue-500 active:bg-blue-600"
+				className={cn(
+					"w-full",
+					isCollapsed && "justify-center p-0 max-w-full",
+				)}
+				variant="outline"
 			>
-				{t("logout.action")}
-			</button>
+				<div className="flex items-center gap-2">
+					<LogOut className="h-4 w-4" />
+					{isCollapsed || t("logout.action")}
+				</div>
+			</Button>
 		</Form>
 	);
 }

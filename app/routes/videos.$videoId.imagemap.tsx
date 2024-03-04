@@ -12,16 +12,24 @@ import { Separator } from "~/components/ui/separator";
 import Stepper from "~/components/ui/stepper";
 
 import { requireAuthSession } from "~/modules/auth";
-import { createManyImages } from "~/modules/images";
-import { getVideo, vidSchema } from "~/modules/videos";
+import { createManyImages, imageSchema } from "~/modules/images";
+import { getVideo, getVideoWithImages, vidSchema } from "~/modules/videos";
 import { assertIsPost, getRequiredParam, isFormProcessing } from "~/utils";
 
 export async function loader({ params }: LoaderFunctionArgs) {
 	const videoId = getRequiredParam(params, "videoId");
 
-	const video = (await getVideo({ id: videoId })) as vidSchema;
+	const video = (await getVideoWithImages({ id: videoId })) as vidSchema & {
+		images: imageSchema[];
+	};
 	if (!video) {
 		throw new Response("Not Found", { status: 404 });
+	}
+
+	const imagesGenerated = video.images.some((image) => image.src !== null);
+
+	if (imagesGenerated) {
+		return redirect(`/videos/${videoId}/images`);
 	}
 
 	return json({

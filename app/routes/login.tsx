@@ -19,6 +19,12 @@ import {
 	ContinueWithEmailForm,
 } from "~/modules/auth";
 import { assertIsPost, isFormProcessing } from "~/utils";
+import { LabelInputContainer } from "~/components/LabelInputContainer";
+import { Label } from "~/components/ui/label-gradient";
+import { Input } from "~/components/ui/input-gradient";
+import { Button } from "~/components/ui/button";
+import { GradientSeparator } from "~/components/ui/gradient-separator";
+import { BottomGradient } from "~/components/ui/bottom-gradient";
 
 export async function loader({ request }: LoaderFunctionArgs) {
 	const authSession = await getAuthSession(request);
@@ -87,65 +93,60 @@ export default function LoginPage() {
 	const { t } = useTranslation("auth");
 
 	return (
-		<div className="flex min-h-full flex-col justify-center">
-			<div className="mx-auto w-full max-w-md px-8">
-				<Form ref={zo.ref} method="post" className="space-y-6" replace>
-					<div>
-						<label
-							htmlFor={zo.fields.email()}
-							className="block text-sm font-medium text-gray-700"
-						>
+		<div className="flex min-h-full w-full flex-col justify-center">
+			<div className="max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
+				<h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200">
+					Welcome to Tubesleuth
+				</h2>
+				<Form
+					ref={zo.ref}
+					method="post"
+					className="my-8 space-y-6"
+					replace
+				>
+					<LabelInputContainer className="mb-4">
+						<Label htmlFor={zo.fields.email()}>
 							{t("login.email")}
-						</label>
+						</Label>
 
-						<div className="mt-1">
-							<input
-								data-test-id="email"
-								required
-								autoFocus={true}
-								name={zo.fields.email()}
-								type="email"
-								autoComplete="email"
-								className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
-								disabled={disabled}
-							/>
-							{zo.errors.email()?.message && (
-								<div
-									className="pt-1 text-red-700"
-									id="email-error"
-								>
-									{zo.errors.email()?.message}
-								</div>
-							)}
-						</div>
-					</div>
+						<Input
+							data-test-id="email"
+							required
+							autoFocus={true}
+							name={zo.fields.email()}
+							type="email"
+							autoComplete="email"
+							disabled={disabled}
+							placeholder="projectmayhem@fc.com"
+						/>
+						{zo.errors.email()?.message && (
+							<div className="pt-1 text-red-700" id="email-error">
+								{zo.errors.email()?.message}
+							</div>
+						)}
+					</LabelInputContainer>
 
-					<div>
-						<label
-							htmlFor={zo.fields.password()}
-							className="block text-sm font-medium text-gray-700"
-						>
+					<LabelInputContainer className="mb-4">
+						<Label htmlFor={zo.fields.password()}>
 							{t("register.password")}
-						</label>
-						<div className="mt-1">
-							<input
-								data-test-id="password"
-								name={zo.fields.password()}
-								type="password"
-								autoComplete="new-password"
-								className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
-								disabled={disabled}
-							/>
-							{zo.errors.password()?.message && (
-								<div
-									className="pt-1 text-red-700"
-									id="password-error"
-								>
-									{zo.errors.password()?.message}
-								</div>
-							)}
-						</div>
-					</div>
+						</Label>
+						<Input
+							data-test-id="password"
+							name={zo.fields.password()}
+							type="password"
+							autoComplete="new-password"
+							disabled={disabled}
+							placeholder="••••••••"
+						/>
+						{zo.errors.password()?.message && (
+							<div
+								className="pt-1 text-red-700"
+								id="password-error"
+							>
+								{zo.errors.password()?.message}
+							</div>
+						)}
+					</LabelInputContainer>
 
 					<input
 						type="hidden"
@@ -155,26 +156,22 @@ export default function LoginPage() {
 					<button
 						data-test-id="login"
 						type="submit"
-						className="w-full rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:bg-blue-400"
+						className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
 						disabled={disabled}
 					>
 						{t("login.action")}
+						<BottomGradient />
 					</button>
-					<div className="flex items-center justify-center">
-						<div className="text-center text-sm text-gray-500">
-							<Link
-								className="text-blue-500 underline"
-								to="/forgot-password"
-							>
-								{t("login.forgotPassword")}?
-							</Link>
-						</div>
+					<div className="flex items-center justify-center text-center text-sm text-gray-500">
+						<Link to="/forgot-password" className="hover:underline">
+							{t("login.forgotPassword")}?
+						</Link>
 					</div>
 					<div className="flex items-center justify-center">
 						<div className="text-center text-sm text-gray-500">
 							{t("login.dontHaveAccount")}{" "}
 							<Link
-								className="text-blue-500 underline"
+								className="underline"
 								to={{
 									pathname: "/join",
 									search: searchParams.toString(),
@@ -185,20 +182,9 @@ export default function LoginPage() {
 						</div>
 					</div>
 				</Form>
+				<GradientSeparator />
 				<div className="mt-6">
-					<div className="relative">
-						<div className="absolute inset-0 flex items-center">
-							<div className="w-full border-t border-gray-300" />
-						</div>
-						<div className="relative flex justify-center text-sm">
-							<span className="bg-white px-2 text-gray-500">
-								{t("login.orContinueWith")}
-							</span>
-						</div>
-					</div>
-					<div className="mt-6">
-						<ContinueWithEmailForm />
-					</div>
+					<ContinueWithEmailForm />
 				</div>
 			</div>
 		</div>

@@ -1,21 +1,20 @@
 import type { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { redirect, json } from "@remix-run/node";
 import { Form, Link, useLoaderData, useNavigation } from "@remix-run/react";
+import { SparklesIcon } from "lucide-react";
 import { z } from "zod";
 import { AudioSelector } from "~/components/AudioSelector";
 import { DialogDrawer } from "~/components/DialogDrawer";
+import { LabelInputContainer } from "~/components/LabelInputContainer";
 import { Button } from "~/components/ui/button";
+import { GradientSeparator } from "~/components/ui/gradient-separator";
+import { Input } from "~/components/ui/input-gradient";
+import { Label } from "~/components/ui/label-gradient";
 import Stepper from "~/components/ui/stepper";
-import { VOICEMODELS } from "~/database/enums";
-import { voicemodelAudios } from "~/lib/constants";
+import { musicAudios } from "~/lib/constants";
 
 import { requireAuthSession, commitAuthSession } from "~/modules/auth";
-import {
-	generateVoiceover,
-	getVideo,
-	updateVideo,
-	vidSchema,
-} from "~/modules/videos";
+import { getVideo, updateVideo, vidSchema } from "~/modules/videos";
 import { assertIsPost, getRequiredParam, isFormProcessing } from "~/utils";
 
 export async function loader({ params }: LoaderFunctionArgs) {
@@ -33,33 +32,28 @@ export const action: ActionFunction = async ({ request, params }) => {
 	const formData = await request.formData();
 	const videoId = getRequiredParam(params, "videoId");
 	const authSession = await requireAuthSession(request);
-	const model = formData.get("model") as VOICEMODELS;
+	const music = formData.get("music") as string;
+	const userMusic = formData.get("userMusic") as string;
+
+	let src = userMusic.length > 0 ? userMusic : music;
 
 	await updateVideo({
 		id: videoId,
 		userId: authSession.userId,
 		data: {
-			voiceover: model,
+			music: src,
 		},
 	});
-
-	await generateVoiceover({
-		userId: authSession.userId,
-		videoId,
-		model,
-	});
-
-	return redirect(`/videos/${videoId}/transcript`, {
+	return redirect(`/videos/${videoId}/generate`, {
 		headers: {
 			"Set-Cookie": await commitAuthSession(request, { authSession }),
 		},
 	});
 };
 
-const voiceOverEnum = z.nativeEnum(VOICEMODELS);
 export const voiceOverSchema = z.object({
-	model: voiceOverEnum,
-	videoId: z.string(),
+	music: z.string().optional(),
+	userMusic: z.string().optional(),
 });
 
 export default function VideoDetailsPage() {
@@ -69,32 +63,43 @@ export default function VideoDetailsPage() {
 	const navigation = useNavigation();
 	const disabled = isFormProcessing(navigation.state);
 
-	const hasVoiceover = Boolean(
-		video?.voiceover && video.voiceover.length > 0,
-	);
+	const hasMusic = Boolean(video?.music && video.music.length > 0);
 
 	return (
 		<DialogDrawer open>
-			<Stepper steps={8} currentStep={3} title="Create a voice-over" />
+			<Stepper steps={8} currentStep={7} title="Choose your music" />
 			<Form
 				method="post"
-				name="createVoiceOver"
+				name="chooseMusic"
 				className="space-y-6 w-full max-w-md flex flex-col items-stretch"
 			>
-				<AudioSelector name={"model"} tracks={voicemodelAudios} />
+				<AudioSelector name="music" tracks={musicAudios} />
+
+				<GradientSeparator />
+
+				<LabelInputContainer>
+					<Label htmlFor="userMusic">
+						Or provide a URL with your own
+					</Label>
+					<Input
+						name="userMusic"
+						type="url"
+						placeholder="https://example.com/music.mp3"
+					/>
+				</LabelInputContainer>
 
 				<div className="flex space-x-4 justify-end">
 					<Button
 						type="submit"
-						name="createVoiceOver"
+						name="chooseMusic"
 						disabled={disabled}
-						variant="outline"
 					>
-						Create Voiceover
+						<SparklesIcon className="mr-2" />
+						Choose and generate video!
 					</Button>
 
-					{hasVoiceover && (
-						<Button asChild>
+					{hasMusic && (
+						<Button asChild variant="outline">
 							<Link to={`/videos/${video.id}/transcript`}>
 								Skip
 							</Link>

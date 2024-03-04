@@ -9,6 +9,7 @@ import { VOICEMODELS } from "~/database/enums";
 import createVoiceover from "~/utils/createVoiceover";
 import { getSupabaseAdmin, supabaseClient } from "~/integrations/supabase";
 import transcribeAudioFull from "~/utils/transcribeAudioFull";
+import { getImagesByVideoId } from "../images";
 
 export const videoSchema = createInsertSchema(videos);
 export type vidSchema = z.infer<typeof videoSchema>;
@@ -68,12 +69,19 @@ export async function getVideo({ id }: z.infer<typeof getVideoSchema>) {
 export async function getVideoWithImages({
 	id,
 }: z.infer<typeof getVideoSchema>) {
-	return db.query.videos.findFirst({
-		where: eq(videos.id, id),
-		with: {
-			images: true,
-		},
+	const video = await getVideo({ id });
+	if (!video) {
+		return null;
+	}
+	const images = await getImagesByVideoId({
+		videoId: id,
+		userId: video.userId as string,
 	});
+	if (images.length > 0) {
+		return { ...video, images };
+	} else {
+		return video;
+	}
 }
 
 export async function getVideos({ userId }: { userId: string }) {

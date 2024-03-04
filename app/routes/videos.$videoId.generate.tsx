@@ -79,7 +79,9 @@ export default function VideoDetailsPage() {
 		script: video.script as string,
 		subtitles,
 		images: images as imageSchema[],
-		mood: "deep",
+		music:
+			(video.music as string) ||
+			"https://ezamdwrrzqrnyewhqdup.supabase.co/storage/v1/object/public/assets/deep.mp3?t=2024-03-04T12%3A55%3A07.216Z",
 		voiceover: video.voiceover,
 		duration,
 	};

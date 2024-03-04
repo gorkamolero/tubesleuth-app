@@ -1,6 +1,12 @@
 import type { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { useLoaderData, Link, Form, useNavigation } from "@remix-run/react";
+import {
+	useLoaderData,
+	Link,
+	Form,
+	useNavigation,
+	Outlet,
+} from "@remix-run/react";
 import { ArrowRight } from "lucide-react";
 import { useRef } from "react";
 import { parseFormAny } from "react-zorm";
@@ -145,6 +151,7 @@ export default function ChannelsPage() {
 	return (
 		<>
 			<Appbar title="Channels" />
+			<Outlet />
 			<ScrollArea className="w-full h-full">
 				<HoverGrid>
 					{data.channels.map((channel) => (

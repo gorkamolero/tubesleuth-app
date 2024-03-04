@@ -145,18 +145,40 @@ export default function VideosPage() {
 								{video.description}
 							</CardDescription>
 							<CardActions>
-								<DialogDrawer
-									trigger={
-										<Button variant="outline">Edit</Button>
-									}
-									title="Video Details"
-								>
-									<VideoForm
-										video={
-											video as z.infer<typeof videoSchema>
+								{video.script ? (
+									<Button asChild variant="outline">
+										<Link to={`/videos/${video.id}/script`}>
+											Edit
+										</Link>
+									</Button>
+								) : (
+									<DialogDrawer
+										trigger={
+											<Button variant="outline">
+												Edit
+											</Button>
 										}
-									/>
-								</DialogDrawer>
+										title="Video Details"
+									>
+										<VideoForm
+											video={
+												video as z.infer<
+													typeof videoSchema
+												>
+											}
+										/>
+									</DialogDrawer>
+								)}
+
+								{video.readyToRender && (
+									<Button asChild>
+										<Link
+											to={`/videos/${video.id}/generate`}
+										>
+											See video
+										</Link>
+									</Button>
+								)}
 							</CardActions>
 						</Card>
 					))}

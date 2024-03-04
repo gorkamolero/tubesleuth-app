@@ -9,6 +9,9 @@ import {
 } from "~/modules/auth";
 import type { AuthSession } from "~/modules/auth";
 import { eq } from "drizzle-orm";
+import { getIdeas } from "../ideas";
+import { getChannelNames } from "../channel";
+import { getVideos } from "../videos";
 
 export const userSchema = createInsertSchema(users);
 
@@ -16,6 +19,21 @@ export async function getUserByEmail(email: string) {
 	return db.query.users.findFirst({
 		where: eq(users.email, email.toLowerCase()),
 	});
+}
+
+export async function getCompleteUserByEmail(email: string) {
+	const user = await getUserByEmail(email);
+	if (!user) return null;
+	const userIdeas = await getIdeas({ userId: user.id });
+	const userChannels = await getChannelNames({ userId: user.id });
+	const userVideos = await getVideos({ userId: user.id });
+
+	return {
+		...user,
+		ideas: userIdeas,
+		channels: userChannels,
+		videos: userVideos,
+	};
 }
 
 async function createUser({

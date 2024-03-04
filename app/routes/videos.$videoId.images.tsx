@@ -89,9 +89,8 @@ export default function VideoImages() {
 				{allImagesGenerated && (
 					<div className="fixed bottom-0 right-0 p-6">
 						<Button size="lg" asChild style={{ zoom: 1.2 }}>
-							<Link to={`/videos/${videoId}/generate`}>
-								<SparklesIcon className="mr-2" />
-								<p className="text-md">Generate video!</p>
+							<Link to={`/videos/${videoId}/music`}>
+								<p className="text-md">Choose music</p>
 							</Link>
 						</Button>
 					</div>

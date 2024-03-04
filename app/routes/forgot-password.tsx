@@ -4,6 +4,10 @@ import { Form, useActionData, useNavigation } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import { parseFormAny, useZorm } from "react-zorm";
 import { z } from "zod";
+import { LabelInputContainer } from "~/components/LabelInputContainer";
+import { BottomGradient } from "~/components/ui/bottom-gradient";
+import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label-gradient";
 
 import { i18nextServer } from "~/integrations/i18n";
 import { getAuthSession, sendResetPasswordLink } from "~/modules/auth";
@@ -67,49 +71,48 @@ export default function ForgotPassword() {
 	const disabled = isFormProcessing(navigation.state);
 
 	return (
-		<div className="flex min-h-full flex-col justify-center">
-			<div className="mx-auto w-full max-w-md px-8">
+		<div className="flex min-h-full w-full flex-col justify-center">
+			<div className="max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
+				<h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200">
+					Recover your password
+				</h2>
 				{!actionData ? (
 					<Form
 						ref={zo.ref}
 						method="post"
-						className="space-y-6"
+						className="space-y-6 mt-8"
 						replace
 					>
-						<div>
-							<label
-								htmlFor={zo.fields.email()}
-								className="block text-sm font-medium text-gray-700"
-							>
+						<LabelInputContainer className="mb-4">
+							<Label htmlFor={zo.fields.email()}>
 								{t("register.email")}
-							</label>
-							<div className="mt-1">
-								<input
-									data-test-id="email"
-									name={zo.fields.email()}
-									type="email"
-									autoComplete="email"
-									className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
-									disabled={disabled}
-								/>
-								{zo.errors.email()?.message && (
-									<div
-										className="pt-1 text-red-700"
-										id="password-error"
-									>
-										{zo.errors.email()?.message}
-									</div>
-								)}
-							</div>
-						</div>
+							</Label>
+							<Input
+								data-test-id="email"
+								name={zo.fields.email()}
+								type="email"
+								autoComplete="email"
+								disabled={disabled}
+							/>
+							{zo.errors.email()?.message && (
+								<div
+									className="pt-1 text-red-700"
+									id="password-error"
+								>
+									{zo.errors.email()?.message}
+								</div>
+							)}
+						</LabelInputContainer>
 
 						<button
 							data-test-id="send-password-reset-link"
 							type="submit"
-							className="w-full rounded bg-blue-500  px-4 py-2 text-white hover:bg-blue-600 focus:bg-blue-400"
+							className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
 							disabled={disabled}
 						>
 							{t("register.sendLink")}
+
+							<BottomGradient />
 						</button>
 					</Form>
 				) : (

@@ -16,7 +16,13 @@ export function ModeToggle({ isCollapsed }: { isCollapsed: boolean }) {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button aria-label="Account information" variant="ghost">
+				<Button
+					aria-label="Toggle theme"
+					variant="outline"
+					className={cn(
+						isCollapsed && "justify-center p-0 max-w-full",
+					)}
+				>
 					<div
 						className={cn(
 							"flex items-center gap-2",
@@ -26,7 +32,7 @@ export function ModeToggle({ isCollapsed }: { isCollapsed: boolean }) {
 					>
 						<Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
 						<Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-						<div>Toggle theme</div>
+						{isCollapsed || <div>Toggle theme</div>}
 					</div>
 				</Button>
 			</DropdownMenuTrigger>

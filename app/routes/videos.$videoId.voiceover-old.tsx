@@ -1,21 +1,16 @@
 import type { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { redirect, json } from "@remix-run/node";
 import { Form, Link, useLoaderData, useNavigation } from "@remix-run/react";
+import { useZorm } from "react-zorm";
 import { z } from "zod";
-import { AudioSelector } from "~/components/AudioSelector";
 import { DialogDrawer } from "~/components/DialogDrawer";
+import { VoiceOverSelect } from "~/components/VoiceoverSelect";
 import { Button } from "~/components/ui/button";
 import Stepper from "~/components/ui/stepper";
 import { VOICEMODELS } from "~/database/enums";
-import { voicemodelAudios } from "~/lib/constants";
 
 import { requireAuthSession, commitAuthSession } from "~/modules/auth";
-import {
-	generateVoiceover,
-	getVideo,
-	updateVideo,
-	vidSchema,
-} from "~/modules/videos";
+import { generateVoiceover, getVideo, vidSchema } from "~/modules/videos";
 import { assertIsPost, getRequiredParam, isFormProcessing } from "~/utils";
 
 export async function loader({ params }: LoaderFunctionArgs) {
@@ -34,14 +29,6 @@ export const action: ActionFunction = async ({ request, params }) => {
 	const videoId = getRequiredParam(params, "videoId");
 	const authSession = await requireAuthSession(request);
 	const model = formData.get("model") as VOICEMODELS;
-
-	await updateVideo({
-		id: videoId,
-		userId: authSession.userId,
-		data: {
-			voiceover: model,
-		},
-	});
 
 	await generateVoiceover({
 		userId: authSession.userId,
@@ -69,6 +56,8 @@ export default function VideoDetailsPage() {
 	const navigation = useNavigation();
 	const disabled = isFormProcessing(navigation.state);
 
+	const createVoiceOver = useZorm("createVoiceOver", voiceOverSchema);
+
 	const hasVoiceover = Boolean(
 		video?.voiceover && video.voiceover.length > 0,
 	);
@@ -78,10 +67,16 @@ export default function VideoDetailsPage() {
 			<Stepper steps={8} currentStep={3} title="Create a voice-over" />
 			<Form
 				method="post"
-				name="createVoiceOver"
+				ref={createVoiceOver.ref}
 				className="space-y-6 w-full max-w-md flex flex-col items-stretch"
 			>
-				<AudioSelector name={"model"} tracks={voicemodelAudios} />
+				<VoiceOverSelect name={createVoiceOver.fields.model()} />
+
+				<input
+					type="hidden"
+					name={createVoiceOver.fields.videoId()}
+					value={video.id}
+				/>
 
 				<div className="flex space-x-4 justify-end">
 					<Button

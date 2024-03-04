@@ -57,6 +57,34 @@
       "when": 1709395763198,
       "tag": "0007_curious_squirrel_girl",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "5",
+      "when": 1709553134624,
+      "tag": "0008_flaky_loners",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "5",
+      "when": 1709555261211,
+      "tag": "0009_furry_kate_bishop",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "5",
+      "when": 1709555316503,
+      "tag": "0010_bizarre_titanium_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "5",
+      "when": 1709557095823,
+      "tag": "0011_clever_sway",
+      "breakpoints": true
     }
   ]
 }

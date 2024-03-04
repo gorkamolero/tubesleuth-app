@@ -1,0 +1,1 @@
+ALTER TABLE "videos" RENAME COLUMN "onyx" TO "voicemodel";

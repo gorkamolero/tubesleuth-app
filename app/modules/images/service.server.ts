@@ -6,6 +6,7 @@ import { and, eq } from "drizzle-orm";
 import { uuid } from "uuidv4";
 import { generateImageMap } from "~/utils/imageMap";
 import { generateImageWithLemonfox } from "~/utils/generateImageWithLemonfox";
+import { getSupabaseAdmin } from "~/integrations/supabase";
 
 export const insertImageSchema = createInsertSchema(images);
 export type imageSchema = z.infer<typeof insertImageSchema>;
@@ -161,9 +162,33 @@ export async function generateImage({
 		throw new Error("No image found or no description");
 	}
 
-	const url = await generateImageWithLemonfox({
+	let url = await generateImageWithLemonfox({
 		description,
 	});
+
+	const imageLocalRequest = await fetch(url);
+	const imageLocal = await imageLocalRequest.blob();
+
+	const iurl = `${userId}/image-${imageId}.mp3`;
+
+	const client = getSupabaseAdmin();
+
+	const imageUploadResult = await client.storage
+		.from(`images`)
+		.upload(iurl, imageLocal, {
+			cacheControl: "3600",
+			upsert: true,
+		});
+
+	if (imageUploadResult.error) {
+		throw imageUploadResult.error;
+	}
+
+	const {
+		data: { publicUrl: imageUrl },
+	} = client.storage.from("images").getPublicUrl(iurl);
+
+	url = imageUrl;
 
 	await updateImage({
 		userId,

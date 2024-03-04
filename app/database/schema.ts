@@ -66,6 +66,10 @@ export const videoType = pgEnum(
 	"video_type",
 	Object.values(VIDEO_TYPES) as [string, ...string[]],
 );
+export const voiceModel = pgEnum(
+	"voicemodel",
+	Object.values(VOICEMODELS) as [string, ...string[]],
+);
 
 export const videos = pgTable("videos", {
 	id: uuid("id").primaryKey(),
@@ -86,12 +90,10 @@ export const videos = pgTable("videos", {
 	createdAt: timestamp("created_at").defaultNow(),
 	updatedAt: timestamp("updated_at").defaultNow(),
 	imageMap: text("image_map"),
+	readyToRender: boolean("ready_to_render").default(false),
+	voicemodel: voiceModel("voicemodel"),
+	music: text("music"),
 });
-
-export const voiceModel = pgEnum(
-	"voicemodel",
-	Object.values(VOICEMODELS) as [string, ...string[]],
-);
 
 export const channels = pgTable("channels", {
 	id: uuid("id").primaryKey(),

@@ -13,7 +13,7 @@ export interface CompositionProps {
 	fps: number;
 	script: string;
 	subtitles: any;
-	mood: string;
+	music: string;
 	images: imageSchema[];
 }
 
@@ -25,7 +25,7 @@ export const Tubesleuth: React.FC<TubesleuthProps> = ({
 	fps,
 	subtitles,
 	images,
-	mood,
+	music,
 	voiceover,
 }) => {
 	let accumulatedFrames = 0;
@@ -79,7 +79,10 @@ export const Tubesleuth: React.FC<TubesleuthProps> = ({
 			<AbsoluteFill>
 				<Audio src={voiceover as string} />
 				<Audio
-					src="https://ezamdwrrzqrnyewhqdup.supabase.co/storage/v1/object/public/assets/deep.mp3"
+					src={
+						music ||
+						"https://ezamdwrrzqrnyewhqdup.supabase.co/storage/v1/object/public/assets/deep.mp3"
+					}
 					volume={0.2}
 				/>
 			</AbsoluteFill>

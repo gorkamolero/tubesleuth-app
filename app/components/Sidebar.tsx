@@ -1,13 +1,12 @@
 import * as React from "react";
-import { Lightbulb, Video, Users, Sparkle, Play } from "lucide-react";
-import { Account } from "./Account";
+import { Lightbulb, Video, Sparkle, Play } from "lucide-react";
 import { Nav } from "./Nav";
 import { Separator } from "~/components/ui/separator";
-import { Button } from "./ui/button";
 import { Link } from "@remix-run/react";
 import { cn } from "~/lib/utils";
 import { ModeToggle } from "./mode-toggle";
 import { NavLink } from "./NavLink";
+import { LogoutButton } from "~/modules/auth";
 
 interface SidebarProps {
 	isCollapsed: boolean;
@@ -57,8 +56,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed }) => {
 					},
 				]}
 			/>
-			<div className="mt-auto flex p-2">
+			<div className="mt-auto grid gap-2 p-2">
 				<ModeToggle isCollapsed={isCollapsed} />
+				<LogoutButton isCollapsed={isCollapsed} />
 			</div>
 		</div>
 	);
