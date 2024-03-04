@@ -8,13 +8,11 @@ import { generateEffectFilter, getDurationInFrames } from "../../lib/utils";
 import { FX } from "~/database/enums";
 import { TranscriptionCaptions } from "./TranscriptionCaptions";
 
-const yes25percentOfTheTime = Math.random() > 0.75;
-
 export interface CompositionProps {
 	videoId: string;
 	fps: number;
 	script: string;
-	transcript: any;
+	subtitles: any;
 	mood: string;
 	images: imageSchema[];
 }
@@ -24,10 +22,8 @@ export interface TubesleuthProps
 		Record<string, unknown> {}
 
 export const Tubesleuth: React.FC<TubesleuthProps> = ({
-	videoId,
 	fps,
-	script,
-	transcript,
+	subtitles,
 	images,
 	mood,
 	voiceover,
@@ -88,7 +84,7 @@ export const Tubesleuth: React.FC<TubesleuthProps> = ({
 				/>
 			</AbsoluteFill>
 
-			{/* <TranscriptionCaptions /> */}
+			<TranscriptionCaptions subtitles={subtitles} fps={fps} />
 		</>
 	);
 };

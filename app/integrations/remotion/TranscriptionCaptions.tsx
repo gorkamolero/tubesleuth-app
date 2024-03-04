@@ -33,7 +33,7 @@ const WordCaption = ({
 	const frame = useCurrentFrame();
 	const localFrame = frame - from - preMod;
 
-	const scale = spring({
+	const data = {
 		frame: localFrame < durationInFrames ? localFrame : 0,
 		fps,
 		config: {
@@ -41,7 +41,9 @@ const WordCaption = ({
 			stiffness: 500,
 			mass: 0.25,
 		},
-	});
+	};
+
+	const scale = spring(data);
 
 	return (
 		<Sequence
@@ -81,16 +83,13 @@ const WordCaption = ({
 	);
 };
 
-export const TranscriptionCaptions = () => {
-	const inputProps = getFullInputProps();
-	const subtitles = (inputProps.transcript as any).words.map((w: word) => ({
-		text: w.text,
-		start: w.start,
-		end: w.end,
-	})) as subtitles;
-
-	const fps = inputProps.fps as number;
-
+export const TranscriptionCaptions = ({
+	subtitles,
+	fps,
+}: {
+	subtitles: subtitles;
+	fps: number;
+}) => {
 	return (
 		<AbsoluteFill>
 			{subtitles &&

@@ -5,7 +5,6 @@ import { Player } from "@remotion/player";
 import { DialogDrawer } from "~/components/DialogDrawer";
 import Stepper from "~/components/ui/stepper";
 import {
-	CompositionProps,
 	Tubesleuth,
 	TubesleuthProps,
 } from "~/integrations/remotion/Composition";
@@ -15,7 +14,7 @@ import { convertSecondsToFrames } from "~/lib/utils";
 import { requireAuthSession, commitAuthSession } from "~/modules/auth";
 import { getImagesByVideoId, imageSchema } from "~/modules/images";
 import { getVideo, vidSchema } from "~/modules/videos";
-import { assertIsPost, getRequiredParam, isFormProcessing } from "~/utils";
+import { assertIsPost, getRequiredParam } from "~/utils";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
 	const { userId } = await requireAuthSession(request);
@@ -60,22 +59,30 @@ export default function VideoDetailsPage() {
 	const { video, transcript, images } = useLoaderData<typeof loader>();
 	if (!video || !transcript) throw new Error("Video not found");
 
+	const ourFPS = FPS;
+
 	const duration = Math.min(transcript.audio_duration + 2, 60);
 
-	const durationInFrames = convertSecondsToFrames(duration, FPS);
+	const durationInFrames = convertSecondsToFrames(duration, ourFPS);
+
+	const subtitles = transcript.words.map(
+		(w: { text: string; start: number; end: number }) => ({
+			text: w.text,
+			start: w.start,
+			end: w.end,
+		}),
+	);
 
 	const inputProps: TubesleuthProps = {
 		videoId: video.id,
-		fps: FPS,
+		fps: ourFPS,
 		script: video.script as string,
-		transcript,
+		subtitles,
 		images: images as imageSchema[],
 		mood: "deep",
 		voiceover: video.voiceover,
 		duration,
 	};
-
-	const x = inputProps;
 
 	return (
 		<DialogDrawer open title="Your video">
@@ -88,7 +95,7 @@ export default function VideoDetailsPage() {
 					durationInFrames={durationInFrames}
 					compositionWidth={1080}
 					compositionHeight={1920}
-					fps={FPS}
+					fps={ourFPS}
 					style={{
 						width: "100%",
 						aspectRatio: "9/16",
