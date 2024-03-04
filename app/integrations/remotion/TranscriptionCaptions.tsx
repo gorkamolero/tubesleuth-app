@@ -91,7 +91,10 @@ export const TranscriptionCaptions = ({
 	fps: number;
 }) => {
 	let subs;
-	if (process.env.NODE_ENV === "development") {
+	if (
+		process.env.NODE_ENV === "development" ||
+		process.env.NODE_ENV === "production"
+	) {
 		subs = subtitles;
 	} else {
 		subs = getFullInputProps().subtitles as subtitlesType;
