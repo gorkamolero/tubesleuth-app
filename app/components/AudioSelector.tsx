@@ -54,11 +54,15 @@ const mockData: Track[] = [
 ];
 
 interface AudioSelectorProps {
+	title?: string;
+	description?: string;
 	name: string;
 	tracks: Track[];
 }
 
 export const AudioSelector = ({
+	title = "Select Your Favorite Track",
+	description = "Click the play button to listen to the track and select your favorite.",
 	tracks = mockData,
 	name,
 }: AudioSelectorProps) => {
@@ -66,12 +70,9 @@ export const AudioSelector = ({
 	return (
 		<Card>
 			<CardHeader className="pb-0">
-				<CardTitle className="text-2xl">
-					Select Your Favorite Track
-				</CardTitle>
+				<CardTitle className="text-2xl">{title}</CardTitle>
 				<CardDescription className="text-gray-500">
-					Click the play button to listen to the track and select your
-					favorite.
+					{description}
 				</CardDescription>
 			</CardHeader>
 			<CardContent className="p-0">

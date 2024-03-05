@@ -46,6 +46,7 @@ import { Label } from "~/components/ui/label-gradient";
 import { capitalize } from "~/lib/utils";
 import { TRANSITIONS } from "~/database/enums";
 import { animateImage } from "~/utils/animate";
+import { GradientSeparator } from "~/components/ui/gradient-separator";
 
 export const loader: LoaderFunction = async ({ params, request }) => {
 	const { userId } = await requireAuthSession(request);
@@ -266,51 +267,57 @@ const ImageCard = ({ image }: { image: imageSchema }) => {
 				</LabelInputContainer>
 
 				<CardFooter className="pt-4">
-					<div className="flex justify-end space-x-2">
-						<Button
-							disabled={disabledSrc}
-							size="sm"
-							type="submit"
-							className="cursor-pointer"
-							name="intent"
-							value="generate"
-						>
-							<div className="mr-2">
+					<div className="grid gap-2 w-full">
+						<div className="flex flex-wrap justify-end gap-2">
+							<Button
+								disabled={disabledSrc}
+								size="sm"
+								type="submit"
+								className="cursor-pointer"
+								name="intent"
+								value="generate"
+							>
+								<div className="mr-2">
+									{isLoading ? (
+										<LoadingSpinner />
+									) : (
+										<SparklesIcon className="h-4 w-4" />
+									)}
+								</div>
+								Generate
+							</Button>
+
+							<Button
+								disabled={disabledAnim}
+								size="sm"
+								variant="outline"
+								type="submit"
+								name="intent"
+								value="animate"
+							>
 								{isLoading ? (
 									<LoadingSpinner />
 								) : (
-									<SparklesIcon className="h-4 w-4" />
+									<Activity className="h-4 w-4 mr-2" />
 								)}
-							</div>
-							Generate
-						</Button>
+								Animate
+							</Button>
+						</div>
 
-						<Button
-							disabled={disabledAnim}
-							size="sm"
-							variant="outline"
-							type="submit"
-							name="intent"
-							value="animate"
-						>
-							{isLoading ? (
-								<LoadingSpinner />
-							) : (
-								<Activity className="h-4 w-4 mr-2" />
-							)}
-							Animate
-						</Button>
+						<GradientSeparator />
 
-						<Button
-							disabled={isLoading || !canSave}
-							size="sm"
-							type="submit"
-							className="cursor-pointer"
-							name="intent"
-							value="save"
-						>
-							Save
-						</Button>
+						<div className="flex justify-end gap-2">
+							<Button
+								disabled={!canSave}
+								size="sm"
+								variant="outline"
+								type="submit"
+								name="intent"
+								value="save"
+							>
+								Save
+							</Button>
+						</div>
 					</div>
 				</CardFooter>
 			</Form>

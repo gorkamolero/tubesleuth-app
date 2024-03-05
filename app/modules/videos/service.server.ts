@@ -32,14 +32,12 @@ export async function createVideo({
 	title,
 	description,
 	script,
-	tags,
 }: z.infer<typeof createVideoSchema>) {
 	const id = uuid();
 	const video = videoSchema.parse({
 		id,
 		title,
 		description,
-		tags,
 		script,
 		uploaded: false,
 		voiceover: "",

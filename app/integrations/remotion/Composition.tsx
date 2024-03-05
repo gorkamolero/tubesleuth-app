@@ -41,7 +41,7 @@ export const Tubesleuth: React.FC<TubesleuthProps> = ({
 		<>
 			<TransitionSeries>
 				{images.map((image, index) => {
-					if (!image?.src) return null;
+					if (!image?.src && !image?.animation) return null;
 
 					const isLastImage = index === images.length - 1;
 
@@ -71,7 +71,7 @@ export const Tubesleuth: React.FC<TubesleuthProps> = ({
 									<OffthreadVideo src={image?.animation} />
 								) : (
 									<Img
-										src={image?.src}
+										src={image?.src || ""}
 										style={{
 											transform,
 										}}

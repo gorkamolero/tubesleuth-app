@@ -78,7 +78,6 @@ export const action: ActionFunction = async ({ request, params }) => {
 const partialUpdateSchema = z.object({
 	title: z.string().min(1, "Title is required"),
 	description: z.string().min(1, "Description is required"),
-	tags: z.string().min(1, "Tags are required"),
 	script: z.string().min(1, "Script is required"),
 });
 
@@ -92,7 +91,6 @@ export default function VideoDetailsPage() {
 	const [formData] = useState({
 		title: video.title || "",
 		description: video.description || "",
-		tags: video.tags || "",
 		script: video.script || "",
 	});
 
@@ -127,16 +125,6 @@ export default function VideoDetailsPage() {
 						id="description"
 						name="description"
 						defaultValue={formData.description}
-					/>
-				</div>
-
-				<div className="grid gap-2">
-					<Label htmlFor="tags">Tags</Label>
-					<Input
-						type="text"
-						id="tags"
-						name="tags"
-						defaultValue={formData.tags}
 					/>
 				</div>
 

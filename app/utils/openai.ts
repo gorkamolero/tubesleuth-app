@@ -1,4 +1,5 @@
 import OpenAI from "openai";
+import { architect } from "./ai/architect";
 
 const apiKey = process.env.OPENAI_AK;
 const organization = process.env.OPENAI_ORG_ID;
@@ -8,7 +9,7 @@ const openai = new OpenAI({
 });
 
 const lemon = new OpenAI({
-	apiKey: process.env.OPENAI_AK,
+	apiKey: process.env.LEMONFOX_API_KEY,
 	baseURL: "https://api.lemonfox.ai/v1",
 });
 
@@ -112,6 +113,98 @@ export const askAssistant = async ({
 		return { ...answer, threadId: newThreadId };
 	} catch (error: any) {
 		console.error("ERROR ASKING ASSISTANT" + error.error.message);
+	}
+};
+
+interface AskInterface {
+	systemMessage: string;
+	message: string;
+	isJSON?: boolean;
+}
+
+export const askLemon = async ({
+	systemMessage,
+	message,
+	isJSON = false,
+}: AskInterface) => {
+	try {
+		const completion = await lemon.chat.completions.create({
+			messages: [
+				{
+					role: "system",
+					content: systemMessage,
+				},
+				{
+					role: "user",
+					content: message,
+				},
+			],
+			model: "mixtral-chat",
+		});
+
+		let result = completion.choices[0].message.content;
+
+		console.log("🍋 LEMON RESULT", result);
+
+		if (isJSON) {
+			let jsonObject = result;
+
+			if (result && result?.length > 0) {
+				try {
+					jsonObject = JSON.parse(result);
+				} catch (error) {
+					console.error(`🛑 ERROR PARSING JSON`, error, result);
+				}
+				return jsonObject;
+			} else {
+				return { error: "No result" };
+			}
+		} else {
+			return result;
+		}
+	} catch (error: any) {
+		console.error("ERROR ASKING LEMON" + error.error.message);
+	}
+};
+
+export const askChatGPT = async ({
+	systemMessage,
+	message,
+	isJSON = false,
+}: AskInterface) => {
+	try {
+		const completion = await openai.chat.completions.create({
+			messages: [
+				{
+					role: "system",
+					content: systemMessage,
+				},
+				{
+					role: "user",
+					content: message,
+				},
+			],
+			model: "gpt-4-0125-preview",
+		});
+
+		let result = completion.choices[0].message.content;
+
+		console.log("🤖 GPT RESULT", result);
+
+		if (!isJSON) return result;
+		if (!result) return { error: "No result" };
+
+		const jsonBlock = result.includes("```json")
+			? result.replace("```json\n", "").replace("```", "")
+			: result;
+		try {
+			return JSON.parse(jsonBlock);
+		} catch (error) {
+			console.error(`🛑 ERROR PARSING JSON`, error, result);
+			return null;
+		}
+	} catch (error: any) {
+		console.error("ERROR ASKING GPT" + error.error.message);
 	}
 };
 

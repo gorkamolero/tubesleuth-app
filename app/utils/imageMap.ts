@@ -1,7 +1,8 @@
 import { getSupabaseAdmin, supabaseClient } from "~/integrations/supabase";
-import { promptAssistant } from "./openai";
+import { askChatGPT, promptAssistant } from "./openai";
 import { updateVideo } from "~/modules/videos";
 import { z } from "zod";
+import { architect } from "./ai/architect";
 
 export const replacer = (key: string, value: any) => {
 	if (typeof value === "string") {
@@ -83,12 +84,13 @@ REMEMBER: JSON ARRAY WITH [{
 	"end": ...,
 }]`;
 
-	const imageMapFromOpenAI = await promptAssistant({
-		assistant_id: process.env.ASSISTANT_ARCHITECT_ID as string,
-		prompt,
+	const imageMapFromOpenAI = await askChatGPT({
+		systemMessage: architect,
+		message: prompt,
 		isJSON: true,
 	});
 
+	// @ts-ignore
 	const imageMap = imageMapFromOpenAI.map(
 		(i: { description: string; start: number; end: number }) => ({
 			description: i.description,

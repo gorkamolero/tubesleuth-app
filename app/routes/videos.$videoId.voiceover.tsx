@@ -96,7 +96,12 @@ export default function VideoDetailsPage() {
 				name="createVoiceOver"
 				className="space-y-6 w-full max-w-md flex flex-col items-stretch"
 			>
-				<AudioSelector name={"model"} tracks={voicemodelAudios} />
+				<AudioSelector
+					name={"model"}
+					tracks={voicemodelAudios}
+					title="Select a voice"
+					description="Choose a voice that best fits your video."
+				/>
 
 				<div className="flex space-x-4 justify-end">
 					<Button

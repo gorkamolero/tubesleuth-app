@@ -1,5 +1,5 @@
 import axios from "axios";
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuid } from "uuid";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import {
 	S3Client,
@@ -102,8 +102,8 @@ export const fullLeiaPix = async ({
 
 		// We start with preparing a correlationId. This might be an internal
 		// ID which you use in your system for this image/entity represented
-		// by the image/etc, or, as we do now, we can just generate new UUIDv4.
-		let correlationId = uuidv4();
+		// by the image/etc, or, as we do now, we can just generate new UUID.
+		let correlationId = uuid();
 		let disparityFinalURL = ";";
 
 		if (!disparityURL) {
@@ -177,7 +177,7 @@ export const fullLeiaPix = async ({
 		// to generate an animation, you would need to make another request to
 		// the service. The steps are very similar to how we called a disparity
 		// map endpoint: first we acquire correlationId...
-		correlationId = uuidv4();
+		correlationId = uuid();
 
 		// ...then we prepare an uploadable url...
 		const putAnimCommand = new PutObjectCommand({

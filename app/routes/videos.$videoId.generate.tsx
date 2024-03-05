@@ -100,7 +100,7 @@ export default function VideoDetailsPage() {
 		>
 			<Stepper steps={8} currentStep={8} title="Play your video!" />
 
-			<div>
+			<div className="w-full" style={{ aspectRatio: "9 / 16" }}>
 				<Player
 					component={Tubesleuth}
 					inputProps={inputProps}

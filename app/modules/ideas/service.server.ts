@@ -2,12 +2,13 @@ import { db } from "~/database";
 import { ideas } from "~/database/schema";
 import { getChannel } from "../channel";
 import { json } from "@remix-run/node";
-import { askAssistant } from "~/utils/openai";
+import { askAssistant, askLemon } from "~/utils/openai";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { and, eq } from "drizzle-orm";
 import { uuid } from "uuidv4";
 import { createVideo } from "../videos";
+import { scriptwriter } from "~/utils/ai/scriptwriter";
 
 export const insertIdeaSchema = createInsertSchema(ideas);
 export type ideaSchema = z.infer<typeof insertIdeaSchema>;
@@ -109,24 +110,25 @@ export const generateScript = async ({
 	const message = `${description}. Style: ${writingStyle}. CTA: ${cta}`;
 
 	const {
+		// @ts-ignore
 		script,
+		// @ts-ignore
 		tags,
+		// @ts-ignore
 		description: scriptDescription,
+		// @ts-ignore
 		title,
-	} = await askAssistant({
+	} = await askLemon({
+		systemMessage: scriptwriter,
 		message,
 		isJSON: true,
 	});
-
-	// if tags is string, ok. If array, stringify
-	let tagsToStore = tags.toString();
 
 	const video = await createVideo({
 		userId,
 		channelId,
 		ideaId,
 		script,
-		tags: tagsToStore,
 		description: scriptDescription,
 		title,
 	});

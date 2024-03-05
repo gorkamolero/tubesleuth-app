@@ -36,21 +36,11 @@ export function generateEffectFilter({
 	); // Ensures progress is between 0 and 1
 
 	switch (effect) {
-		case "MoveAbout":
-			const {
-				x: xAbout,
-				y: yAbout,
-				scale: zoomScale,
-			} = moveAbout(currentFrame, from, durationInFrames);
-			transform = `scale(${zoomScale}) translate(${xAbout}px, ${yAbout}px)`;
-			break;
-
-		case "MoveAround":
-			const x = Math.sin(progress * Math.PI * 2) * 50; // Increased the frequency and amplitude for more violent movement
-			const y = Math.cos(progress * Math.PI * 2) * 50;
-			transform = `scale(1.25) translate(${x}px, ${y}px)`;
-			break;
-
+		case "perspective":
+		case "horizontal":
+		case "vertical":
+		case "circle":
+		case "zoom":
 		case "ZoomIn":
 			transform = `scale(${Math.min(1.1, 1 + progress * 0.1)})`; // Caps the maximum scale at 1.1
 			break;
