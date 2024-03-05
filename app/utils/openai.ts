@@ -197,6 +197,7 @@ export const askChatGPT = async ({
 		const jsonBlock = result.includes("```json")
 			? result.replace("```json\n", "").replace("```", "")
 			: result;
+
 		try {
 			return JSON.parse(jsonBlock);
 		} catch (error) {

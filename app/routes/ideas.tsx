@@ -46,6 +46,10 @@ export async function loader({ request }: LoaderFunctionArgs) {
 		throw notFound(`No ideas found for user with id ${userId}`);
 	}
 
+	ideas.sort(
+		(a, b) => (b.createdAt?.getTime() ?? 0) - (a.createdAt?.getTime() ?? 0),
+	);
+
 	return json({ email, ideas });
 }
 

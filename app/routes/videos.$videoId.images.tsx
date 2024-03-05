@@ -7,6 +7,7 @@ import {
 import {
 	Form,
 	Link,
+	useFetcher,
 	useLoaderData,
 	useNavigate,
 	useNavigation,
@@ -43,7 +44,7 @@ import {
 import { animationParameters } from "~/lib/animations";
 import { LabelInputContainer } from "~/components/LabelInputContainer";
 import { Label } from "~/components/ui/label-gradient";
-import { capitalize } from "~/lib/utils";
+import { capitalize, cn } from "~/lib/utils";
 import { TRANSITIONS } from "~/database/enums";
 import { animateImage } from "~/utils/animate";
 import { GradientSeparator } from "~/components/ui/gradient-separator";
@@ -155,7 +156,9 @@ export default function VideoImages() {
 }
 
 const ImageCard = ({ image }: { image: imageSchema }) => {
+	const fetcher = useFetcher();
 	const navigation = useNavigation();
+
 	const [description, setDescription] = useState(image.description || "");
 	const [fx, setFx] = useState(image.fx || "");
 	const [transition, setTransition] = useState(image.transition || "fade");
@@ -166,7 +169,7 @@ const ImageCard = ({ image }: { image: imageSchema }) => {
 
 	const isDisabledSrc = image.src && !hasChangedDescription;
 	const isDisabledAnim = image.animation && !hasChangedDescription;
-	const isLoading = isFormProcessing(navigation.state);
+	const isLoading = isFormProcessing(fetcher.state);
 	const disabledSrc = !!(isDisabledSrc || isLoading);
 	const disabledAnim = !!(isDisabledAnim || isLoading);
 
@@ -175,7 +178,7 @@ const ImageCard = ({ image }: { image: imageSchema }) => {
 
 	return (
 		<Card>
-			<Form name="generateImage" method="post">
+			<fetcher.Form name="generateImage" method="post">
 				<input type="hidden" name="imageId" value={image.id} />
 				{image.animation ? (
 					<div
@@ -223,7 +226,9 @@ const ImageCard = ({ image }: { image: imageSchema }) => {
 					/>
 				</LabelInputContainer>
 
-				<LabelInputContainer className="p-4">
+				<LabelInputContainer
+					className={cn("p-4", image?.src || "hidden")}
+				>
 					<Label htmlFor="animation" className="mb-2 block">
 						Animation. Refer to{" "}
 						<Link className="underline" to="/animations">
@@ -244,7 +249,9 @@ const ImageCard = ({ image }: { image: imageSchema }) => {
 					</Select>
 				</LabelInputContainer>
 
-				<LabelInputContainer className="p-4">
+				<LabelInputContainer
+					className={cn("p-4", image?.src || "hidden")}
+				>
 					<Label htmlFor="transition" className="mb-2 block">
 						Transition
 					</Label>
@@ -306,7 +313,12 @@ const ImageCard = ({ image }: { image: imageSchema }) => {
 
 						<GradientSeparator />
 
-						<div className="flex justify-end gap-2">
+						<div
+							className={cn(
+								"flex justify-end gap-2",
+								image?.src || "hidden",
+							)}
+						>
 							<Button
 								disabled={!canSave}
 								size="sm"
@@ -320,7 +332,7 @@ const ImageCard = ({ image }: { image: imageSchema }) => {
 						</div>
 					</div>
 				</CardFooter>
-			</Form>
+			</fetcher.Form>
 		</Card>
 	);
 };

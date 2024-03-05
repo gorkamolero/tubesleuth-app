@@ -178,7 +178,9 @@ export default function ImagesDescriptionPage() {
 								disabled={disabled}
 								size="lg"
 								onClick={() => {
-									toast.info("Generating image map...");
+									toast.info(
+										"Generating image map. This could take a while...",
+									);
 								}}
 							>
 								<div className="flex items-center gap-2">

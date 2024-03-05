@@ -161,7 +161,7 @@ export default function IdeaDetailsPage() {
 						disabled={disabled}
 						onClick={() =>
 							toast.info(
-								"Generating script. This will take a while...",
+								"Generating script. This can take a while...",
 							)
 						}
 					>

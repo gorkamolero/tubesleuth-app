@@ -2,7 +2,7 @@ import { db } from "~/database";
 import { ideas } from "~/database/schema";
 import { getChannel } from "../channel";
 import { json } from "@remix-run/node";
-import { askAssistant, askLemon } from "~/utils/openai";
+import { askAssistant, askChatGPT, askLemon } from "~/utils/openai";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { and, eq } from "drizzle-orm";
@@ -107,22 +107,22 @@ export const generateScript = async ({
 
 	const { writingStyle, cta } = channel;
 
-	const message = `${description}. Style: ${writingStyle}. CTA: ${cta}`;
+	const message = `${description}. Style: ${writingStyle}. CTA: ${cta}. ENSURE JSON OUTPUT`;
+
+	const result = await askChatGPT({
+		systemMessage: scriptwriter,
+		message,
+		isJSON: true,
+	});
 
 	const {
 		// @ts-ignore
 		script,
 		// @ts-ignore
-		tags,
-		// @ts-ignore
 		description: scriptDescription,
 		// @ts-ignore
 		title,
-	} = await askLemon({
-		systemMessage: scriptwriter,
-		message,
-		isJSON: true,
-	});
+	} = result;
 
 	const video = await createVideo({
 		userId,
