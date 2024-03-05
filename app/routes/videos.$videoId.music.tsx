@@ -48,10 +48,11 @@ export const action: ActionFunction = async ({ request, params }) => {
 		userId: authSession.userId,
 		data: {
 			music: src,
+			readyToRender: true,
 		},
 	});
 
-	return redirect(`/videos/${videoId}/generate`, {
+	return redirect(`/videos/${videoId}/render`, {
 		headers: {
 			"Set-Cookie": await commitAuthSession(request, { authSession }),
 		},

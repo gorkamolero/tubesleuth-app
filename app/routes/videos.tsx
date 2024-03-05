@@ -22,7 +22,6 @@ import {
 } from "~/components/ui/card-hover-effect";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
-import { ScrollArea } from "~/components/ui/scroll-area";
 import { commitAuthSession, requireAuthSession } from "~/modules/auth";
 import {
 	deleteVideo,
@@ -162,7 +161,7 @@ export default function VideosPage() {
 
 							{video.readyToRender && (
 								<Button asChild>
-									<Link to={`/videos/${video.id}/generate`}>
+									<Link to={`/videos/${video.id}/render`}>
 										See video
 									</Link>
 								</Button>

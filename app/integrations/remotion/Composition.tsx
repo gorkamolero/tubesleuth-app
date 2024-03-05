@@ -16,9 +16,7 @@ import { FX } from "../../database/enums";
 import { TranscriptionCaptions } from "./TranscriptionCaptions";
 
 export interface CompositionProps {
-	videoId: string;
 	fps: number;
-	script: string;
 	subtitles: any;
 	music: string;
 	images: imageSchema[];

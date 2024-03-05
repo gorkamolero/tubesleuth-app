@@ -1,20 +1,37 @@
 import type { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { redirect, json } from "@remix-run/node";
-import { useLoaderData, useNavigate, useNavigation } from "@remix-run/react";
+import {
+	Form,
+	Outlet,
+	useFetcher,
+	useLoaderData,
+	useNavigate,
+	useNavigation,
+} from "@remix-run/react";
 import { Player } from "@remotion/player";
+import { Video as VideoIcon } from "lucide-react";
+import { useCallback } from "react";
 import { DialogDrawer } from "~/components/DialogDrawer";
+import { RenderProgress } from "~/components/render-progress";
+import { Button } from "~/components/ui/button";
 import Stepper from "~/components/ui/stepper";
 import {
 	Tubesleuth,
 	TubesleuthProps,
 } from "~/integrations/remotion/Composition";
+import {
+	COMPOSITION_ID,
+	SITE_NAME,
+} from "~/integrations/remotion/lib/constants";
+import { renderVideo } from "~/integrations/remotion/lib/render-video.server";
 import { FPS } from "~/lib/constants";
+import { RenderResponse } from "~/lib/types";
 import { convertSecondsToFrames } from "~/lib/utils";
 
-import { requireAuthSession, commitAuthSession } from "~/modules/auth";
+import { requireAuthSession } from "~/modules/auth";
 import { getImagesByVideoId, imageSchema } from "~/modules/images";
 import { getVideo, vidSchema } from "~/modules/videos";
-import { assertIsPost, getRequiredParam } from "~/utils";
+import { getRequiredParam } from "~/utils";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
 	const { userId } = await requireAuthSession(request);
@@ -43,16 +60,20 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 	});
 }
 
-export const action: ActionFunction = async ({ request, params }) => {
-	assertIsPost(request);
-	const videoId = getRequiredParam(params, "videoId");
-	const authSession = await requireAuthSession(request);
+export const action: ActionFunction = async ({ request }) => {
+	const formData = await request.formData();
 
-	return redirect(`/videos/${videoId}/images`, {
-		headers: {
-			"Set-Cookie": await commitAuthSession(request, { authSession }),
-		},
+	const inputPropsJSON = formData.get("inputProps");
+	const inputProps = JSON.parse(inputPropsJSON as string);
+
+	const renderData = await renderVideo({
+		serveUrl: SITE_NAME,
+		composition: COMPOSITION_ID,
+		inputProps,
+		outName: `logo-animation.mp4`,
 	});
+
+	return json(renderData);
 };
 
 export default function VideoDetailsPage() {
@@ -87,10 +108,23 @@ export default function VideoDetailsPage() {
 			(video.music as string) ||
 			"https://ezamdwrrzqrnyewhqdup.supabase.co/storage/v1/object/public/assets/deep.mp3?t=2024-03-04T12%3A55%3A07.216Z",
 		voiceover: video.voiceover,
-		duration,
+		durationInFrames,
 	};
 
 	const navigate = useNavigate();
+	const { state } = useNavigation();
+
+	const fetcher = useFetcher<RenderResponse>();
+
+	const onClick = useCallback(
+		(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+			e.preventDefault();
+			const data = new FormData();
+			data.append("inputProps", JSON.stringify(inputProps));
+			fetcher.submit(data, { method: "post" });
+		},
+		[fetcher, inputProps],
+	);
 
 	return (
 		<DialogDrawer
@@ -98,22 +132,46 @@ export default function VideoDetailsPage() {
 			title="Your video"
 			onClose={() => navigate("/videos/")}
 		>
-			<Stepper steps={8} currentStep={8} title="Play your video!" />
+			<Stepper steps={8} currentStep={8} title="Play your video!">
+				<fetcher.Form name="render" method="post">
+					<Button
+						type="button"
+						name="intent"
+						value="render"
+						onClick={onClick}
+					>
+						<VideoIcon className="mr-2" />
+						Render it!
+					</Button>
+				</fetcher.Form>
+			</Stepper>
 
-			<div className="w-full" style={{ aspectRatio: "9 / 16" }}>
-				<Player
-					component={Tubesleuth}
-					inputProps={inputProps}
-					durationInFrames={durationInFrames}
-					compositionWidth={1080}
-					compositionHeight={1920}
-					fps={ourFPS}
-					style={{
-						width: "100%",
-						aspectRatio: "9/16",
-					}}
-					controls
-				/>
+			<div
+				className="w-full flex flex-col items-center justify-center"
+				style={{ aspectRatio: "9 / 16" }}
+			>
+				{fetcher.data ? (
+					<RenderProgress
+						bucketName={fetcher.data.bucketName}
+						renderId={fetcher.data.renderId}
+					/>
+				) : fetcher.state === "submitting" ? (
+					<div>Invoking</div>
+				) : (
+					<Player
+						component={Tubesleuth}
+						inputProps={inputProps}
+						durationInFrames={durationInFrames}
+						compositionWidth={1080}
+						compositionHeight={1920}
+						fps={ourFPS}
+						style={{
+							width: "100%",
+							aspectRatio: "9/16",
+						}}
+						controls
+					/>
+				)}
 			</div>
 		</DialogDrawer>
 	);

@@ -24,7 +24,13 @@
 		"postinstallio": "drizzle-kit generate:pg",
 		"migrate": "drizzle-kit generate:pg",
 		"video": "remotion studio app/integrations/remotion/index.ts --log=verbose --port=8001 ",
-		"kill": "lsof -t -i:8000 | xargs kill -9"
+		"kill": "lsof -t -i:8000 | xargs kill -9",
+		"deployLambda": "ts-node deploy-lambda.ts",
+		"remotion:studio": "remotion studio",
+		"remotion:render": "remotion render LogoAnimation out/logo-animation.mp4",
+		"remotion:upgrade": "remotion upgrade",
+		"remotion:renderlambda": "remotion lambda render remotion-remix-example LogoAnimation out/logo-animation-lambda-rendered.mp4",
+		"remotion:deploy": "ts-node deploy-lambda.ts"
 	},
 	"dependencies": {
 		"@aws-sdk/s3-request-presigner": "^3.525.0",
@@ -82,7 +88,6 @@
 		"pretty-ms": "^9.0.0",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
-		"react-hook-form": "^7.50.1",
 		"react-i18next": "^13.5.0",
 		"react-player": "^2.15.0",
 		"react-resizable-panels": "^2.0.11",
@@ -131,6 +136,7 @@
 		"start-server-and-test": "^2.0.3",
 		"tailwind-scrollbar": "^3.0.5",
 		"tailwindcss": "^3.4.1",
+		"ts-node": "^10.9.2",
 		"tsconfig-paths": "^4.2.0",
 		"tsx": "^4.7.0",
 		"typescript": "^5.3.3",

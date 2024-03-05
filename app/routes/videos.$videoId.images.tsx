@@ -10,7 +10,6 @@ import {
 	useFetcher,
 	useLoaderData,
 	useNavigate,
-	useNavigation,
 } from "@remix-run/react";
 import {
 	generateImage,
@@ -157,7 +156,6 @@ export default function VideoImages() {
 
 const ImageCard = ({ image }: { image: imageSchema }) => {
 	const fetcher = useFetcher();
-	const navigation = useNavigation();
 
 	const [description, setDescription] = useState(image.description || "");
 	const [fx, setFx] = useState(image.fx || "");

@@ -921,6 +921,16 @@ const mockData = {
 	voiceover:
 		"https://ezamdwrrzqrnyewhqdup.supabase.co/storage/v1/object/public/voiceovers/59f652d5-8e5c-4ddc-b00d-8d29244f98fa/voiceover-e14286d3-5067-4cfb-890a-71b6fa0d47ee.mp3",
 	duration: 55,
+	durationInFrames: 1650,
 };
 
-export default mockData;
+const data = {
+	...mockData,
+	images: mockData.images.map((image) => ({
+		...image,
+		createdAt: new Date(image.createdAt),
+		updatedAt: new Date(image.updatedAt),
+	})),
+};
+
+export default data;
