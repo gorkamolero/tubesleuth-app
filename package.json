@@ -22,6 +22,7 @@
 		"test:e2e:run": "dotenv -- cross-env PORT=8811 start-server-and-test http://localhost:8811 'npx cypress run'",
 		"typecheck": "tsc -b",
 		"postinstallio": "drizzle-kit generate:pg",
+		"migrate": "drizzle-kit generate:pg",
 		"video": "remotion studio app/integrations/remotion/index.ts --log=verbose --port=8001 ",
 		"kill": "lsof -t -i:8000 | xargs kill -9"
 	},

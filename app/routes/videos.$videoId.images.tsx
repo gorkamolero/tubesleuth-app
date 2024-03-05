@@ -63,7 +63,11 @@ export const action: ActionFunction = async ({ params, request }) => {
 		description,
 	});
 
-	return redirect(`/videos/${videoId}/images`);
+	return redirect(`/videos/${videoId}/images`, {
+		headers: {
+			"Cache-Control": "no-cache",
+		},
+	});
 };
 
 export default function VideoImages() {
@@ -150,7 +154,6 @@ const ImageCard = ({ image }: { image: imageSchema }) => {
 				)}
 
 				<Textarea
-					disabled={disabled}
 					name="description"
 					id="description"
 					value={description}

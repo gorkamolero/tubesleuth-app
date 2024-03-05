@@ -43,10 +43,17 @@ export async function getCompleteUserByEmail(email: string) {
 async function createUser({
 	email,
 	userId,
-}: Pick<AuthSession, "userId" | "email">) {
+	firstName,
+	lastName,
+}: Pick<AuthSession, "userId" | "email"> & {
+	firstName: string;
+	lastName: string;
+}) {
 	const userData = userSchema.parse({
 		email,
 		id: userId,
+		firstName,
+		lastName,
 	});
 
 	return db
@@ -59,10 +66,17 @@ async function createUser({
 export async function tryCreateUser({
 	email,
 	userId,
-}: Pick<AuthSession, "userId" | "email">) {
+	firstName,
+	lastName,
+}: Pick<AuthSession, "userId" | "email"> & {
+	firstName: string;
+	lastName: string;
+}) {
 	const user = await createUser({
 		userId,
 		email,
+		firstName,
+		lastName,
 	});
 
 	// user account created and have a session but unable to store in User table
@@ -78,9 +92,13 @@ export async function tryCreateUser({
 export async function createUserAccount({
 	email,
 	password,
+	firstName,
+	lastName,
 }: {
 	email: string;
 	password: string;
+	firstName: string;
+	lastName: string;
 }): Promise<AuthSession | null> {
 	const authAccount = await createEmailAuthAccount(email, password);
 
@@ -96,7 +114,7 @@ export async function createUserAccount({
 		return null;
 	}
 
-	const user = await tryCreateUser(authSession);
+	const user = await tryCreateUser({ ...authSession, firstName, lastName });
 
 	if (!user) return null;
 

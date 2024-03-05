@@ -22,6 +22,8 @@ export const invitations = pgTable("invitations", {
 export const users = pgTable("users", {
 	id: uuid("id").primaryKey(),
 	email: text("email").unique(),
+	firstName: text("first_name"),
+	lastName: text("last_name"),
 	createdAt: timestamp("created_at").defaultNow(),
 	updatedAt: timestamp("updated_at").defaultNow(),
 });

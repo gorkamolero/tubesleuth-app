@@ -162,16 +162,24 @@ export async function generateImage({
 		throw new Error("No image found or no description");
 	}
 
-	let url = await generateImageWithLemonfox({
+	const remoteUrl = await generateImageWithLemonfox({
 		description,
 	});
 
-	const imageLocalRequest = await fetch(url);
+	const imageLocalRequest = await fetch(remoteUrl);
 	const imageLocal = await imageLocalRequest.blob();
 
 	const iurl = `${userId}/image-${imageId}.png`;
 
 	const client = getSupabaseAdmin();
+
+	// delete file
+	const imageDeleteResult = await client.storage
+		.from(`images`)
+		.remove([iurl]);
+
+	// wait 2 seconds
+	await new Promise((resolve) => setTimeout(resolve, 2000));
 
 	const imageUploadResult = await client.storage
 		.from(`images`)
@@ -188,11 +196,9 @@ export async function generateImage({
 		data: { publicUrl: imageUrl },
 	} = client.storage.from("images").getPublicUrl(iurl);
 
-	url = imageUrl;
-
 	await updateImage({
 		userId,
 		id: imageId,
-		data: { src: url, description },
+		data: { src: imageUrl, description },
 	});
 }

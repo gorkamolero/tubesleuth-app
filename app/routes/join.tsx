@@ -19,7 +19,7 @@ import { LabelInputContainer } from "~/components/LabelInputContainer";
 import { Label } from "~/components/ui/label-gradient";
 import { Input } from "~/components/ui/input-gradient";
 import { BottomGradient } from "~/components/ui/bottom-gradient";
-import { getInvitation } from "~/modules/invitations";
+import { getInvitation, updateInvitation } from "~/modules/invitations";
 import { jsonWithError } from "remix-toast";
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -48,14 +48,6 @@ export async function action({ request }: ActionFunctionArgs) {
 	const formData = await request.formData();
 	const emailFromForm = formData.get("email") as string;
 
-	const invitation = await getInvitation(emailFromForm);
-	if (!invitation) {
-		return jsonWithError(null, {
-			message: "Invitation only!",
-			description: "The app is still in alpha. Contact us",
-		});
-	}
-
 	const result = await JoinFormSchema.safeParseAsync(parseFormAny(formData));
 
 	if (!result.success) {
@@ -65,6 +57,14 @@ export async function action({ request }: ActionFunctionArgs) {
 			},
 			{ status: 400 },
 		);
+	}
+
+	const invitation = await getInvitation(emailFromForm);
+	if (!invitation) {
+		return jsonWithError(null, {
+			message: "Invitation only!",
+			description: "The app is still in alpha. Contact us",
+		});
 	}
 
 	const { firstName, lastName, email, password, redirectTo } = result.data;
@@ -78,6 +78,8 @@ export async function action({ request }: ActionFunctionArgs) {
 	const authSession = await createUserAccount({
 		email,
 		password,
+		firstName,
+		lastName,
 	});
 
 	if (!authSession) {
@@ -88,6 +90,15 @@ export async function action({ request }: ActionFunctionArgs) {
 			"Unable to create user",
 		);
 	}
+
+	await updateInvitation({
+		email,
+		data: {
+			accepted: true,
+			updatedAt: new Date(),
+			userId: authSession.userId,
+		},
+	});
 
 	return createAuthSession({
 		request,
@@ -123,6 +134,42 @@ export default function Join() {
 					className="my-8 space-y-6"
 					replace
 				>
+					<div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
+						<LabelInputContainer>
+							<Label htmlFor="firstname">First name</Label>
+							<Input
+								id="firstname"
+								placeholder="Tyler"
+								type="text"
+								name={zo.fields.firstName()}
+							/>
+							{zo.errors.firstName()?.message && (
+								<div
+									className="pt-1 text-red-700 text-sm"
+									id="firstname-error"
+								>
+									{zo.errors.firstName()?.message}
+								</div>
+							)}
+						</LabelInputContainer>
+						<LabelInputContainer>
+							<Label htmlFor="lastname">Last name</Label>
+							<Input
+								id="lastname"
+								placeholder="Durden"
+								type="text"
+								name={zo.fields.lastName()}
+							/>
+							{zo.errors.lastName()?.message && (
+								<div
+									className="pt-1 text-red-700 text-sm"
+									id="lastname-error"
+								>
+									{zo.errors.lastName()?.message}
+								</div>
+							)}
+						</LabelInputContainer>
+					</div>
 					<LabelInputContainer className="mb-4">
 						<Label htmlFor={zo.fields.email()}>
 							{t("register.email")}
