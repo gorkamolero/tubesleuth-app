@@ -18,11 +18,11 @@ export enum PREMIUM_FX {
 }
 
 export enum TRANSITIONS {
-	FADE = "Fade",
-	SLIDE_LEFT = "SlideLeft",
-	SLIDE_RIGHT = "SlideRight",
-	SLIDE_UP = "SlideUp",
-	SLIDE_DOWN = "SlideDown",
+	FADE = "fade",
+	SLIDE_LEFT = "slideLeft",
+	SLIDE_RIGHT = "slideRight",
+	SLIDE_UP = "slideUp",
+	SLIDE_DOWN = "slideDown",
 }
 
 export enum VIDEO_TYPES {

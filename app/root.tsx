@@ -11,7 +11,9 @@ import {
 	Outlet,
 	Scripts,
 	ScrollRestoration,
+	isRouteErrorResponse,
 	useLoaderData,
+	useRouteError,
 } from "@remix-run/react";
 import {
 	PreventFlashOnWrongTheme,
@@ -94,6 +96,40 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 const defaultLayout = [245, 800];
 const defaultCollapsed = false;
+
+export function ErrorBoundary() {
+	const error = useRouteError();
+	return (
+		<html>
+			<head>
+				<title>Oh no!</title>
+				<Meta />
+				<Links />
+			</head>
+			<body>
+				{isRouteErrorResponse(error) ? (
+					<div>
+						<h1>
+							{error.status} {error.statusText}
+						</h1>
+						<p>{error.data}</p>
+					</div>
+				) : error instanceof Error ? (
+					<div>
+						<h1>Error</h1>
+						<p>{error.message}</p>
+						<p>The stack trace is:</p>
+						<pre>{error.stack}</pre>
+					</div>
+				) : (
+					<h1>Unknown error</h1>
+				)}
+
+				<Scripts />
+			</body>
+		</html>
+	);
+}
 
 export function App() {
 	const {

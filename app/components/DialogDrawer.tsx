@@ -59,6 +59,7 @@ export function DialogDrawer({
 			{trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
 			<DialogContent
 				className={cn(
+					"flex flex-col items-start",
 					"sm:max-w-[425px]",
 					className,
 					fullScreen &&
@@ -73,10 +74,15 @@ export function DialogDrawer({
 						: {}
 				}
 			>
-				<DialogHeader>
-					<DialogTitle>{title}</DialogTitle>
-					<DialogDescription>{description}</DialogDescription>
-				</DialogHeader>
+				{(title || description) && (
+					<DialogHeader>
+						{title && <DialogTitle>{title}</DialogTitle>}
+
+						{description && (
+							<DialogDescription>{description}</DialogDescription>
+						)}
+					</DialogHeader>
+				)}
 				{children}
 			</DialogContent>
 		</Dialog>

@@ -13,6 +13,13 @@ import { redirectWithSuccess } from "remix-toast";
 import { toast } from "sonner";
 import { DialogDrawer } from "~/components/DialogDrawer";
 import { Button } from "~/components/ui/button";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import { LoadingSpinner } from "~/components/ui/loading-spinner";
 import { Separator } from "~/components/ui/separator";
@@ -85,28 +92,36 @@ export default function ImagesDescriptionPage() {
 	return (
 		<DialogDrawer open fullScreen onClose={() => navigate("/videos/")}>
 			<Stepper steps={8} currentStep={5} title="Add images" />
-			<div className="flex w-full">
-				<div className="w-1/3 flex flex-col items-center justify-center">
-					<div className="space-y-6 w-full max-w-md">
-						<h1 className="text-3xl font-bold">{video.title}</h1>
-						<p>{video.description}</p>
-						<p>{video.script}</p>
-					</div>
+			<div className="flex w-full items-start space-x-8 h-full">
+				<div className="w-1/2 flex flex-col items-center justify-center h-full">
+					<Card className="max-w-md">
+						<CardHeader>
+							<CardTitle>{video.title}</CardTitle>
+
+							<CardDescription>
+								{video.description}
+							</CardDescription>
+						</CardHeader>
+						<CardContent>{video.script}</CardContent>
+					</Card>
 				</div>
-				<div className="w-2/3 flex flex-col items-center justify-center">
+				<div className="w-2/2 flex flex-col items-center justify-center h-full">
 					<Form
 						method="post"
 						name="generate-images"
-						className="space-y-6 w-full max-w-md"
+						className="space-y-6 w-full"
 					>
-						<input type="hidden" name="videoId" value={video.id} />
-
 						<div className="flex flex-col space-y-4">
 							<h2 className="text-2xl font-bold">Add Images</h2>
 							<p className="text-sm">
 								Or remove the image and click "Auto-generate" to
 								let the AI do it for you
 							</p>
+							<input
+								type="hidden"
+								name="videoId"
+								value={video.id}
+							/>
 							{imageFields.map((_, index) => (
 								<div
 									key={index}

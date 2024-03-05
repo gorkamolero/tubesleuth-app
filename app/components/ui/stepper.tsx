@@ -17,7 +17,7 @@ const Stepper: React.FC<StepperProps> = ({
 	const progressPercentage = Math.round((currentStep / steps) * 100);
 
 	return (
-		<div className="flex flex-col gap-4 sticky -top-6 bg-background pt-6 z-10">
+		<div className="flex flex-col gap-4 sticky -top-6 bg-background pt-6 z-10 w-full">
 			<div className="flex items-end gap-8">
 				<div className="w-[66%]">
 					<div className="uppercase tracking-wide text-xs font-bold text-gray-500 mb-1 leading-tight">

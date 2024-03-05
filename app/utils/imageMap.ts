@@ -83,11 +83,19 @@ REMEMBER: JSON ARRAY WITH [{
 	"end": ...,
 }]`;
 
-	const imageMap = await promptAssistant({
+	const imageMapFromOpenAI = await promptAssistant({
 		assistant_id: process.env.ASSISTANT_ARCHITECT_ID as string,
 		prompt,
 		isJSON: true,
 	});
+
+	const imageMap = imageMapFromOpenAI.map(
+		(i: { description: string; start: number; end: number }) => ({
+			description: i.description,
+			start: i.start,
+			end: i.end,
+		}),
+	);
 
 	const client = getSupabaseAdmin();
 

@@ -1,13 +1,14 @@
 import OpenAI from "openai";
 
-const apiKey = process.env.OPENAI_API_KEY;
+const apiKey = process.env.OPENAI_AK;
+const organization = process.env.OPENAI_ORG_ID;
 const openai = new OpenAI({
 	apiKey: apiKey,
-	organization: process.env.OPENAI_ORG_ID,
+	organization,
 });
 
 const lemon = new OpenAI({
-	apiKey: process.env.OPENAI_API_KEY,
+	apiKey: process.env.OPENAI_AK,
 	baseURL: "https://api.lemonfox.ai/v1",
 });
 
