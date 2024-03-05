@@ -14,12 +14,13 @@ import {
 import {
 	generateImage,
 	getImagesByVideoId,
+	updateImage,
 } from "~/modules/images/service.server";
 import { requireAuthSession } from "~/modules/auth";
 
 import { imageSchema } from "~/modules/images/service.server";
 import { Button } from "~/components/ui/button";
-import { SparklesIcon } from "lucide-react";
+import { Activity, ArrowRight, SparklesIcon } from "lucide-react";
 import { Card, CardFooter } from "~/components/ui/card";
 import { assertIsPost, isFormProcessing } from "~/utils";
 import { useState } from "react";
@@ -32,6 +33,19 @@ import {
 } from "~/components/ui/tooltip";
 import Stepper from "~/components/ui/stepper";
 import { LoadingSpinner } from "~/components/ui/loading-spinner";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "~/components/ui/select";
+import { animationParameters } from "~/lib/animations";
+import { LabelInputContainer } from "~/components/LabelInputContainer";
+import { Label } from "~/components/ui/label-gradient";
+import { capitalize } from "~/lib/utils";
+import { TRANSITIONS } from "~/database/enums";
+import { animateImage } from "~/utils/animate";
 
 export const loader: LoaderFunction = async ({ params, request }) => {
 	const { userId } = await requireAuthSession(request);
@@ -54,14 +68,23 @@ export const action: ActionFunction = async ({ params, request }) => {
 	const formData = await request.formData();
 	const imageId = formData.get("imageId") as string;
 	const description = formData.get("description") as string;
+	const intent = formData.get("intent") as string;
 
 	const videoId = params.videoId;
 
-	await generateImage({
-		imageId,
-		userId,
-		description,
-	});
+	if (intent === "save") {
+		const fx = (formData.get("fx") || "perspective") as string;
+		const transition = (formData.get("transition") || "fade") as string;
+		await updateImage({
+			userId,
+			id: imageId,
+			data: { description, fx, transition },
+		});
+	} else if (intent === "generate") {
+		await generateImage({ imageId, userId, description });
+	} else if (intent === "animate") {
+		await animateImage({ id: imageId, userId });
+	}
 
 	return redirect(`/videos/${videoId}/images`, {
 		headers: {
@@ -87,7 +110,24 @@ export default function VideoImages() {
 	return (
 		<>
 			<DialogDrawer open fullScreen onClose={() => navigate("/videos/")}>
-				<Stepper steps={8} currentStep={6} title="Generate images" />
+				<Stepper steps={8} currentStep={6} title="Generate images">
+					{allImagesGenerated && (
+						<Form method="post">
+							<Button
+								style={{ zoom: 1.2 }}
+								name="intent"
+								value="generateAll"
+								type="submit"
+								asChild
+							>
+								<Link to={`/videos/${videoId}/music`}>
+									<ArrowRight className="mr-2" />
+									<p>Generate Music</p>
+								</Link>
+							</Button>
+						</Form>
+					)}
+				</Stepper>
 				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
 					{images.map((image) => {
 						return (
@@ -98,15 +138,6 @@ export default function VideoImages() {
 						);
 					})}
 				</div>
-				{allImagesGenerated && (
-					<div className="fixed bottom-0 right-0 p-6">
-						<Button size="lg" asChild style={{ zoom: 1.2 }}>
-							<Link to={`/videos/${videoId}/music`}>
-								<p className="text-md">Choose music</p>
-							</Link>
-						</Button>
-					</div>
-				)}
 			</DialogDrawer>
 
 			<Tooltip>
@@ -124,14 +155,38 @@ export default function VideoImages() {
 
 const ImageCard = ({ image }: { image: imageSchema }) => {
 	const navigation = useNavigation();
-	const disabled = isFormProcessing(navigation.state);
 	const [description, setDescription] = useState(image.description || "");
+	const [fx, setFx] = useState(image.fx || "");
+	const [transition, setTransition] = useState(image.transition || "fade");
+
+	const hasChangedDescription = description !== image.description;
+	const hasChangedFx = fx !== image.fx;
+	const hasChangedTransition = transition !== image.transition;
+
+	const isDisabledSrc = image.src && !hasChangedDescription;
+	const isDisabledAnim = image.animation && !hasChangedDescription;
+	const isLoading = isFormProcessing(navigation.state);
+	const disabledSrc = !!(isDisabledSrc || isLoading);
+	const disabledAnim = !!(isDisabledAnim || isLoading);
+
+	const canSave =
+		hasChangedDescription || hasChangedFx || hasChangedTransition;
 
 	return (
 		<Card>
 			<Form name="generateImage" method="post">
 				<input type="hidden" name="imageId" value={image.id} />
-				{image.src ? (
+				{image.animation ? (
+					<div
+						className="w-[1080] h-[1920]"
+						style={{ aspectRatio: "9 / 16" }}
+					>
+						<video className="w-full h-full" controls loop>
+							<source src={image.animation} type="video/mp4" />
+							Your browser does not support the video tag.
+						</video>
+					</div>
+				) : image.src ? (
 					<img
 						src={image.src}
 						alt={image.description || "Image"}
@@ -143,7 +198,7 @@ const ImageCard = ({ image }: { image: imageSchema }) => {
 						className="w-full bg-zinc/80 flex items-center justify-center"
 						style={{ aspectRatio: "9 / 16" }}
 					>
-						{disabled ? (
+						{isLoading ? (
 							<LoadingSpinner className="h-12 w-12" />
 						) : (
 							<span className="text-gray-500">
@@ -153,39 +208,109 @@ const ImageCard = ({ image }: { image: imageSchema }) => {
 					</div>
 				)}
 
-				<Textarea
-					name="description"
-					id="description"
-					value={description}
-					onChange={(e) => setDescription(e.target.value)}
-					className="h-32 text-sm"
-					cols={160}
-				/>
+				<LabelInputContainer className="p-4">
+					<Label htmlFor="description" className="mb-2 block">
+						Description
+					</Label>
+					<Textarea
+						name="description"
+						id="description"
+						value={description}
+						onChange={(e) => setDescription(e.target.value)}
+						className="h-32 text-sm"
+						cols={160}
+					/>
+				</LabelInputContainer>
+
+				<LabelInputContainer className="p-4">
+					<Label htmlFor="animation" className="mb-2 block">
+						Animation. Refer to{" "}
+						<Link className="underline" to="/animations">
+							these
+						</Link>
+					</Label>
+					<Select name="fx" defaultValue={fx} onValueChange={setFx}>
+						<SelectTrigger className="w-[180px]">
+							<SelectValue placeholder="Select animation" />
+						</SelectTrigger>
+						<SelectContent>
+							{Object.keys(animationParameters).map((key) => (
+								<SelectItem key={key} value={key}>
+									{capitalize(key)}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+				</LabelInputContainer>
+
+				<LabelInputContainer className="p-4">
+					<Label htmlFor="transition" className="mb-2 block">
+						Transition
+					</Label>
+					<Select
+						name="transition"
+						defaultValue={transition}
+						onValueChange={setTransition}
+					>
+						<SelectTrigger className="w-[180px]">
+							<SelectValue placeholder="Select transition" />
+						</SelectTrigger>
+						<SelectContent>
+							{Object.values(TRANSITIONS).map((transition) => (
+								<SelectItem key={transition} value={transition}>
+									{capitalize(transition)}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+				</LabelInputContainer>
 
 				<CardFooter className="pt-4">
-					<div className="flex flex-1 justify-between items-baseline">
-						{image.start !== undefined && (
-							<p className="text-xs">
-								@{(image.start! / 1000).toFixed(2)}s
-							</p>
-						)}
-						<div className="flex justify-end space-x-2">
-							<Button
-								disabled={disabled}
-								size="sm"
-								type="submit"
-								className="cursor-pointer"
-							>
-								<div className="mr-2">
-									{disabled ? (
-										<LoadingSpinner />
-									) : (
-										<SparklesIcon className="h-4 w-4" />
-									)}
-								</div>
-								Generate
-							</Button>
-						</div>
+					<div className="flex justify-end space-x-2">
+						<Button
+							disabled={disabledSrc}
+							size="sm"
+							type="submit"
+							className="cursor-pointer"
+							name="intent"
+							value="generate"
+						>
+							<div className="mr-2">
+								{isLoading ? (
+									<LoadingSpinner />
+								) : (
+									<SparklesIcon className="h-4 w-4" />
+								)}
+							</div>
+							Generate
+						</Button>
+
+						<Button
+							disabled={disabledAnim}
+							size="sm"
+							variant="outline"
+							type="submit"
+							name="intent"
+							value="animate"
+						>
+							{isLoading ? (
+								<LoadingSpinner />
+							) : (
+								<Activity className="h-4 w-4 mr-2" />
+							)}
+							Animate
+						</Button>
+
+						<Button
+							disabled={isLoading || !canSave}
+							size="sm"
+							type="submit"
+							className="cursor-pointer"
+							name="intent"
+							value="save"
+						>
+							Save
+						</Button>
 					</div>
 				</CardFooter>
 			</Form>

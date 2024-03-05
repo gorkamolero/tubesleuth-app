@@ -1,8 +1,6 @@
 import { getSupabaseAdmin, supabaseClient } from "~/integrations/supabase";
 import { promptAssistant } from "./openai";
 import { updateVideo } from "~/modules/videos";
-import { imageMaps } from "~/database/schema";
-import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
 export const replacer = (key: string, value: any) => {
@@ -12,8 +10,13 @@ export const replacer = (key: string, value: any) => {
 	return value;
 };
 
-const imageMapsSchema = createInsertSchema(imageMaps);
-const returnMultipleImageMapsSchema = z.array(imageMapsSchema);
+const imageMapSchema = z.array(
+	z.object({
+		description: z.string(),
+		start: z.number(),
+		end: z.number(),
+	}),
+);
 
 export const generateImageMap = async ({
 	userId,
@@ -29,7 +32,7 @@ export const generateImageMap = async ({
 	imageStyle: string;
 	script: string;
 	transcript: any;
-}): Promise<z.infer<typeof returnMultipleImageMapsSchema>> => {
+}): Promise<z.infer<typeof imageMapSchema>> => {
 	// autogenerate if array has only empty values or values with no length or if non existeng
 	const autoGenerate =
 		descriptions.every(
@@ -78,8 +81,6 @@ REMEMBER: JSON ARRAY WITH [{
 	"description": "...",
 	"start": ...,
 	"end": ...,
-	"fx": "...",
-	"transition": "..."
 }]`;
 
 	const imageMap = await promptAssistant({

@@ -123,47 +123,43 @@ export default function IdeasPage() {
 	return (
 		<>
 			<Appbar title="Ideas" />
-			<ScrollArea className="w-full h-full">
-				<HoverGrid>
-					{data.ideas.map((idea) => (
-						<Card key={idea.id}>
-							<CardDescription className="text-2xl text-foreground/70">
-								{idea.description}
-							</CardDescription>
-							<CardActions>
-								<DialogDrawer
-									trigger={
-										<Button variant="outline">Edit</Button>
-									}
-									title="Idea Details"
-								>
-									<IdeaForm idea={idea as ideaSchema} />
-								</DialogDrawer>
-
-								<Button asChild>
-									<Link to={`/ideas/${idea.id}/`}>
-										<ArrowRight className="h-4 w-4 mr-2" />
-										Develop
-									</Link>
-								</Button>
-							</CardActions>
-						</Card>
-					))}
-					<Card>
-						<CardTitle>Create new idea</CardTitle>
+			<HoverGrid>
+				{data.ideas.map((idea) => (
+					<Card key={idea.id}>
+						<CardDescription className="text-2xl text-foreground/70">
+							{idea.description}
+						</CardDescription>
 						<CardActions>
 							<DialogDrawer
 								trigger={
-									<Button variant="outline">Create</Button>
+									<Button variant="outline">Edit</Button>
 								}
-								title="Describe your idea"
+								title="Idea Details"
 							>
-								<IdeaForm isNewIdea />
+								<IdeaForm idea={idea as ideaSchema} />
 							</DialogDrawer>
+
+							<Button asChild>
+								<Link to={`/ideas/${idea.id}/`}>
+									<ArrowRight className="h-4 w-4 mr-2" />
+									Develop
+								</Link>
+							</Button>
 						</CardActions>
 					</Card>
-				</HoverGrid>
-			</ScrollArea>
+				))}
+				<Card>
+					<CardTitle>Create new idea</CardTitle>
+					<CardActions>
+						<DialogDrawer
+							trigger={<Button variant="outline">Create</Button>}
+							title="Describe your idea"
+						>
+							<IdeaForm isNewIdea />
+						</DialogDrawer>
+					</CardActions>
+				</Card>
+			</HoverGrid>
 			<Outlet />
 		</>
 	);

@@ -7,7 +7,7 @@ const openai = new OpenAI({
 });
 
 const lemon = new OpenAI({
-	apiKey: "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",
+	apiKey: process.env.OPENAI_API_KEY,
 	baseURL: "https://api.lemonfox.ai/v1",
 });
 

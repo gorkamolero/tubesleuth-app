@@ -1,6 +1,7 @@
 import { ReactNode, useState, Children } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "~/lib/utils";
+import { ScrollArea } from "./ui/scroll-area";
 
 interface HoverGridProps {
 	className?: string;
@@ -13,7 +14,7 @@ export const HoverGrid = ({ children, className }: HoverGridProps) => {
 	return (
 		<div
 			className={cn(
-				"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 p-4",
+				"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 p-4 overflow-y-auto",
 				className,
 			)}
 		>
@@ -35,7 +36,10 @@ export const HoverGrid = ({ children, className }: HoverGridProps) => {
 								}}
 								exit={{
 									opacity: 0,
-									transition: { duration: 0.15, delay: 0.2 },
+									transition: {
+										duration: 0.15,
+										delay: 0.2,
+									},
 								}}
 							/>
 						)}

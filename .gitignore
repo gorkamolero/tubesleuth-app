@@ -3,6 +3,7 @@ node_modules
 /build
 /public/build
 .env
+.env.fly
 
 /cypress/screenshots
 /cypress/videos

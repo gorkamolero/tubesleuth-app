@@ -46,14 +46,14 @@ async function createUser({
 	firstName,
 	lastName,
 }: Pick<AuthSession, "userId" | "email"> & {
-	firstName: string;
-	lastName: string;
+	firstName?: string;
+	lastName?: string;
 }) {
 	const userData = userSchema.parse({
 		email,
 		id: userId,
-		firstName,
-		lastName,
+		...(firstName && { firstName }),
+		...(lastName && { lastName }),
 	});
 
 	return db
@@ -69,14 +69,14 @@ export async function tryCreateUser({
 	firstName,
 	lastName,
 }: Pick<AuthSession, "userId" | "email"> & {
-	firstName: string;
-	lastName: string;
+	firstName?: string;
+	lastName?: string;
 }) {
 	const user = await createUser({
 		userId,
 		email,
-		firstName,
-		lastName,
+		...(firstName && { firstName }),
+		...(lastName && { lastName }),
 	});
 
 	// user account created and have a session but unable to store in User table

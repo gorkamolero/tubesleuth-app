@@ -152,52 +152,48 @@ export default function ChannelsPage() {
 		<>
 			<Appbar title="Channels" />
 			<Outlet />
-			<ScrollArea className="w-full h-full">
-				<HoverGrid>
-					{data.channels.map((channel) => (
-						<Card key={channel.id}>
-							<CardTitle>{channel.name}</CardTitle>
-							<CardDescription>{channel.cta}</CardDescription>
-							<CardActions>
-								<DialogDrawer
-									trigger={
-										<Button variant="outline">
-											<ArrowRight className="h-4 w-4 mr-2" />
-											Edit
-										</Button>
-									}
-									title="Channel Details"
-								>
-									<ChannelForm
-										channel={
-											channel as z.infer<
-												typeof channelSchema
-											>
-										}
-									/>
-								</DialogDrawer>
-							</CardActions>
-						</Card>
-					))}
-
-					<Card>
-						<CardTitle>Create new channel</CardTitle>
+			<HoverGrid>
+				{data.channels.map((channel) => (
+					<Card key={channel.id}>
+						<CardTitle>{channel.name}</CardTitle>
+						<CardDescription>{channel.cta}</CardDescription>
 						<CardActions>
 							<DialogDrawer
 								trigger={
 									<Button variant="outline">
 										<ArrowRight className="h-4 w-4 mr-2" />
-										Create
+										Edit
 									</Button>
 								}
-								title="Create Channel"
+								title="Channel Details"
 							>
-								<ChannelForm isNewChannel />
+								<ChannelForm
+									channel={
+										channel as z.infer<typeof channelSchema>
+									}
+								/>
 							</DialogDrawer>
 						</CardActions>
 					</Card>
-				</HoverGrid>
-			</ScrollArea>
+				))}
+
+				<Card>
+					<CardTitle>Create new channel</CardTitle>
+					<CardActions>
+						<DialogDrawer
+							trigger={
+								<Button variant="outline">
+									<ArrowRight className="h-4 w-4 mr-2" />
+									Create
+								</Button>
+							}
+							title="Create Channel"
+						>
+							<ChannelForm isNewChannel />
+						</DialogDrawer>
+					</CardActions>
+				</Card>
+			</HoverGrid>
 		</>
 	);
 }

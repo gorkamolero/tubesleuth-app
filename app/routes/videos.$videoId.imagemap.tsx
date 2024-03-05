@@ -2,6 +2,7 @@ import type { LoaderFunctionArgs, ActionFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import {
 	Form,
+	Link,
 	useLoaderData,
 	useNavigate,
 	useNavigation,
@@ -19,14 +20,14 @@ import Stepper from "~/components/ui/stepper";
 
 import { requireAuthSession } from "~/modules/auth";
 import { createManyImages, imageSchema } from "~/modules/images";
-import { getVideo, getVideoWithImages, vidSchema } from "~/modules/videos";
+import { getVideoWithImages, vidSchema } from "~/modules/videos";
 import { assertIsPost, getRequiredParam, isFormProcessing } from "~/utils";
 
 export async function loader({ params }: LoaderFunctionArgs) {
 	const videoId = getRequiredParam(params, "videoId");
 
 	const video = (await getVideoWithImages({ id: videoId })) as vidSchema & {
-		images: imageSchema[];
+		images?: imageSchema[] | null | undefined;
 	};
 	if (!video) {
 		throw new Response("Not Found", { status: 404 });
@@ -62,6 +63,8 @@ export const action: ActionFunction = async ({ request }) => {
 export default function ImagesDescriptionPage() {
 	const { video } = useLoaderData<typeof loader>();
 	if (!video) throw new Error("Video not found");
+
+	const hasImages = video.images && video.images.length > 0;
 
 	const navigation = useNavigation();
 	const disabled = isFormProcessing(navigation.state);
@@ -172,6 +175,13 @@ export default function ImagesDescriptionPage() {
 									{hasNoImages ? "Auto-generate" : "Generate"}
 								</div>
 							</Button>
+							{hasImages && (
+								<Button asChild variant="outline">
+									<Link to={`/videos/${video.id}/images`}>
+										Continue
+									</Link>
+								</Button>
+							)}
 						</div>
 					</Form>
 				</div>

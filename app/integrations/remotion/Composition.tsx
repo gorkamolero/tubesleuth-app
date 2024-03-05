@@ -1,6 +1,13 @@
 import React from "react";
 
-import { Img, useCurrentFrame, AbsoluteFill, Audio } from "remotion";
+import {
+	Img,
+	useCurrentFrame,
+	AbsoluteFill,
+	Audio,
+	Video,
+	OffthreadVideo,
+} from "remotion";
 import { linearTiming, TransitionSeries } from "@remotion/transitions";
 import { fade } from "@remotion/transitions/fade";
 import { imageSchema } from "../../modules/images";
@@ -60,12 +67,16 @@ export const Tubesleuth: React.FC<TubesleuthProps> = ({
 							<TransitionSeries.Sequence
 								durationInFrames={durationInFrames}
 							>
-								<Img
-									src={image?.src}
-									style={{
-										transform,
-									}}
-								/>
+								{image?.animation ? (
+									<OffthreadVideo src={image?.animation} />
+								) : (
+									<Img
+										src={image?.src}
+										style={{
+											transform,
+										}}
+									/>
+								)}
 							</TransitionSeries.Sequence>
 							<TransitionSeries.Transition
 								presentation={fade()}

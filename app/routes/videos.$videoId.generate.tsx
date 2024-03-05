@@ -73,12 +73,16 @@ export default function VideoDetailsPage() {
 		}),
 	);
 
+	const sortImageByWhichStartsFirst = (a: any, b: any) =>
+		(a.start as number) - (b.start as number);
+	const sorted = images.sort(sortImageByWhichStartsFirst);
+
 	const inputProps: TubesleuthProps = {
 		videoId: video.id,
 		fps: ourFPS,
 		script: video.script as string,
 		subtitles,
-		images: images as imageSchema[],
+		images: sorted as imageSchema[],
 		music:
 			(video.music as string) ||
 			"https://ezamdwrrzqrnyewhqdup.supabase.co/storage/v1/object/public/assets/deep.mp3?t=2024-03-04T12%3A55%3A07.216Z",

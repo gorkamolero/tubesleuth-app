@@ -9,6 +9,14 @@ export enum FX {
 	MoveAbout = "MoveAbout",
 }
 
+export enum PREMIUM_FX {
+	horizontal = "horizontal",
+	vertical = "vertical",
+	circle = "circle",
+	perspective = "perspective",
+	zoom = "zoom",
+}
+
 export enum TRANSITIONS {
 	FADE = "Fade",
 	SLIDE_LEFT = "SlideLeft",

@@ -122,67 +122,55 @@ export default function VideosPage() {
 		<>
 			<Appbar title="Videos" />
 			<Outlet />
-			<ScrollArea className="w-full h-full">
-				<HoverGrid>
-					<Card>
-						<CardTitle className="text-3xl">
-							Create new video
-						</CardTitle>
+			<HoverGrid>
+				<Card>
+					<CardTitle className="text-3xl">Create new video</CardTitle>
+					<CardActions>
+						<Button asChild>
+							<Link to="/ideas/new">
+								<Lightbulb className="w-4 h-4 mr-2" />
+								Create new video
+							</Link>
+						</Button>
+					</CardActions>
+				</Card>
+				{data.videos.map((video) => (
+					<Card key={video.id}>
+						<CardTitle>{video.title}</CardTitle>
+						<CardDescription>{video.description}</CardDescription>
 						<CardActions>
-							<Button asChild>
-								<Link to="/ideas/new">
-									<Lightbulb className="w-4 h-4 mr-2" />
-									Create new video
-								</Link>
-							</Button>
+							{video.script ? (
+								<Button asChild variant="outline">
+									<Link to={`/videos/${video.id}/script`}>
+										Edit
+									</Link>
+								</Button>
+							) : (
+								<DialogDrawer
+									trigger={
+										<Button variant="outline">Edit</Button>
+									}
+									title="Video Details"
+								>
+									<VideoForm
+										video={
+											video as z.infer<typeof videoSchema>
+										}
+									/>
+								</DialogDrawer>
+							)}
+
+							{video.readyToRender && (
+								<Button asChild>
+									<Link to={`/videos/${video.id}/generate`}>
+										See video
+									</Link>
+								</Button>
+							)}
 						</CardActions>
 					</Card>
-					{data.videos.map((video) => (
-						<Card key={video.id}>
-							<CardTitle>{video.title}</CardTitle>
-							<CardDescription>
-								{video.description}
-							</CardDescription>
-							<CardActions>
-								{video.script ? (
-									<Button asChild variant="outline">
-										<Link to={`/videos/${video.id}/script`}>
-											Edit
-										</Link>
-									</Button>
-								) : (
-									<DialogDrawer
-										trigger={
-											<Button variant="outline">
-												Edit
-											</Button>
-										}
-										title="Video Details"
-									>
-										<VideoForm
-											video={
-												video as z.infer<
-													typeof videoSchema
-												>
-											}
-										/>
-									</DialogDrawer>
-								)}
-
-								{video.readyToRender && (
-									<Button asChild>
-										<Link
-											to={`/videos/${video.id}/generate`}
-										>
-											See video
-										</Link>
-									</Button>
-								)}
-							</CardActions>
-						</Card>
-					))}
-				</HoverGrid>
-			</ScrollArea>
+				))}
+			</HoverGrid>
 		</>
 	);
 }

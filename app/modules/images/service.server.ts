@@ -2,7 +2,7 @@ import { db } from "~/database";
 import { images } from "~/database/schema";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
-import { and, eq } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { uuid } from "uuidv4";
 import { generateImageMap } from "~/utils/imageMap";
 import { generateImageWithLemonfox } from "~/utils/generateImageWithLemonfox";
@@ -16,6 +16,13 @@ export const createImageSchema = insertImageSchema.pick({
 	userId: true,
 	videoId: true,
 	src: true,
+	generated: true,
+	fx: true,
+	transition: true,
+	dimensions: true,
+	animation: true,
+	generatedAt: true,
+	animatedAt: true,
 });
 
 export const createManyImagesSchema = z.object({
@@ -73,19 +80,17 @@ export async function createManyImages({
 		transcript,
 	});
 
-	const imagesToInsertParsed = imageMap.map(
-		({ title, description, fx, transition, start, end }) =>
-			insertImageSchema.parse({
-				id: uuid(),
-				title,
-				description,
-				userId,
-				videoId,
-				fx,
-				transition,
-				start,
-				end,
-			}),
+	const imagesToInsertParsed = imageMap.map(({ description, start, end }) =>
+		insertImageSchema.parse({
+			id: uuid(),
+			description,
+			userId,
+			videoId,
+			fx: "perspective",
+			transition: "fade",
+			start,
+			end,
+		}),
 	);
 
 	return db.insert(images).values(imagesToInsertParsed).returning();
@@ -173,12 +178,6 @@ export async function generateImage({
 
 	const client = getSupabaseAdmin();
 
-	// delete file
-	const imageDeleteResult = await client.storage
-		.from(`images`)
-		.remove([iurl]);
-
-	// wait 2 seconds
 	await new Promise((resolve) => setTimeout(resolve, 2000));
 
 	const imageUploadResult = await client.storage
@@ -199,6 +198,27 @@ export async function generateImage({
 	await updateImage({
 		userId,
 		id: imageId,
-		data: { src: imageUrl, description },
+		data: {
+			src: imageUrl,
+			description,
+			generated: true,
+			generatedAt: new Date(),
+		},
 	});
 }
+
+export const countByColumnNameAndDate = async ({
+	userId,
+	columnName,
+}: {
+	userId: string;
+	columnName: string;
+}) => {
+	const now = new Date();
+	const yesterday = new Date();
+	yesterday.setDate(now.getDate() - 1);
+
+	return db.execute(
+		sql`SELECT COUNT(*) FROM images WHERE userId = ${userId} AND ${columnName} > ${yesterday}`,
+	);
+};

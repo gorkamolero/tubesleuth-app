@@ -50,6 +50,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 			music: src,
 		},
 	});
+
 	return redirect(`/videos/${videoId}/generate`, {
 		headers: {
 			"Set-Cookie": await commitAuthSession(request, { authSession }),

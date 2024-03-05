@@ -8,7 +8,7 @@ import {
 	pgEnum,
 	uuid,
 } from "drizzle-orm/pg-core";
-import { FX, TRANSITIONS, VIDEO_TYPES, VOICEMODELS } from "./enums";
+import { FX, PREMIUM_FX, TRANSITIONS, VIDEO_TYPES, VOICEMODELS } from "./enums";
 
 export const invitations = pgTable("invitations", {
 	id: uuid("id").primaryKey(),
@@ -37,7 +37,10 @@ export const ideas = pgTable("ideas", {
 	userId: uuid("user_id").references(() => users.id),
 });
 
-export const fx = pgEnum("fx", Object.values(FX) as [string, ...string[]]);
+export const fx = pgEnum(
+	"fx",
+	Object.values(PREMIUM_FX) as [string, ...string[]],
+);
 
 export const transition = pgEnum(
 	"transition",
@@ -49,8 +52,8 @@ export const images = pgTable("images", {
 	title: text("title"),
 	description: text("description"),
 	prompt: text("prompt"),
-	fx: fx("MoveAround"),
-	transition: transition("Fade"),
+	fx: fx("fx"),
+	transition: transition("transition"),
 	start: integer("start"),
 	end: integer("end"),
 	createdAt: timestamp("created_at").defaultNow(),
@@ -60,18 +63,11 @@ export const images = pgTable("images", {
 	src: text("src"),
 	tmpSrc: text("tmp_src"),
 	generations: integer("generations"),
-});
-
-export const imageMaps = pgTable("image_maps", {
-	id: uuid("id").primaryKey(),
-	title: text("title"),
-	imageId: uuid("image_id").references(() => images.id),
-	start: integer("start"),
-	end: integer("end"),
-	videoId: uuid("video_id").references(() => videos.id),
-	fx: fx("MoveAround"),
-	transition: transition("Fade"),
-	description: text("description"),
+	generatedAt: timestamp("generated_at"),
+	generated: boolean("generated").default(false),
+	animation: text("animation"),
+	animatedAt: timestamp("animated_at"),
+	disparityUrl: text("disparity_url"),
 });
 
 export const videoType = pgEnum(
@@ -129,17 +125,6 @@ export const ideasRelations = relations(ideas, ({ one, many }) => ({
 	videos: many(videos),
 }));
 
-export const imageMapsRelations = relations(imageMaps, ({ one }) => ({
-	image: one(images, {
-		fields: [imageMaps.imageId],
-		references: [images.id],
-	}),
-	video: one(videos, {
-		fields: [imageMaps.videoId],
-		references: [videos.id],
-	}),
-}));
-
 export const videosRelations = relations(videos, ({ one, many }) => ({
 	images: many(images),
 	channel: one(channels, {
@@ -149,10 +134,6 @@ export const videosRelations = relations(videos, ({ one, many }) => ({
 	user: one(users, {
 		fields: [videos.userId],
 		references: [users.id],
-	}),
-	imageMaps: one(imageMaps, {
-		fields: [videos.id],
-		references: [imageMaps.videoId],
 	}),
 	idea: one(ideas, {
 		fields: [videos.ideaId],
@@ -166,8 +147,4 @@ export const channelsRelations = relations(channels, ({ one, many }) => ({
 		references: [users.id],
 	}),
 	videos: many(videos),
-}));
-
-export const imagesRelations = relations(images, ({ many }) => ({
-	imageMaps: many(imageMaps),
 }));

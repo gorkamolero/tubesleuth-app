@@ -113,6 +113,55 @@
       "when": 1709630757403,
       "tag": "0015_woozy_longshot",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "5",
+      "when": 1709640348831,
+      "tag": "0016_clean_shadow_king",
+      "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "5",
+      "when": 1709640870851,
+      "tag": "0017_aberrant_omega_red",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "5",
+      "when": 1709642078166,
+      "tag": "0018_mature_epoch",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "5",
+      "when": 1709642561496,
+      "tag": "0019_silky_nova",
+      "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "5",
+      "when": 1709643465588,
+      "tag": "0020_lying_smiling_tiger",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "5",
+      "when": 1709644736397,
+      "tag": "0021_keen_sleeper",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "5",
+      "when": 1709653797813,
+      "tag": "0022_outgoing_tempest",
+      "breakpoints": true
     }
   ]
 }
