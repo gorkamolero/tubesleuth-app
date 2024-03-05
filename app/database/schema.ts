@@ -8,6 +8,7 @@ import {
 	pgEnum,
 	uuid,
 } from "drizzle-orm/pg-core";
+
 import { FX, PREMIUM_FX, TRANSITIONS, VIDEO_TYPES, VOICEMODELS } from "./enums";
 
 export const invitations = pgTable("invitations", {

@@ -1,3 +1,4 @@
+import type { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
 import {
 	useLoaderData,
 	json,
@@ -5,10 +6,10 @@ import {
 	Form,
 	useNavigation,
 } from "@remix-run/react";
-import { getChannelNames } from "~/modules/channel";
-import { createVideo } from "~/modules/videos";
-import { requireAuthSession } from "~/modules/auth";
-import { Textarea } from "~/components/ui/textarea";
+import { parseFormAny, useZorm } from "react-zorm";
+import { z } from "zod";
+
+import { Button } from "~/components/ui/button";
 import {
 	Select,
 	SelectContent,
@@ -16,11 +17,11 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "~/components/ui/select";
-import { Button } from "~/components/ui/button";
-import { z } from "zod";
-import { parseFormAny, useZorm } from "react-zorm";
+import { Textarea } from "~/components/ui/textarea";
+import { requireAuthSession } from "~/modules/auth";
+import { getChannelNames } from "~/modules/channel";
+import { createVideo } from "~/modules/videos";
 import { assertIsPost, isFormProcessing, notFound } from "~/utils";
-import { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
 
 export async function loader({ request }: LoaderFunctionArgs) {
 	const { userId, email } = await requireAuthSession(request);
@@ -68,12 +69,12 @@ export default function NewVideo() {
 	const disabled = isFormProcessing(navigation.state);
 
 	return (
-		<div className="flex flex-col items-center justify-center h-screen">
-			<h1 className="text-2xl font-bold mb-4">Create a New Video</h1>
+		<div className="flex h-screen flex-col items-center justify-center">
+			<h1 className="mb-4 text-2xl font-bold">Create a New Video</h1>
 			<Form
 				ref={zo.ref}
 				method="post"
-				className="space-y-6 w-full max-w-md"
+				className="w-full max-w-md space-y-6"
 			>
 				<div>
 					<Select name={zo.fields.channelId()}>

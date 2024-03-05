@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import type { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import {
@@ -6,10 +8,10 @@ import {
 	useNavigate,
 	useNavigation,
 } from "@remix-run/react";
-import { useState } from "react";
 import { useZorm } from "react-zorm";
 import { jsonWithError, redirectWithSuccess } from "remix-toast";
 import { toast } from "sonner";
+
 import { DialogDrawer } from "~/components/DialogDrawer";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input-gradient";
@@ -24,7 +26,6 @@ import {
 } from "~/components/ui/select";
 import Stepper from "~/components/ui/stepper";
 import { Textarea } from "~/components/ui/textarea-gradient";
-
 import { requireAuthSession, commitAuthSession } from "~/modules/auth";
 import { getChannels } from "~/modules/channel";
 import {
@@ -33,7 +34,7 @@ import {
 	generateScript,
 	updateIdea,
 } from "~/modules/ideas";
-import { vidSchema } from "~/modules/videos";
+import type { vidSchema } from "~/modules/videos";
 import { assertIsPost, getRequiredParam, isFormProcessing } from "~/utils";
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
@@ -113,7 +114,7 @@ export default function IdeaDetailsPage() {
 			<Form
 				ref={gen.ref}
 				method="post"
-				className="space-y-6 w-full max-w-md flex flex-col items-stretch"
+				className="flex w-full max-w-md flex-col items-stretch space-y-6"
 			>
 				<div className="grid gap-2">
 					<Label htmlFor="title">Give your idea a title</Label>
@@ -131,7 +132,7 @@ export default function IdeaDetailsPage() {
 						name="description"
 						value={description}
 						onChange={(e) => setDescription(e.target.value)}
-						className="w-full h-32 border border-gray-300 rounded-md p-2"
+						className="h-32 w-full rounded-md border border-gray-300 p-2"
 					/>
 				</div>
 
@@ -153,7 +154,7 @@ export default function IdeaDetailsPage() {
 					</Select>
 				</div>
 
-				<div className="flex justify-end gap-2 w-full">
+				<div className="flex w-full justify-end gap-2">
 					<Button
 						type="submit"
 						name="generate"

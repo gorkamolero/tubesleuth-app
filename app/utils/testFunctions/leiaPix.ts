@@ -1,11 +1,12 @@
-import axios from "axios";
-import { v4 as uuid } from "uuid";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import {
 	S3Client,
 	PutObjectCommand,
 	GetObjectCommand,
 } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import axios from "axios";
+import { v4 as uuid } from "uuid";
+
 import { animationParameters } from "../../lib/animations";
 
 const v = 8;

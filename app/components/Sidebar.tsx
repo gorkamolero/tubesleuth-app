@@ -1,20 +1,23 @@
 import * as React from "react";
-import { Lightbulb, Video, Sparkle, Play } from "lucide-react";
-import { Nav } from "./Nav";
-import { Separator } from "~/components/ui/separator";
+
 import { Link } from "@remix-run/react";
+import { Lightbulb, Video, Sparkle, Play } from "lucide-react";
+
+import { Separator } from "~/components/ui/separator";
 import { cn } from "~/lib/utils";
-import { ModeToggle } from "./mode-toggle";
-import { NavLink } from "./NavLink";
 import { LogoutButton } from "~/modules/auth";
+
+import { ModeToggle } from "./mode-toggle";
+import { Nav } from "./Nav";
+import { NavLink } from "./NavLink";
+
 
 interface SidebarProps {
 	isCollapsed: boolean;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed }) => {
-	return (
-		<div className="flex flex-col h-full">
+export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed }) => (
+		<div className="flex h-full flex-col">
 			<div
 				className={`flex h-[52px] items-center justify-start ${
 					isCollapsed ? "h-[52px] justify-center" : "px-2"
@@ -22,7 +25,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed }) => {
 			>
 				<NavLink isCollapsed={isCollapsed}>
 					<Link to="/">
-						<Sparkle className="h-4 w-4" />
+						<Sparkle className="size-4" />
 						<h1 className={cn("text-sm", isCollapsed && "hidden")}>
 							Tubesleuth
 						</h1>
@@ -62,4 +65,3 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed }) => {
 			</div>
 		</div>
 	);
-};

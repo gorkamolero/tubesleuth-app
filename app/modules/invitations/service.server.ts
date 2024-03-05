@@ -1,16 +1,15 @@
+import { eq } from "drizzle-orm";
+import { createInsertSchema } from "drizzle-zod";
+import { z } from "zod";
+
 import { db } from "~/database";
 import { invitations } from "~/database/schema";
-import { createInsertSchema } from "drizzle-zod";
-import { eq } from "drizzle-orm";
-import { z } from "zod";
 
 export const invSchema = createInsertSchema(invitations);
 
-export const getInvitation = async (email: string) => {
-	return db.query.invitations.findFirst({
+export const getInvitation = async (email: string) => db.query.invitations.findFirst({
 		where: eq(invitations.email, email),
 	});
-};
 
 const updatePartial = invSchema.partial();
 export const updateInvitationSchema = z.object({
@@ -21,6 +20,4 @@ export const updateInvitationSchema = z.object({
 export const updateInvitation = async ({
 	email,
 	data,
-}: z.infer<typeof updateInvitationSchema>) => {
-	return db.update(invitations).set(data).where(eq(invitations.email, email));
-};
+}: z.infer<typeof updateInvitationSchema>) => db.update(invitations).set(data).where(eq(invitations.email, email));

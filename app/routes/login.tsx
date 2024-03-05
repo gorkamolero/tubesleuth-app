@@ -11,6 +11,12 @@ import { useTranslation } from "react-i18next";
 import { parseFormAny, useZorm } from "react-zorm";
 import { z } from "zod";
 
+import { LabelInputContainer } from "~/components/LabelInputContainer";
+import { BottomGradient } from "~/components/ui/bottom-gradient";
+import { Button } from "~/components/ui/button";
+import { GradientSeparator } from "~/components/ui/gradient-separator";
+import { Input } from "~/components/ui/input-gradient";
+import { Label } from "~/components/ui/label-gradient";
 import { i18nextServer } from "~/integrations/i18n";
 import {
 	createAuthSession,
@@ -19,12 +25,6 @@ import {
 	ContinueWithEmailForm,
 } from "~/modules/auth";
 import { assertIsPost, isFormProcessing } from "~/utils";
-import { LabelInputContainer } from "~/components/LabelInputContainer";
-import { Label } from "~/components/ui/label-gradient";
-import { Input } from "~/components/ui/input-gradient";
-import { Button } from "~/components/ui/button";
-import { GradientSeparator } from "~/components/ui/gradient-separator";
-import { BottomGradient } from "~/components/ui/bottom-gradient";
 
 export async function loader({ request }: LoaderFunctionArgs) {
 	const authSession = await getAuthSession(request);
@@ -94,8 +94,8 @@ export default function LoginPage() {
 
 	return (
 		<div className="flex min-h-full w-full flex-col justify-center">
-			<div className="max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
-				<h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200">
+			<div className="mx-auto w-full max-w-md rounded-none bg-white p-4 shadow-input dark:bg-black md:rounded-2xl md:p-8">
+				<h2 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">
 					Welcome to Tubesleuth
 				</h2>
 				<Form
@@ -121,7 +121,7 @@ export default function LoginPage() {
 						/>
 						{zo.errors.email()?.message && (
 							<div
-								className="pt-1 text-red-700 text-sm"
+								className="pt-1 text-sm text-red-700"
 								id="email-error"
 							>
 								{zo.errors.email()?.message}
@@ -143,7 +143,7 @@ export default function LoginPage() {
 						/>
 						{zo.errors.password()?.message && (
 							<div
-								className="pt-1 text-red-700 text-sm"
+								className="pt-1 text-sm text-red-700"
 								id="password-error"
 							>
 								{zo.errors.password()?.message}
@@ -159,7 +159,7 @@ export default function LoginPage() {
 					<button
 						data-test-id="login"
 						type="submit"
-						className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
+						className="group/btn relative block h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
 						disabled={disabled}
 					>
 						{t("login.action")}

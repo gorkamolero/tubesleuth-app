@@ -1,14 +1,16 @@
-import { db } from "~/database";
-import { videos } from "~/database/schema";
 import { json } from "@remix-run/node";
-import { createInsertSchema } from "drizzle-zod";
-import { z } from "zod";
 import { and, eq } from "drizzle-orm";
+import { createInsertSchema } from "drizzle-zod";
 import { uuid } from "uuidv4";
+import { z } from "zod";
+
+import { db } from "~/database";
 import { VOICEMODELS } from "~/database/enums";
-import createVoiceover from "~/utils/createVoiceover";
+import { videos } from "~/database/schema";
 import { getSupabaseAdmin, supabaseClient } from "~/integrations/supabase";
+import createVoiceover from "~/utils/createVoiceover";
 import transcribeAudioFull from "~/utils/transcribeAudioFull";
+
 import { getImagesByVideoId } from "../images";
 
 export const videoSchema = createInsertSchema(videos);

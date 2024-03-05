@@ -1,5 +1,7 @@
-import { useFetcher } from "@remix-run/react";
 import { useCallback, useEffect, useMemo } from "react";
+
+import { useFetcher } from "@remix-run/react";
+
 import type { StatusResponse } from "../lib/types";
 
 export function usePollRenderStatus({
@@ -40,11 +42,9 @@ export function usePollRenderStatus({
 		};
 	}, [checkRenderProgress, done, renderId]);
 
-	const status = useMemo(() => {
-		return {
+	const status = useMemo(() => ({
 			progress: data,
-		};
-	}, [data]);
+		}), [data]);
 
 	return status;
 }

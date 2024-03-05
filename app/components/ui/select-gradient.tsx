@@ -1,7 +1,8 @@
 import * as React from "react";
+
 import * as SelectPrimitive from "@radix-ui/react-select";
-import { Check, ChevronDown, ChevronUp } from "lucide-react";
 import { useMotionTemplate, useMotionValue, motion } from "framer-motion";
+import { Check, ChevronDown, ChevronUp } from "lucide-react";
 
 import { cn } from "app/lib/utils";
 
@@ -44,7 +45,7 @@ const SelectTrigger = React.forwardRef<
 			onMouseMove={handleMouseMove}
 			onMouseEnter={() => setVisible(true)}
 			onMouseLeave={() => setVisible(false)}
-			className="p-[2px] rounded-lg transition duration-300"
+			className="rounded-lg p-[2px] transition duration-300"
 		>
 			<SelectPrimitive.Trigger
 				ref={ref}
@@ -56,7 +57,7 @@ const SelectTrigger = React.forwardRef<
 			>
 				{children}
 				<SelectPrimitive.Icon asChild>
-					<ChevronDown className="h-4 w-4 opacity-50" />
+					<ChevronDown className="size-4 opacity-50" />
 				</SelectPrimitive.Icon>
 			</SelectPrimitive.Trigger>
 		</motion.div>

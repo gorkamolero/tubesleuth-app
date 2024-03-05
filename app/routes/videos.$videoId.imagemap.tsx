@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import type { LoaderFunctionArgs, ActionFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import {
@@ -8,9 +10,9 @@ import {
 	useNavigation,
 } from "@remix-run/react";
 import { LucidePlus, LucideX, Sparkles } from "lucide-react";
-import { useState } from "react";
 import { redirectWithSuccess } from "remix-toast";
 import { toast } from "sonner";
+
 import { DialogDrawer } from "~/components/DialogDrawer";
 import { Button } from "~/components/ui/button";
 import {
@@ -24,10 +26,11 @@ import { Input } from "~/components/ui/input";
 import { LoadingSpinner } from "~/components/ui/loading-spinner";
 import { Separator } from "~/components/ui/separator";
 import Stepper from "~/components/ui/stepper";
-
 import { requireAuthSession } from "~/modules/auth";
-import { createManyImages, imageSchema } from "~/modules/images";
-import { getVideoWithImages, vidSchema } from "~/modules/videos";
+import type { imageSchema } from "~/modules/images";
+import { createManyImages } from "~/modules/images";
+import type { vidSchema } from "~/modules/videos";
+import { getVideoWithImages } from "~/modules/videos";
 import { assertIsPost, getRequiredParam, isFormProcessing } from "~/utils";
 
 export async function loader({ params }: LoaderFunctionArgs) {
@@ -92,8 +95,8 @@ export default function ImagesDescriptionPage() {
 	return (
 		<DialogDrawer open fullScreen onClose={() => navigate("/videos/")}>
 			<Stepper steps={8} currentStep={5} title="Add images" />
-			<div className="flex w-full items-start space-x-8 h-full">
-				<div className="w-1/2 flex flex-col items-center justify-center h-full">
+			<div className="flex size-full items-start space-x-8">
+				<div className="flex h-full w-1/2 flex-col items-center justify-center">
 					<Card className="max-w-md">
 						<CardHeader>
 							<CardTitle>{video.title}</CardTitle>
@@ -105,11 +108,11 @@ export default function ImagesDescriptionPage() {
 						<CardContent>{video.script}</CardContent>
 					</Card>
 				</div>
-				<div className="w-2/2 flex flex-col items-center justify-center h-full">
+				<div className="w-2/2 flex h-full flex-col items-center justify-center">
 					<Form
 						method="post"
 						name="generate-images"
-						className="space-y-6 w-full"
+						className="w-full space-y-6"
 					>
 						<div className="flex flex-col space-y-4">
 							<h2 className="text-2xl font-bold">Add Images</h2>
@@ -125,10 +128,10 @@ export default function ImagesDescriptionPage() {
 							{imageFields.map((_, index) => (
 								<div
 									key={index}
-									className="flex justify-between items-center space-x-4 w-full"
+									className="flex w-full items-center justify-between space-x-4"
 								>
 									{hasNoImages && (
-										<div className="h-10 flex-grow">
+										<div className="h-10 grow">
 											&nbsp;
 										</div>
 									)}
@@ -136,7 +139,7 @@ export default function ImagesDescriptionPage() {
 										type="text"
 										name="imageMap[]"
 										placeholder="Add an image"
-										className="flex-grow"
+										className="grow"
 									/>
 									<div className="flex items-center">
 										<Button

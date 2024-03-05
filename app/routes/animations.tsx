@@ -1,8 +1,11 @@
 import { Outlet } from "@remix-run/react";
+
 import { Appbar } from "~/components/Appbar";
 import { HoverGrid } from "~/components/HoverGrid";
 import { Card, CardTitle } from "~/components/ui/card-hover-effect";
-import { Animation, animations } from "~/lib/animations";
+import type { Animation } from "~/lib/animations";
+import { animations } from "~/lib/animations";
+
 import * as animationVids from "../utils/animations/all-animations";
 
 export default function VideosPage() {
@@ -10,12 +13,12 @@ export default function VideosPage() {
 		<>
 			<Appbar title="Animations" />
 			<Outlet />
-			<HoverGrid>
+			<HoverGrid noPadding>
 				{Object.values(animations).map((animation: Animation) => (
 					<Card key={animation.key} className="p-0">
 						<CardTitle>{animation.title}</CardTitle>
 						<div style={{ aspectRatio: "9 / 16" }}>
-							<video className="w-full h-full" controls loop>
+							<video className="size-full" controls loop>
 								<source
 									src={
 										animationVids[

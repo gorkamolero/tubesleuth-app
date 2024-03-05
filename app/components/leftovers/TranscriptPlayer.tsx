@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+
 import { AudioPlayer } from "./AudioPlayer";
 
 interface TranscriptPlayerProps {
@@ -17,7 +18,6 @@ export const TranscriptPlayer: React.FC<TranscriptPlayerProps> = ({
 	const [progress, setProgress] = useState(0);
 
 	const togglePlayPause = () => {
-		console.log("isPlaying", isPlaying);
 		setIsPlaying(!isPlaying);
 	};
 

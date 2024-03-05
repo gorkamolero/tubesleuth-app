@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+
 import type {
 	LinksFunction,
 	LoaderFunction,
@@ -15,35 +17,36 @@ import {
 	useLoaderData,
 	useRouteError,
 } from "@remix-run/react";
+import { clsx } from "clsx";
+import { useTranslation } from "react-i18next";
+import { useChangeLanguage } from "remix-i18next";
 import {
 	PreventFlashOnWrongTheme,
 	ThemeProvider,
 	useTheme,
 } from "remix-themes";
-import { useTranslation } from "react-i18next";
-import { useChangeLanguage } from "remix-i18next";
 import { getToast } from "remix-toast";
-import { clsx } from "clsx";
 import { Toaster, toast as notify } from "sonner";
-import { useEffect } from "react";
 
-import { i18nextServer } from "~/integrations/i18n";
-
-import tailwindStylesheetUrl from "./tailwind.css";
-import { getBrowserEnv } from "./utils/env";
 import {
 	ResizableHandle,
 	ResizablePanel,
 	ResizablePanelGroup,
 } from "~/components/ui/resizable";
-import { Sidebar } from "./components/Sidebar";
+import { i18nextServer } from "~/integrations/i18n";
 import { cn } from "~/lib/utils";
-import useLocalStorage from "./hooks/use-local-storage";
+
+import { Sidebar } from "./components/Sidebar";
 import { TooltipProvider } from "./components/ui/tooltip";
+import useLocalStorage from "./hooks/use-local-storage";
 import {
 	getAuthSession,
 	themeSessionResolver,
 } from "./modules/auth/session.server";
+import tailwindStylesheetUrl from "./tailwind.css";
+import { getBrowserEnv } from "./utils/env";
+
+
 
 export const links: LinksFunction = () => [
 	{
@@ -180,7 +183,7 @@ export function App() {
 				<TooltipProvider>
 					<Toaster richColors />
 					{!isLoggedIn ? (
-						<div className="h-screen w-screen flex items-center justify-center">
+						<div className="flex h-screen w-screen items-center justify-center">
 							<Outlet />
 						</div>
 					) : (
@@ -217,7 +220,7 @@ export function App() {
 								minSize={30}
 								defaultSize={mainPanelSizes}
 							>
-								<div className="flex flex-col flex-1 h-screen">
+								<div className="flex h-screen flex-1 flex-col">
 									<Outlet />
 									<ScrollRestoration />
 									<LiveReload />

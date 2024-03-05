@@ -1,3 +1,5 @@
+import { useCallback } from "react";
+
 import type { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { redirect, json } from "@remix-run/node";
 import {
@@ -10,14 +12,15 @@ import {
 } from "@remix-run/react";
 import { Player } from "@remotion/player";
 import { Video as VideoIcon } from "lucide-react";
-import { useCallback } from "react";
+
 import { DialogDrawer } from "~/components/DialogDrawer";
 import { RenderProgress } from "~/components/render-progress";
 import { Button } from "~/components/ui/button";
 import Stepper from "~/components/ui/stepper";
+import type {
+	TubesleuthProps} from "~/integrations/remotion/Composition";
 import {
-	Tubesleuth,
-	TubesleuthProps,
+	Tubesleuth
 } from "~/integrations/remotion/Composition";
 import {
 	COMPOSITION_ID,
@@ -25,12 +28,13 @@ import {
 } from "~/integrations/remotion/lib/constants";
 import { renderVideo } from "~/integrations/remotion/lib/render-video.server";
 import { FPS } from "~/lib/constants";
-import { RenderResponse } from "~/lib/types";
+import type { RenderResponse } from "~/lib/types";
 import { convertSecondsToFrames } from "~/lib/utils";
-
 import { requireAuthSession } from "~/modules/auth";
-import { getImagesByVideoId, imageSchema } from "~/modules/images";
-import { getVideo, vidSchema } from "~/modules/videos";
+import type { imageSchema } from "~/modules/images";
+import { getImagesByVideoId } from "~/modules/images";
+import type { vidSchema } from "~/modules/videos";
+import { getVideo } from "~/modules/videos";
 import { getRequiredParam } from "~/utils";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
@@ -147,7 +151,7 @@ export default function VideoDetailsPage() {
 			</Stepper>
 
 			<div
-				className="w-full flex flex-col items-center justify-center"
+				className="flex w-full flex-col items-center justify-center"
 				style={{ aspectRatio: "9 / 16" }}
 			>
 				{fetcher.data ? (

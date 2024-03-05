@@ -1,7 +1,5 @@
 import * as React from "react";
 
-import { cn } from "~/lib/utils";
-import { useMediaQuery } from "~/hooks/use-media-query";
 import {
 	Dialog,
 	DialogContent,
@@ -22,6 +20,9 @@ import {
 } from "~/components/ui/drawer";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
+import { useMediaQuery } from "~/hooks/use-media-query";
+import { cn } from "~/lib/utils";
+
 import { Button } from "./ui/button";
 
 interface DialogDrawerProps {

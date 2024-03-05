@@ -1,8 +1,9 @@
 import type { AwsRegion } from "@remotion/lambda";
 import { renderMediaOnLambda } from "@remotion/lambda/client";
+
 import { speculateFunctionName } from "./get-function-name";
 import type { RenderResponse } from "../../../lib/types";
-import { TubesleuthProps } from "../Composition";
+import type { TubesleuthProps } from "../Composition";
 
 export const renderVideo = async ({
 	serveUrl,

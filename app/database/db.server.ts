@@ -1,8 +1,9 @@
 import { drizzle } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
-import * as schema from "./schema";
 import { migrate } from "drizzle-orm/postgres-js/migrator";
 import once from "lodash.once";
+import postgres from "postgres";
+
+import * as schema from "./schema";
 
 const connectionString = process.env.DATABASE_URL || "";
 const client = postgres(connectionString, {

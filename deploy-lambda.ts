@@ -1,3 +1,5 @@
+import path from "path";
+
 import type { AwsRegion } from "@remotion/lambda";
 import {
 	deploySite,
@@ -5,7 +7,7 @@ import {
 	deployFunction,
 } from "@remotion/lambda";
 import dotenv from "dotenv";
-import path from "path";
+
 import {
 	RAM,
 	TIMEOUT,

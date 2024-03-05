@@ -1,6 +1,8 @@
 import * as React from "react";
-import { cn } from "app/lib/utils";
+
 import { useMotionTemplate, useMotionValue, motion } from "framer-motion";
+
+import { cn } from "app/lib/utils";
 
 export interface TextareaProps
 	extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
@@ -33,7 +35,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
 				onMouseMove={handleMouseMove}
 				onMouseEnter={() => setVisible(true)}
 				onMouseLeave={() => setVisible(false)}
-				className="p-[2px] rounded-lg transition duration-300 group/input"
+				className="group/input rounded-lg p-[2px] transition duration-300"
 			>
 				<textarea
 					className={cn(

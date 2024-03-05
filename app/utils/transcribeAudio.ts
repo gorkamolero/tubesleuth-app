@@ -1,5 +1,6 @@
+import type { Uploadable } from "openai/uploads";
+
 import openai from "./openai";
-import { Uploadable } from "openai/uploads";
 
 type Transcription = {
 	duration: number;
@@ -13,8 +14,7 @@ type Transcription = {
 	}>;
 };
 
-export const remapTranscript = (transcript: Transcription) => {
-	return {
+export const remapTranscript = (transcript: Transcription) => ({
 		duration: transcript.duration,
 		language: transcript.language,
 		text: transcript.text,
@@ -24,8 +24,7 @@ export const remapTranscript = (transcript: Transcription) => {
 			end: segment.end,
 			text: segment.text,
 		})),
-	};
-};
+	});
 
 export async function transcribeAudio({
 	file,

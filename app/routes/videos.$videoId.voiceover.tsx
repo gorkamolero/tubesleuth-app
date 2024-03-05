@@ -10,6 +10,7 @@ import {
 import { redirectWithSuccess } from "remix-toast";
 import { toast } from "sonner";
 import { z } from "zod";
+
 import { AudioSelector } from "~/components/AudioSelector";
 import { DialogDrawer } from "~/components/DialogDrawer";
 import { Button } from "~/components/ui/button";
@@ -17,13 +18,13 @@ import { LoadingSpinner } from "~/components/ui/loading-spinner";
 import Stepper from "~/components/ui/stepper";
 import { VOICEMODELS } from "~/database/enums";
 import { voicemodelAudios } from "~/lib/constants";
-
 import { requireAuthSession, commitAuthSession } from "~/modules/auth";
+import type {
+	vidSchema} from "~/modules/videos";
 import {
 	generateVoiceover,
 	getVideo,
-	updateVideo,
-	vidSchema,
+	updateVideo
 } from "~/modules/videos";
 import { assertIsPost, getRequiredParam, isFormProcessing } from "~/utils";
 
@@ -94,7 +95,7 @@ export default function VideoDetailsPage() {
 			<Form
 				method="post"
 				name="createVoiceOver"
-				className="space-y-6 w-full max-w-md flex flex-col items-stretch"
+				className="flex w-full max-w-md flex-col items-stretch space-y-6"
 			>
 				<AudioSelector
 					name={"model"}
@@ -103,7 +104,7 @@ export default function VideoDetailsPage() {
 					description="Choose a voice that best fits your video."
 				/>
 
-				<div className="flex space-x-4 justify-end">
+				<div className="flex justify-end space-x-4">
 					<Button
 						type="submit"
 						name="createVoiceOver"

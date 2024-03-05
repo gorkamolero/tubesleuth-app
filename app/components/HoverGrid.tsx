@@ -1,14 +1,21 @@
-import { ReactNode, useState, Children } from "react";
+import type { ReactNode } from "react";
+import { useState, Children } from "react";
+
 import { AnimatePresence, motion } from "framer-motion";
+
 import { cn } from "~/lib/utils";
-import { ScrollArea } from "./ui/scroll-area";
 
 interface HoverGridProps {
 	className?: string;
 	children: ReactNode;
+	noPadding?: boolean;
 }
 
-export const HoverGrid = ({ children, className }: HoverGridProps) => {
+export const HoverGrid = ({
+	children,
+	className,
+	noPadding,
+}: HoverGridProps) => {
 	let [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
 	return (
@@ -22,12 +29,12 @@ export const HoverGrid = ({ children, className }: HoverGridProps) => {
 				<div
 					onMouseEnter={() => setHoveredIndex(idx)}
 					onMouseLeave={() => setHoveredIndex(null)}
-					className="relative p-4"
+					className={"relative p-4"}
 				>
 					<AnimatePresence>
 						{hoveredIndex === idx && (
 							<motion.span
-								className="absolute inset-0 h-full w-full bg-neutral-200 dark:bg-slate-800/[0.8] block rounded-3xl"
+								className="absolute inset-0 block size-full rounded-3xl bg-neutral-200 dark:bg-slate-800/[0.8]"
 								layoutId="hoverBackground"
 								initial={{ opacity: 0 }}
 								animate={{

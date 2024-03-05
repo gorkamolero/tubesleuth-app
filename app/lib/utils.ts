@@ -1,21 +1,19 @@
 import { type ClassValue, clsx } from "clsx";
-import { twMerge } from "tailwind-merge";
-import mockData from "../integrations/remotion/mockData";
-import { imageSchema } from "~/modules/images";
 import { getInputProps } from "remotion";
+import { twMerge } from "tailwind-merge";
+
+import type { imageSchema } from "~/modules/images";
+
 import { moveAbout } from "./effects/moveAbout";
+import mockData from "../integrations/remotion/mockData";
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
 }
 
-export const capitalize = (s: string) => {
-	return s.charAt(0).toUpperCase() + s.slice(1);
-};
+export const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
-export const convertSecondsToFrames = (seconds: number, fps: number) => {
-	return seconds * fps;
-};
+export const convertSecondsToFrames = (seconds: number, fps: number) => seconds * fps;
 
 export function generateEffectFilter({
 	effect,

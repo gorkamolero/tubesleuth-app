@@ -1,5 +1,7 @@
-import { LoaderFunctionArgs, json } from "@remix-run/node";
+import type { LoaderFunctionArgs} from "@remix-run/node";
+import { json } from "@remix-run/node";
 import { useLoaderData, useNavigate } from "@remix-run/react";
+
 import { DialogDrawer } from "~/components/DialogDrawer";
 import { requireAuthSession } from "~/modules/auth";
 import { fullLeiaPix } from "~/utils/testFunctions/leiaPix";
@@ -35,10 +37,10 @@ export default function Test() {
 			onClose={() => navigate("/videos/")}
 		>
 			<div
-				className="w-[1080] h-[1920]"
+				className="h-[1920] w-[1080]"
 				style={{ aspectRatio: "9 / 16" }}
 			>
-				<video className="w-full h-full" controls loop>
+				<video className="size-full" controls loop>
 					<source src={getAnimPresignedUrl} type="video/mp4" />
 					Your browser does not support the video tag.
 				</video>

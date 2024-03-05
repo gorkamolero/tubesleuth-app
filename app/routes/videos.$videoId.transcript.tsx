@@ -1,14 +1,15 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData, useNavigate } from "@remix-run/react";
+
 import { DialogDrawer } from "~/components/DialogDrawer";
 import { TranscriptDisplay } from "~/components/TranscriptDisplay";
 import { Button } from "~/components/ui/button";
 import Stepper from "~/components/ui/stepper";
 import { supabaseClient } from "~/integrations/supabase";
-
 import { requireAuthSession } from "~/modules/auth";
-import { getVideo, vidSchema } from "~/modules/videos";
+import type { vidSchema } from "~/modules/videos";
+import { getVideo } from "~/modules/videos";
 import { getRequiredParam } from "~/utils";
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
@@ -55,12 +56,12 @@ export default function VideoDetailsPage() {
 		>
 			<Stepper steps={8} currentStep={4} title="Review your transcript" />
 			<div className="flex flex-col items-center justify-center">
-				<div className="space-y-6 w-full flex flex-col items-stretch">
+				<div className="flex w-full flex-col items-stretch space-y-6">
 					<h1 className="text-3xl font-bold">{video.title}</h1>
 
 					<TranscriptDisplay src={url} transcript={transcript} />
 
-					<div className="flex space-x-4 justify-end">
+					<div className="flex justify-end space-x-4">
 						<Button asChild>
 							<Link to={`/videos/${video.id}/imagemap`}>
 								Next

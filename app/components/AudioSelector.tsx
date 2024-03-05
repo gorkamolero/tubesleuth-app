@@ -1,6 +1,11 @@
 "use client";
 
 import { useState, useRef } from "react";
+
+import type { LucideProps } from "lucide-react";
+import { Pause } from "lucide-react";
+
+import { Button } from "~/components/ui/button";
 import {
 	CardTitle,
 	CardDescription,
@@ -8,10 +13,8 @@ import {
 	CardContent,
 	Card,
 } from "~/components/ui/card";
-import { Button } from "~/components/ui/button";
-import { RadioGroupItem, RadioGroup } from "~/components/ui/radio-group";
 import { Label } from "~/components/ui/label";
-import { LucideProps, Pause } from "lucide-react";
+import { RadioGroupItem, RadioGroup } from "~/components/ui/radio-group";
 
 export interface Track {
 	name: string;
@@ -65,9 +68,7 @@ export const AudioSelector = ({
 	description = "Click the play button to listen to the track and select your favorite.",
 	tracks = mockData,
 	name,
-}: AudioSelectorProps) => {
-	console.log("YOLO", tracks);
-	return (
+}: AudioSelectorProps) => (
 		<Card>
 			<CardHeader className="pb-0">
 				<CardTitle className="text-2xl">{title}</CardTitle>
@@ -90,7 +91,6 @@ export const AudioSelector = ({
 			</CardContent>
 		</Card>
 	);
-};
 
 export const TrackItem: React.FC<TrackItemProps> = ({ track, index }) => {
 	const audioRef = useRef<HTMLAudioElement>(null);
@@ -126,7 +126,7 @@ export const TrackItem: React.FC<TrackItemProps> = ({ track, index }) => {
 				value={track.forceValue ? track.forceValue : track.name}
 			/>
 			<Label
-				className="flex-1 cursor-pointer grid gap-1 rounded-lg transition-colors p-4 text-sm peer-aria-checked:border-2"
+				className="grid flex-1 cursor-pointer gap-1 rounded-lg p-4 text-sm transition-colors peer-aria-checked:border-2"
 				htmlFor={track.name}
 			>
 				<div className="font-medium">{track.title}</div>

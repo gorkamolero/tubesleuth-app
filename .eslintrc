@@ -35,7 +35,8 @@
 			}
 		],
 		//import
-		"import/no-cycle": "error",
+		// TODO: Reput this on and learn
+		"import/no-cycle": "warn",
 		"import/no-unresolved": "error",
 		"import/no-default-export": "warn",
 		"import/order": [
@@ -64,13 +65,15 @@
 				"./app/root.tsx",
 				"./app/entry.client.tsx",
 				"./app/entry.server.tsx",
-				"./app/routes/**/*.tsx",
-				"remotion/*.{ts,tsx}"
+				"./app/routes/**/*.tsx"
 			],
-			"extends": ["plugin:@remotion/recommended"],
 			"rules": {
 				"import/no-default-export": "off"
 			}
+		},
+		{
+			"files": ["app/integrations/remotion/*.{ts,tsx}"],
+			"extends": ["plugin:@remotion/recommended"]
 		}
 	]
 }

@@ -1,14 +1,19 @@
-import axios from "axios";
-import { uuid } from "uuidv4";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import {
 	S3Client,
 	PutObjectCommand,
 	GetObjectCommand,
 } from "@aws-sdk/client-s3";
-import { AnimationFX, animationParameters } from "../lib/animations";
-import { getImage, imageSchema, updateImage } from "~/modules/images";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import axios from "axios";
+import { uuid } from "uuidv4";
+
 import { getSupabaseAdmin } from "~/integrations/supabase";
+import type { imageSchema} from "~/modules/images";
+import { getImage, updateImage } from "~/modules/images";
+
+import type { AnimationFX} from "../lib/animations";
+import { animationParameters } from "../lib/animations";
+
 
 const v = 0;
 

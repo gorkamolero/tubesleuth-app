@@ -1,5 +1,7 @@
-import { Composition, Video, getInputProps } from "remotion";
 import { getAudioDurationInSeconds } from "@remotion/media-utils";
+import { Composition, Video, getInputProps } from "remotion";
+
+import { Tubesleuth } from "./Composition";
 import {
 	COMPOSITION_DURATION_IN_FRAMES,
 	COMPOSITION_FPS,
@@ -7,7 +9,6 @@ import {
 	COMPOSITION_ID,
 	COMPOSITION_WIDTH,
 } from "./lib/constants";
-import { Tubesleuth } from "./Composition";
 import mockData from "./mockData";
 
 export const RemotionRoot = () => {

@@ -5,8 +5,9 @@ import {
 	useCurrentFrame,
 	useVideoConfig,
 } from "remotion";
-import { convertMsToFrames, getFullInputProps } from "../../lib/utils";
+
 import { captionStylesModern } from "../../lib/captions";
+import { convertMsToFrames, getFullInputProps } from "../../lib/utils";
 
 interface word {
 	text: string;

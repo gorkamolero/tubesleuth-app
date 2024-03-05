@@ -1,18 +1,19 @@
-import { Link, useNavigation } from "@remix-run/react";
-import { ActionFunction, json, redirect } from "@remix-run/node";
-import { Label } from "~/components/ui/label";
-import { Input } from "~/components/ui/input";
-import { Form } from "@remix-run/react";
-import { createChannel } from "~/modules/channel";
-import { Button } from "~/components/ui/button";
-import { commitAuthSession, requireAuthSession } from "~/modules/auth";
-
-import { z } from "zod";
-import { assertIsPost, isFormProcessing } from "~/utils";
+import type { ActionFunction} from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
+import { Link, useNavigation , Form } from "@remix-run/react";
 import { parseFormAny, useZorm } from "react-zorm";
+import { z } from "zod";
 
-import { VOICEMODELS } from "~/database/enums";
+import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
 import { VoiceOverSelect } from "~/components/VoiceoverSelect";
+import { VOICEMODELS } from "~/database/enums";
+import { commitAuthSession, requireAuthSession } from "~/modules/auth";
+import { createChannel } from "~/modules/channel";
+import { assertIsPost, isFormProcessing } from "~/utils";
+
+
 
 export const NewChannelFormSchema = z.object({
 	name: z.string().min(1, "Channel name is required"),
@@ -70,12 +71,12 @@ export default function NewChannel() {
 	const disabled = isFormProcessing(navigation.state);
 
 	return (
-		<div className="flex flex-col items-center justify-center h-screen">
-			<h1 className="text-2xl font-bold mb-4">Create a New Channel</h1>
+		<div className="flex h-screen flex-col items-center justify-center">
+			<h1 className="mb-4 text-2xl font-bold">Create a New Channel</h1>
 			<Form
 				ref={zo.ref}
 				method="post"
-				className="space-y-6 w-full max-w-md"
+				className="w-full max-w-md space-y-6"
 			>
 				<div>
 					<Label htmlFor="name">Channel Name</Label>
@@ -106,7 +107,7 @@ export default function NewChannel() {
 				</div>
 				<Button
 					type="submit"
-					className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700"
+					className="mt-4 rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-700"
 					disabled={disabled}
 				>
 					Create Channel

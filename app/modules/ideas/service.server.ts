@@ -1,14 +1,17 @@
+import { json } from "@remix-run/node";
+import { and, eq } from "drizzle-orm";
+import { createInsertSchema } from "drizzle-zod";
+import { uuid } from "uuidv4";
+import { z } from "zod";
+
 import { db } from "~/database";
 import { ideas } from "~/database/schema";
-import { getChannel } from "../channel";
-import { json } from "@remix-run/node";
-import { askAssistant, askChatGPT, askLemon } from "~/utils/openai";
-import { createInsertSchema } from "drizzle-zod";
-import { z } from "zod";
-import { and, eq } from "drizzle-orm";
-import { uuid } from "uuidv4";
-import { createVideo } from "../videos";
 import { scriptwriter } from "~/utils/ai/scriptwriter";
+import { askAssistant, askChatGPT, askLemon } from "~/utils/openai";
+
+import { getChannel } from "../channel";
+import { createVideo } from "../videos";
+
 
 export const insertIdeaSchema = createInsertSchema(ideas);
 export type ideaSchema = z.infer<typeof insertIdeaSchema>;

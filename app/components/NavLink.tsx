@@ -1,5 +1,6 @@
-import { Button } from "./ui/button";
 import { cn } from "~/lib/utils";
+
+import { Button } from "./ui/button";
 
 export const NavLink = ({
 	children,
@@ -7,8 +8,7 @@ export const NavLink = ({
 }: {
 	children: React.ReactNode;
 	isCollapsed: boolean;
-}) => {
-	return (
+}) => (
 		<Button
 			asChild
 			className={cn(
@@ -21,4 +21,3 @@ export const NavLink = ({
 			{children}
 		</Button>
 	);
-};

@@ -1,8 +1,10 @@
 "use client";
 
-import { cn } from "~/lib/utils";
-import { motion, stagger, useAnimate, useInView } from "framer-motion";
 import { useEffect } from "react";
+
+import { motion, stagger, useAnimate, useInView } from "framer-motion";
+
+import { cn } from "~/lib/utils";
 
 export const TypewriterEffect = ({
 	words,
@@ -17,12 +19,10 @@ export const TypewriterEffect = ({
 	cursorClassName?: string;
 }) => {
 	// split text inside of words into array of characters
-	const wordsArray = words.map((word) => {
-		return {
+	const wordsArray = words.map((word) => ({
 			...word,
 			text: word.text.split(""),
-		};
-	});
+		}));
 
 	const [scope, animate] = useAnimate();
 	const isInView = useInView(scope);
@@ -43,11 +43,9 @@ export const TypewriterEffect = ({
 		}
 	}, [isInView]);
 
-	const renderWords = () => {
-		return (
+	const renderWords = () => (
 			<motion.div ref={scope} className="inline">
-				{wordsArray.map((word, idx) => {
-					return (
+				{wordsArray.map((word, idx) => (
 						<div key={`word-${idx}`} className="inline-block">
 							{word.text.map((char, index) => (
 								<motion.span
@@ -63,11 +61,9 @@ export const TypewriterEffect = ({
 							))}
 							&nbsp;
 						</div>
-					);
-				})}
+					))}
 			</motion.div>
 		);
-	};
 	return (
 		<div
 			className={cn(
@@ -110,17 +106,13 @@ export const TypewriterEffectSmooth = ({
 	cursorClassName?: string;
 }) => {
 	// split text inside of words into array of characters
-	const wordsArray = words.map((word) => {
-		return {
+	const wordsArray = words.map((word) => ({
 			...word,
 			text: word.text.split(""),
-		};
-	});
-	const renderWords = () => {
-		return (
+		}));
+	const renderWords = () => (
 			<div>
-				{wordsArray.map((word, idx) => {
-					return (
+				{wordsArray.map((word, idx) => (
 						<div key={`word-${idx}`} className="inline-block">
 							{word.text.map((char, index) => (
 								<span
@@ -135,11 +127,9 @@ export const TypewriterEffectSmooth = ({
 							))}
 							&nbsp;
 						</div>
-					);
-				})}
+					))}
 			</div>
 		);
-	};
 
 	return (
 		<div className={cn("flex space-x-1 my-6", className)}>
@@ -158,7 +148,7 @@ export const TypewriterEffectSmooth = ({
 				}}
 			>
 				<div
-					className="text-xs sm:text-base md:text-xl lg:text:3xl xl:text-5xl font-bold"
+					className="lg:text:3xl text-xs font-bold sm:text-base md:text-xl xl:text-5xl"
 					style={{
 						whiteSpace: "nowrap",
 					}}

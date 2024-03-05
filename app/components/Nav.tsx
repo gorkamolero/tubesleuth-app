@@ -1,15 +1,15 @@
 "use client";
 
 import { Link } from "@remix-run/react";
-import { LucideIcon } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
-import { cn } from "~/lib/utils";
 import { buttonVariants } from "~/components/ui/button";
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipTrigger,
 } from "~/components/ui/tooltip";
+import { cn } from "~/lib/utils";
 
 interface NavProps {
 	isCollapsed: boolean;
@@ -45,7 +45,7 @@ export function Nav({ links, isCollapsed }: NavProps) {
 											"dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white",
 									)}
 								>
-									<link.icon className="h-4 w-4" />
+									<link.icon className="size-4" />
 									<span className="sr-only">
 										{link.title}
 									</span>
@@ -77,7 +77,7 @@ export function Nav({ links, isCollapsed }: NavProps) {
 								"justify-start",
 							)}
 						>
-							<link.icon className="mr-2 h-4 w-4" />
+							<link.icon className="mr-2 size-4" />
 							{link.title}
 							{link.label && (
 								<span

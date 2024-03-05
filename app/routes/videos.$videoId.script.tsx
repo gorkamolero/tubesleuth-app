@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import type { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { redirect, json } from "@remix-run/node";
 import {
@@ -7,22 +9,22 @@ import {
 	useNavigate,
 	useNavigation,
 } from "@remix-run/react";
-import { useState } from "react";
 import { parseFormAny, useZorm } from "react-zorm";
 import { z } from "zod";
+
 import { DialogDrawer } from "~/components/DialogDrawer";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input-gradient";
 import { Label } from "~/components/ui/label";
 import Stepper from "~/components/ui/stepper";
 import { Textarea } from "~/components/ui/textarea-gradient";
-
 import { requireAuthSession, commitAuthSession } from "~/modules/auth";
+import type {
+	vidSchema} from "~/modules/videos";
 import {
 	getVideo,
 	updateVideo,
-	updateVideoPartialSchema,
-	vidSchema,
+	updateVideoPartialSchema
 } from "~/modules/videos";
 import { assertIsPost, getRequiredParam, isFormProcessing } from "~/utils";
 
@@ -108,7 +110,7 @@ export default function VideoDetailsPage() {
 			<Form
 				method="post"
 				ref={update.ref}
-				className="space-y-6 w-full flex flex-col items-stretch"
+				className="flex w-full flex-col items-stretch space-y-6"
 			>
 				<div className="grid gap-2">
 					<Label htmlFor="title">Title</Label>
@@ -138,7 +140,7 @@ export default function VideoDetailsPage() {
 					/>
 				</div>
 
-				<div className="flex space-x-4 justify-end">
+				<div className="flex justify-end space-x-4">
 					<Button
 						type="submit"
 						name="update"

@@ -54,7 +54,7 @@ Perspective
 phaseX = 1, phaseY = 0.25, phaseZ = 1, amplitudeX = 0.0, amplitudeY = 0.25, amplitudeZ = 0.25
 */
 
-import { PREMIUM_FX } from "~/database/enums";
+import type { PREMIUM_FX } from "~/database/enums";
 
 // Define the AnimationType with only the required properties for the effects
 type AnimationType = {

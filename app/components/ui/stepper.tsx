@@ -1,4 +1,5 @@
 import React from "react";
+
 import { Separator } from "./separator";
 
 interface StepperProps {
@@ -17,19 +18,19 @@ const Stepper: React.FC<StepperProps> = ({
 	const progressPercentage = Math.round((currentStep / steps) * 100);
 
 	return (
-		<div className="flex flex-col gap-4 sticky -top-6 bg-background pt-6 z-10 w-full">
+		<div className="sticky -top-6 z-10 flex w-full flex-col gap-4 bg-background pt-6">
 			<div className="flex items-end gap-8">
 				<div className="w-[66%]">
-					<div className="uppercase tracking-wide text-xs font-bold text-gray-500 mb-1 leading-tight">
+					<div className="mb-1 text-xs font-bold uppercase leading-tight tracking-wide text-gray-500">
 						Step: {currentStep} of {steps}
 					</div>
 					<h1 className="text-md font-bold">{title}</h1>
 				</div>
 
-				<div className="w-[34%] pb-2 max-w-xl mx-auto flex flex-col gap-2 items-center justify-end">
-					<div className="flex-1 bg-gray-200 rounded-full h-2 dark:bg-gray-700 ">
+				<div className="mx-auto flex w-[34%] max-w-xl flex-col items-center justify-end gap-2 pb-2">
+					<div className="h-2 flex-1 rounded-full bg-gray-200 dark:bg-gray-700 ">
 						<div
-							className="bg-green-500 h-2 rounded-full"
+							className="h-2 rounded-full bg-green-500"
 							style={{ width: `${progressPercentage}%` }}
 						/>
 					</div>

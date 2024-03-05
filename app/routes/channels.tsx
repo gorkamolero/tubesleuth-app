@@ -1,3 +1,5 @@
+import { useRef } from "react";
+
 import type { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import {
@@ -8,9 +10,9 @@ import {
 	Outlet,
 } from "@remix-run/react";
 import { ArrowRight } from "lucide-react";
-import { useRef } from "react";
 import { parseFormAny } from "react-zorm";
-import { z } from "zod";
+import type { z } from "zod";
+
 import { Appbar } from "~/components/Appbar";
 import { DialogDrawer } from "~/components/DialogDrawer";
 import { HoverGrid } from "~/components/HoverGrid";
@@ -34,11 +36,12 @@ import {
 import { VOICEMODELS } from "~/database/enums";
 import { capitalize } from "~/lib/utils";
 import { commitAuthSession, requireAuthSession } from "~/modules/auth";
+import type {
+	channelSchema} from "~/modules/channel";
 import {
 	getChannels,
 	updateChannel,
 	updateChannelPartialSchema,
-	channelSchema,
 	deleteChannel,
 	createChannel,
 } from "~/modules/channel";
@@ -161,7 +164,7 @@ export default function ChannelsPage() {
 							<DialogDrawer
 								trigger={
 									<Button variant="outline">
-										<ArrowRight className="h-4 w-4 mr-2" />
+										<ArrowRight className="mr-2 size-4" />
 										Edit
 									</Button>
 								}
@@ -183,7 +186,7 @@ export default function ChannelsPage() {
 						<DialogDrawer
 							trigger={
 								<Button variant="outline">
-									<ArrowRight className="h-4 w-4 mr-2" />
+									<ArrowRight className="mr-2 size-4" />
 									Create
 								</Button>
 							}
@@ -233,7 +236,7 @@ const ChannelForm = ({
 					/>
 				</div>
 
-				<div className="grid gap-2 w-full">
+				<div className="grid w-full gap-2">
 					<Label htmlFor="voicemodel" className="mb-2 block">
 						Voice Model
 					</Label>
@@ -241,7 +244,7 @@ const ChannelForm = ({
 						name="voicemodel"
 						defaultValue={channel?.voicemodel || "onyx"}
 					>
-						<SelectTrigger className="min-w-[180px] w-full">
+						<SelectTrigger className="w-full min-w-[180px]">
 							<SelectValue placeholder="Voice model" />
 						</SelectTrigger>
 
@@ -262,7 +265,7 @@ const ChannelForm = ({
 
 				<input type="hidden" name="id" value={channel?.id} />
 
-				<div className="flex justify-end gap-2 w-full mt-8">
+				<div className="mt-8 flex w-full justify-end gap-2">
 					{isNewChannel ? (
 						<Button
 							type="submit"

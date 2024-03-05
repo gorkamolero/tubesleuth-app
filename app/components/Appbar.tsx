@@ -1,4 +1,5 @@
 import { cn } from "~/lib/utils";
+
 import { Separator } from "./ui/separator";
 
 export const Appbar = ({
@@ -9,8 +10,7 @@ export const Appbar = ({
 	title: string;
 	className?: string;
 	children?: React.ReactNode;
-}) => {
-	return (
+}) => (
 		<div className="flex flex-col">
 			<div
 				className={cn(
@@ -21,11 +21,10 @@ export const Appbar = ({
 				<div className="flex items-center space-x-4">
 					<h1 className="text-xl">{title}</h1>
 				</div>
-				<div className="flex ml-auto items-center space-x-4">
+				<div className="ml-auto flex items-center space-x-4">
 					{children}
 				</div>
 			</div>
 			<Separator />
 		</div>
 	);
-};

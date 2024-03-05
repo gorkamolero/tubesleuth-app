@@ -1,5 +1,7 @@
 import React from "react";
 
+import { linearTiming, TransitionSeries } from "@remotion/transitions";
+import { fade } from "@remotion/transitions/fade";
 import {
 	Img,
 	useCurrentFrame,
@@ -8,12 +10,11 @@ import {
 	Video,
 	OffthreadVideo,
 } from "remotion";
-import { linearTiming, TransitionSeries } from "@remotion/transitions";
-import { fade } from "@remotion/transitions/fade";
-import { imageSchema } from "../../modules/images";
-import { generateEffectFilter, getDurationInFrames } from "../../lib/utils";
-import { FX } from "../../database/enums";
+
 import { TranscriptionCaptions } from "./TranscriptionCaptions";
+import type { FX } from "../../database/enums";
+import { generateEffectFilter, getDurationInFrames } from "../../lib/utils";
+import type { imageSchema } from "../../modules/images";
 
 export interface CompositionProps {
 	fps: number;

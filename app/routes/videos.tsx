@@ -9,7 +9,8 @@ import {
 } from "@remix-run/react";
 import { Lightbulb } from "lucide-react";
 import { parseFormAny } from "react-zorm";
-import { z } from "zod";
+import type { z } from "zod";
+
 import { Appbar } from "~/components/Appbar";
 import { DialogDrawer } from "~/components/DialogDrawer";
 import { HoverGrid } from "~/components/HoverGrid";
@@ -23,12 +24,13 @@ import {
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { commitAuthSession, requireAuthSession } from "~/modules/auth";
+import type {
+	videoSchema} from "~/modules/videos";
 import {
 	deleteVideo,
 	getVideos,
 	updateVideo,
-	updateVideoPartialSchema,
-	videoSchema,
+	updateVideoPartialSchema
 } from "~/modules/videos";
 import { isFormProcessing } from "~/utils";
 import { assertIsPost, notFound } from "~/utils/http.server";
@@ -127,7 +129,7 @@ export default function VideosPage() {
 					<CardActions>
 						<Button asChild>
 							<Link to="/ideas/new">
-								<Lightbulb className="w-4 h-4 mr-2" />
+								<Lightbulb className="mr-2 size-4" />
 								Create new video
 							</Link>
 						</Button>
@@ -204,7 +206,7 @@ const VideoForm = ({
 
 				<input type="hidden" name="id" value={video?.id} />
 
-				<div className="flex justify-end gap-2 w-full mt-8">
+				<div className="mt-8 flex w-full justify-end gap-2">
 					{isNewVideo ? (
 						<Button
 							type="submit"

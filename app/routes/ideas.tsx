@@ -1,7 +1,8 @@
-import {
+import type {
 	LoaderFunctionArgs,
+	ActionFunction} from "@remix-run/node";
+import {
 	json,
-	ActionFunction,
 	redirect,
 } from "@remix-run/node";
 import {
@@ -13,6 +14,7 @@ import {
 } from "@remix-run/react";
 import { ArrowRight } from "lucide-react";
 import { parseFormAny } from "react-zorm";
+
 import { Appbar } from "~/components/Appbar";
 import { DialogDrawer } from "~/components/DialogDrawer";
 import { HoverGrid } from "~/components/HoverGrid";
@@ -27,12 +29,13 @@ import { Input } from "~/components/ui/input-gradient";
 import { Label } from "~/components/ui/label";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { requireAuthSession, commitAuthSession } from "~/modules/auth";
+import type {
+	ideaSchema} from "~/modules/ideas";
 import {
 	getIdeas,
 	createIdea,
 	updateIdea,
 	deleteIdea,
-	ideaSchema,
 	updateIdeaPartialSchema,
 } from "~/modules/ideas";
 import { isFormProcessing, notFound, assertIsPost } from "~/utils";
@@ -145,7 +148,7 @@ export default function IdeasPage() {
 
 							<Button asChild>
 								<Link to={`/ideas/${idea.id}/`}>
-									<ArrowRight className="h-4 w-4 mr-2" />
+									<ArrowRight className="mr-2 size-4" />
 									Develop
 								</Link>
 							</Button>
@@ -194,7 +197,7 @@ const IdeaForm = ({
 
 				<input type="hidden" name="id" value={idea?.id} />
 
-				<div className="flex justify-end gap-2 w-full mt-8">
+				<div className="mt-8 flex w-full justify-end gap-2">
 					{isNewIdea ? (
 						<Button
 							type="submit"

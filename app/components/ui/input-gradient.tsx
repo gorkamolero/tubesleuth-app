@@ -1,8 +1,10 @@
 // Input component extends from shadcnui - https://ui.shadcn.com/docs/components/input
 "use client";
 import * as React from "react";
-import { cn } from "~/lib/utils";
+
 import { useMotionTemplate, useMotionValue, motion } from "framer-motion";
+
+import { cn } from "~/lib/utils";
 
 export interface InputProps
 	extends React.InputHTMLAttributes<HTMLInputElement> {}
@@ -35,7 +37,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 				onMouseMove={handleMouseMove}
 				onMouseEnter={() => setVisible(true)}
 				onMouseLeave={() => setVisible(false)}
-				className="p-[2px] rounded-lg transition duration-300 group/input"
+				className="group/input rounded-lg p-[2px] transition duration-300"
 			>
 				<input
 					type={type}

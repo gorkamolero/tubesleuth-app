@@ -1,8 +1,9 @@
-import { z } from "zod";
-import { db } from "~/database";
 import { and, eq } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { uuid } from "uuidv4";
+import { z } from "zod";
+
+import { db } from "~/database";
 import { channels } from "~/database/schema";
 
 export const channelSchema = createInsertSchema(channels);
@@ -69,12 +70,10 @@ export const updateChannel = async ({
 	userId,
 	id,
 	data,
-}: z.infer<typeof updateChannelSchema>) => {
-	return db
+}: z.infer<typeof updateChannelSchema>) => db
 		.update(channels)
 		.set(data)
 		.where(and(eq(channels.id, id), eq(channels.userId, userId)));
-};
 
 export async function deleteChannel({
 	userId,

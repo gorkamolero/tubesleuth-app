@@ -1,5 +1,5 @@
-import { VOICEMODELS } from "../database/enums";
 import { capitalize } from "./utils";
+import { VOICEMODELS } from "../database/enums";
 
 export const MAX_IMAGE_GENERATIONS = 3;
 export const FPS = 30;

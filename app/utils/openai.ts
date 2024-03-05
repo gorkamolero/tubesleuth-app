@@ -1,4 +1,5 @@
 import OpenAI from "openai";
+
 import { architect } from "./ai/architect";
 
 const apiKey = process.env.OPENAI_AK;

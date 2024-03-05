@@ -1,3 +1,4 @@
+import type { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
 import {
 	useLoaderData,
 	json,
@@ -6,16 +7,17 @@ import {
 	useNavigation,
 	useNavigate,
 } from "@remix-run/react";
-import { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
-import { createIdea } from "~/modules/ideas";
-import { requireAuthSession } from "~/modules/auth";
-import { Textarea } from "~/components/ui/textarea-gradient";
-import { Button } from "~/components/ui/button";
-import { z } from "zod";
-import { parseFormAny, useZorm } from "react-zorm";
-import { assertIsPost, isFormProcessing, notFound } from "~/utils";
-import { DialogDrawer } from "~/components/DialogDrawer";
 import { LightbulbIcon } from "lucide-react";
+import { parseFormAny, useZorm } from "react-zorm";
+import { z } from "zod";
+
+import { DialogDrawer } from "~/components/DialogDrawer";
+import { Button } from "~/components/ui/button";
+import { Textarea } from "~/components/ui/textarea-gradient";
+import { requireAuthSession } from "~/modules/auth";
+import { createIdea } from "~/modules/ideas";
+import { assertIsPost, isFormProcessing, notFound } from "~/utils";
+
 
 export async function loader({ request }: LoaderFunctionArgs) {
 	const { email } = await requireAuthSession(request);
@@ -60,7 +62,7 @@ export default function NewIdea() {
 			<Form
 				ref={zo.ref}
 				method="post"
-				className="space-y-6 w-full max-w-md"
+				className="w-full max-w-md space-y-6"
 			>
 				<Textarea
 					id="description"
@@ -70,7 +72,7 @@ export default function NewIdea() {
 
 				<div className="flex justify-end">
 					<Button type="submit" disabled={disabled}>
-						<LightbulbIcon className="w-4 h-4 mr-2" />
+						<LightbulbIcon className="mr-2 size-4" />
 						Create Idea
 					</Button>
 				</div>

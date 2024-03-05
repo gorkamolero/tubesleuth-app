@@ -1,4 +1,5 @@
-import { VOICEMODELS } from "~/database/enums";
+import type { VOICEMODELS } from "~/database/enums";
+
 import openai from "./openai";
 
 export async function createVoiceover({

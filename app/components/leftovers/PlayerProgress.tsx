@@ -23,11 +23,11 @@ export const ProgressWrapper: React.FC<ProgressWrapperProps> = ({
 
 	return (
 		<div
-			className="w-full bg-gray-200 h-2 cursor-pointer rounded-lg overflow-hidden"
+			className="h-2 w-full cursor-pointer overflow-hidden rounded-lg bg-gray-200"
 			onClick={handleClick}
 		>
 			<div
-				className="bg-blue-600 h-2 rounded-lg"
+				className="h-2 rounded-lg bg-blue-600"
 				style={{ width: `${progress}%` }}
 			></div>
 		</div>

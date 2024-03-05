@@ -1,8 +1,10 @@
 import * as React from "react";
+
 import { Link } from "@remix-run/react";
+import type { LucideIcon } from "lucide-react";
 
 import { cn } from "~/lib/utils";
-import { LucideIcon } from "lucide-react";
+
 import { Button } from "./ui/button";
 
 export interface NavItem {
@@ -20,9 +22,9 @@ interface MainNavProps {
 
 export function MainNav({ items }: MainNavProps) {
 	return (
-		<div className="flex gap-6 md:gap-10 items-center ">
+		<div className="flex items-center gap-6 md:gap-10 ">
 			{items?.length ? (
-				<nav className="flex gap-6 items-center">
+				<nav className="flex items-center gap-6">
 					{items?.map(
 						(item, index) =>
 							item.to && (

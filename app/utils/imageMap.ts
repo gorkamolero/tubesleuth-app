@@ -1,8 +1,10 @@
-import { getSupabaseAdmin, supabaseClient } from "~/integrations/supabase";
-import { askChatGPT, promptAssistant } from "./openai";
-import { updateVideo } from "~/modules/videos";
 import { z } from "zod";
+
+import { getSupabaseAdmin, supabaseClient } from "~/integrations/supabase";
+import { updateVideo } from "~/modules/videos";
+
 import { architect } from "./ai/architect";
+import { askChatGPT } from "./openai";
 
 export const replacer = (key: string, value: any) => {
 	if (typeof value === "string") {

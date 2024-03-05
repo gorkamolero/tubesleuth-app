@@ -1,11 +1,12 @@
 import { Outlet } from "@remix-run/react";
+
 import { MainNav } from "~/components/MainNav";
 import { Separator } from "~/components/ui/separator";
 
 export default function Video() {
 	return (
 		<>
-			<div className="h-[52px] px-2 gap-2 w-full align-center flex">
+			<div className="align-center flex h-[52px] w-full gap-2 px-2">
 				<MainNav
 					items={[
 						{
@@ -28,7 +29,7 @@ export default function Video() {
 				/>
 			</div>
 			<Separator />
-			<div className="p-6 border-box">
+			<div className="border-box p-6">
 				<Outlet />
 			</div>
 		</>

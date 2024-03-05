@@ -1,5 +1,4 @@
-const convertStructure = (data: any) => {
-	return {
+const convertStructure = (data: any) => ({
 		action: "audio-transcribe",
 		retval: {
 			status: true,
@@ -14,5 +13,4 @@ const convertStructure = (data: any) => {
 				index: data.words.indexOf(word), // Index of the word in the array
 			})),
 		},
-	};
-};
+	});

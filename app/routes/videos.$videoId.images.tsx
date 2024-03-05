@@ -1,9 +1,7 @@
-import {
-	ActionFunction,
-	json,
-	LoaderFunction,
-	redirect,
-} from "@remix-run/node";
+import { useState } from "react";
+
+import type { ActionFunction, LoaderFunction } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
 import {
 	Form,
 	Link,
@@ -11,27 +9,14 @@ import {
 	useLoaderData,
 	useNavigate,
 } from "@remix-run/react";
-import {
-	generateImage,
-	getImagesByVideoId,
-	updateImage,
-} from "~/modules/images/service.server";
-import { requireAuthSession } from "~/modules/auth";
-
-import { imageSchema } from "~/modules/images/service.server";
-import { Button } from "~/components/ui/button";
 import { Activity, ArrowRight, SparklesIcon } from "lucide-react";
-import { Card, CardFooter } from "~/components/ui/card";
-import { assertIsPost, isFormProcessing } from "~/utils";
-import { useState } from "react";
-import { Textarea } from "~/components/ui/textarea-gradient";
+
 import { DialogDrawer } from "~/components/DialogDrawer";
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipTrigger,
-} from "~/components/ui/tooltip";
-import Stepper from "~/components/ui/stepper";
+import { LabelInputContainer } from "~/components/LabelInputContainer";
+import { Button } from "~/components/ui/button";
+import { Card, CardFooter } from "~/components/ui/card";
+import { GradientSeparator } from "~/components/ui/gradient-separator";
+import { Label } from "~/components/ui/label-gradient";
 import { LoadingSpinner } from "~/components/ui/loading-spinner";
 import {
 	Select,
@@ -40,13 +25,25 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "~/components/ui/select";
-import { animationParameters } from "~/lib/animations";
-import { LabelInputContainer } from "~/components/LabelInputContainer";
-import { Label } from "~/components/ui/label-gradient";
-import { capitalize, cn } from "~/lib/utils";
+import Stepper from "~/components/ui/stepper";
+import { Textarea } from "~/components/ui/textarea-gradient";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+} from "~/components/ui/tooltip";
 import { TRANSITIONS } from "~/database/enums";
+import { animationParameters } from "~/lib/animations";
+import { capitalize, cn } from "~/lib/utils";
+import { requireAuthSession } from "~/modules/auth";
+import {
+	generateImage,
+	getImagesByVideoId,
+	updateImage,
+} from "~/modules/images/service.server";
+import type { imageSchema } from "~/modules/images/service.server";
+import { assertIsPost, isFormProcessing } from "~/utils";
 import { animateImage } from "~/utils/animate";
-import { GradientSeparator } from "~/components/ui/gradient-separator";
 
 export const loader: LoaderFunction = async ({ params, request }) => {
 	const { userId } = await requireAuthSession(request);
@@ -100,13 +97,13 @@ export default function VideoImages() {
 		videoId: string;
 	}>();
 
+	const navigate = useNavigate();
+
 	if (images.length === 0) {
 		return <div>No images found for this video.</div>;
 	}
 
 	const allImagesGenerated = images.every((image) => image.src);
-
-	const navigate = useNavigate();
 
 	return (
 		<>
@@ -129,15 +126,13 @@ export default function VideoImages() {
 						</Form>
 					)}
 				</Stepper>
-				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
-					{images.map((image) => {
-						return (
-							<ImageCard
-								key={image.id}
-								image={image as imageSchema}
-							/>
-						);
-					})}
+				<div className="grid grid-cols-1 gap-4 p-4 md:grid-cols-2 lg:grid-cols-3">
+					{images.map((image) => (
+						<ImageCard
+							key={image.id}
+							image={image as imageSchema}
+						/>
+					))}
 				</div>
 			</DialogDrawer>
 
@@ -180,10 +175,10 @@ const ImageCard = ({ image }: { image: imageSchema }) => {
 				<input type="hidden" name="imageId" value={image.id} />
 				{image.animation ? (
 					<div
-						className="w-[1080] h-[1920]"
+						className="h-[1920] w-[1080]"
 						style={{ aspectRatio: "9 / 16" }}
 					>
-						<video className="w-full h-full" controls loop>
+						<video className="size-full" controls loop>
 							<source src={image.animation} type="video/mp4" />
 							Your browser does not support the video tag.
 						</video>
@@ -192,16 +187,16 @@ const ImageCard = ({ image }: { image: imageSchema }) => {
 					<img
 						src={image.src}
 						alt={image.description || "Image"}
-						className="w-full h-auto object-cover"
+						className="h-auto w-full object-cover"
 						style={{ aspectRatio: "9 / 16" }}
 					/>
 				) : (
 					<div
-						className="w-full bg-zinc/80 flex items-center justify-center"
+						className="bg-zinc/80 flex w-full items-center justify-center"
 						style={{ aspectRatio: "9 / 16" }}
 					>
 						{isLoading ? (
-							<LoadingSpinner className="h-12 w-12" />
+							<LoadingSpinner className="size-12" />
 						) : (
 							<span className="text-gray-500">
 								No image found
@@ -272,7 +267,7 @@ const ImageCard = ({ image }: { image: imageSchema }) => {
 				</LabelInputContainer>
 
 				<CardFooter className="pt-4">
-					<div className="grid gap-2 w-full">
+					<div className="grid w-full gap-2">
 						<div className="flex flex-wrap justify-end gap-2">
 							<Button
 								disabled={disabledSrc}
@@ -286,7 +281,7 @@ const ImageCard = ({ image }: { image: imageSchema }) => {
 									{isLoading ? (
 										<LoadingSpinner />
 									) : (
-										<SparklesIcon className="h-4 w-4" />
+										<SparklesIcon className="size-4" />
 									)}
 								</div>
 								Generate
@@ -303,7 +298,7 @@ const ImageCard = ({ image }: { image: imageSchema }) => {
 								{isLoading ? (
 									<LoadingSpinner />
 								) : (
-									<Activity className="h-4 w-4 mr-2" />
+									<Activity className="mr-2 size-4" />
 								)}
 								Animate
 							</Button>

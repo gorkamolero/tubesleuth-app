@@ -148,7 +148,7 @@ export default function ResetPassword() {
 							/>
 							{zo.errors.password()?.message && (
 								<div
-									className="pt-1 text-red-700 text-sm"
+									className="pt-1 text-sm text-red-700"
 									id="password-error"
 								>
 									{zo.errors.password()?.message}
@@ -174,7 +174,7 @@ export default function ResetPassword() {
 							/>
 							{zo.errors.confirmPassword()?.message && (
 								<div
-									className="pt-1 text-red-700 text-sm"
+									className="pt-1 text-sm text-red-700"
 									id="password-error"
 								>
 									{zo.errors.confirmPassword()?.message}

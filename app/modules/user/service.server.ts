@@ -1,16 +1,19 @@
+import { count, eq } from "drizzle-orm";
+import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
+
 import { db } from "~/database";
 import { users } from "~/database/schema";
-import { createInsertSchema } from "drizzle-zod";
 import {
 	createEmailAuthAccount,
 	signInWithEmail,
 	deleteAuthAccount,
 } from "~/modules/auth";
 import type { AuthSession } from "~/modules/auth";
-import { count, eq } from "drizzle-orm";
-import { getIdeas } from "../ideas";
+
+
 import { getChannelNames } from "../channel";
+import { getIdeas } from "../ideas";
 import { getVideos } from "../videos";
 
 export const userSchema = createInsertSchema(users);
