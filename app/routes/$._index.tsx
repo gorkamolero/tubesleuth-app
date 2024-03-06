@@ -11,10 +11,23 @@ import { getCompleteUserByEmail } from "~/modules/user";
 
 export async function loader({ request }: LoaderFunctionArgs) {
 	const authSession = await requireAuthSession(request);
+	if (!authSession) {
+		return redirectWithError(
+			"/logout",
+			"You need to be logged in to access this page",
+		);
+	}
 
 	const user = await getCompleteUserByEmail(authSession.email);
 
-	if (!user || !user.invitation) {
+	if (!user) {
+		return redirectWithError(
+			"/login",
+			"Something went wrong. Please try again",
+		);
+	}
+
+	if (!user.invitation) {
 		return redirectWithError(
 			"/invitation",
 			"You need to be invited to access this page",

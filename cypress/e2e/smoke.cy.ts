@@ -28,33 +28,38 @@ describe("smoke tests", () => {
 
 		cy.findByText("Tubesleuth");
 
+		cy.findByTestId("account").click();
+		cy.findByTestId("delete-account").click();
+		cy.wait(1000);
 		cy.findByTestId("logout").click();
-		cy.findByTestId("login");
-
-		cy.cleanupUser({ email: loginForm.email });
 	});
 
 	it("should allow you to make an idea", () => {
 		const testIdea = {
 			description: faker.lorem.sentences(1),
 		};
-		const credentials = {
+
+		const loginForm = {
+			email: faker.internet
+				.email({
+					provider: "example.com",
+				})
+				.toLowerCase(),
+			password: faker.internet.password(),
 			firstName: faker.person.firstName(),
 			lastName: faker.person.lastName(),
-			email: faker.internet.email({
-				provider: "example.com",
-			}),
-			password: faker.internet.password(),
 		};
+		cy.then(() => ({ email: loginForm.email })).as("user");
 
-		cy.log("Create account with", credentials);
-		cy.createAccount(credentials);
 		cy.visit("/");
-		cy.findByTestId("login").click();
 
-		cy.findByTestId("email").type(credentials.email);
-		cy.findByTestId("password").type(credentials.password);
-		cy.findByTestId("login").click();
+		cy.findByText("Sign up").click();
+
+		cy.findByTestId("firstname").type(loginForm.firstName);
+		cy.findByTestId("lastname").type(loginForm.lastName);
+		cy.findByTestId("email").type(loginForm.email);
+		cy.findByTestId("password").type(loginForm.password);
+		cy.findByTestId("create-account").click();
 
 		cy.findByText("Welcome to Tubesleuth");
 
@@ -71,9 +76,11 @@ describe("smoke tests", () => {
 
 		cy.findByTestId("delete-idea").click();
 
+		cy.findByTestId("account").click();
+		cy.findByTestId("delete-account").click();
+		cy.wait(1000);
 		cy.findByTestId("logout").click();
-		cy.findByTestId("login");
 
-		cy.cleanupUser({ email: credentials.email });
+		cy.findByTestId("login");
 	});
 });

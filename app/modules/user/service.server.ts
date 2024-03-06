@@ -125,3 +125,19 @@ export async function createUserAccount({
 
 	return authSession;
 }
+
+export async function deleteUserAccount(email: string) {
+	const user = await getUserByEmail(email);
+	if (!user) return null;
+
+	try {
+		const user = await getUserByEmail(email);
+		await db.delete(users).where(eq(users.email, email));
+
+		if (user?.id) {
+			await deleteAuthAccount(user.id);
+		}
+	} catch (error) {
+		throw error;
+	}
+}
