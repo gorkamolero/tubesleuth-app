@@ -27,26 +27,14 @@ import {
 } from "remix-themes";
 import { getToast } from "remix-toast";
 import { Toaster, toast as notify } from "sonner";
-
-import {
-	ResizableHandle,
-	ResizablePanel,
-	ResizablePanelGroup,
-} from "~/components/ui/resizable";
 import { i18nextServer } from "~/integrations/i18n";
-import { cn } from "~/lib/utils";
-
-import { Sidebar } from "./components/Sidebar";
 import { TooltipProvider } from "./components/ui/tooltip";
-import useLocalStorage from "./hooks/use-local-storage";
 import {
 	getAuthSession,
 	themeSessionResolver,
 } from "./modules/auth/session.server";
 import tailwindStylesheetUrl from "./tailwind.css";
 import { getBrowserEnv } from "./utils/env";
-
-
 
 export const links: LinksFunction = () => [
 	{
@@ -97,9 +85,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 	);
 };
 
-const defaultLayout = [245, 800];
-const defaultCollapsed = false;
-
 export function ErrorBoundary() {
 	const error = useRouteError();
 	return (
@@ -145,16 +130,6 @@ export function App() {
 	const [theme] = useTheme();
 
 	const { i18n } = useTranslation();
-	const [isCollapsed, setIsCollapsed] = useLocalStorage(
-		"collapsed",
-		defaultCollapsed,
-	);
-	const [panelSizes, setPanelSizes] = useLocalStorage(
-		"panelSizes",
-		defaultLayout,
-	);
-	const sidebarPanelSizes = panelSizes[0];
-	const mainPanelSizes = panelSizes[1];
 
 	useChangeLanguage(locale);
 
@@ -182,58 +157,18 @@ export function App() {
 			<body className="flex h-full">
 				<TooltipProvider>
 					<Toaster richColors />
-					{!isLoggedIn ? (
-						<div className="flex h-screen w-screen items-center justify-center">
-							<Outlet />
-						</div>
-					) : (
-						<ResizablePanelGroup
-							direction="horizontal"
-							onLayout={(sizes: number[]) => {
-								setPanelSizes(sizes);
-							}}
-							className="flex h-full items-stretch"
-						>
-							<ResizablePanel
-								defaultSize={sidebarPanelSizes}
-								collapsedSize={4}
-								collapsible={true}
-								minSize={15}
-								maxSize={20}
-								onCollapse={() => {
-									setIsCollapsed(true);
-								}}
-								onExpand={() => {
-									setIsCollapsed(false);
-								}}
-								className={cn(
-									isCollapsed &&
-										"min-w-[50px] transition-all duration-300 ease-in-out",
-								)}
-							>
-								<Sidebar isCollapsed={isCollapsed} />
-							</ResizablePanel>
-
-							<ResizableHandle withHandle />
-
-							<ResizablePanel
-								minSize={30}
-								defaultSize={mainPanelSizes}
-							>
-								<div className="flex h-screen flex-1 flex-col">
-									<Outlet />
-									<ScrollRestoration />
-									<LiveReload />
-								</div>
-							</ResizablePanel>
-						</ResizablePanelGroup>
-					)}
+					<div className="flex h-screen w-screen items-center justify-center">
+						<Outlet />
+					</div>
 				</TooltipProvider>
 				<script
 					dangerouslySetInnerHTML={{
 						__html: `window.env = ${JSON.stringify(env)}`,
 					}}
 				/>
+
+				<ScrollRestoration />
+				<LiveReload />
 				<Scripts />
 			</body>
 		</html>
