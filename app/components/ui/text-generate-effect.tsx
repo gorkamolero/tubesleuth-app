@@ -3,7 +3,7 @@ import { useEffect } from "react";
 
 import { motion, stagger, useAnimate } from "framer-motion";
 
-import { cn } from "app/lib/utils";
+import { cn } from "~/lib/utils";
 
 export const TextGenerateEffect = ({
 	words,
@@ -28,17 +28,17 @@ export const TextGenerateEffect = ({
 	}, [scope.current]);
 
 	const renderWords = () => (
-			<motion.div ref={scope}>
-				{wordsArray.map((word, idx) => (
-						<motion.span
-							key={word + idx}
-							className="text-black opacity-0 dark:text-white"
-						>
-							{word}{" "}
-						</motion.span>
-					))}
-			</motion.div>
-		);
+		<motion.div ref={scope}>
+			{wordsArray.map((word, idx) => (
+				<motion.span
+					key={word + idx}
+					className="text-black opacity-0 dark:text-white"
+				>
+					{word}{" "}
+				</motion.span>
+			))}
+		</motion.div>
+	);
 
 	return (
 		<div className={className}>
