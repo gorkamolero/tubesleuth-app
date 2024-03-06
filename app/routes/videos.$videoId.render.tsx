@@ -1,10 +1,8 @@
 import { useCallback } from "react";
 
 import type { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
-import { redirect, json } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import {
-	Form,
-	Outlet,
 	useFetcher,
 	useLoaderData,
 	useNavigate,
@@ -17,11 +15,8 @@ import { DialogDrawer } from "~/components/DialogDrawer";
 import { RenderProgress } from "~/components/render-progress";
 import { Button } from "~/components/ui/button";
 import Stepper from "~/components/ui/stepper";
-import type {
-	TubesleuthProps} from "~/integrations/remotion/Composition";
-import {
-	Tubesleuth
-} from "~/integrations/remotion/Composition";
+import type { TubesleuthProps } from "~/integrations/remotion/Composition";
+import { Tubesleuth } from "~/integrations/remotion/Composition";
 import {
 	COMPOSITION_ID,
 	SITE_NAME,

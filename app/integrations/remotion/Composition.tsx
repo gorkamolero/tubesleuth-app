@@ -2,14 +2,7 @@ import React from "react";
 
 import { linearTiming, TransitionSeries } from "@remotion/transitions";
 import { fade } from "@remotion/transitions/fade";
-import {
-	Img,
-	useCurrentFrame,
-	AbsoluteFill,
-	Audio,
-	Video,
-	OffthreadVideo,
-} from "remotion";
+import { Img, useCurrentFrame, AbsoluteFill, Audio, Video } from "remotion";
 
 import { TranscriptionCaptions } from "./TranscriptionCaptions";
 import type { FX } from "../../database/enums";
@@ -67,7 +60,7 @@ export const Tubesleuth: React.FC<TubesleuthProps> = ({
 								durationInFrames={durationInFrames}
 							>
 								{image?.animation ? (
-									<OffthreadVideo src={image?.animation} />
+									<Video src={image?.animation} loop />
 								) : (
 									<Img
 										src={image?.src || ""}
