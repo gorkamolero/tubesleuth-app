@@ -45,7 +45,6 @@ const JoinFormSchema = z.object({
 export async function action({ request }: ActionFunctionArgs) {
 	assertIsPost(request);
 	const formData = await request.formData();
-	const emailFromForm = formData.get("email") as string;
 
 	const result = await JoinFormSchema.safeParseAsync(parseFormAny(formData));
 
@@ -120,6 +119,7 @@ export default function Join() {
 						<LabelInputContainer>
 							<Label htmlFor="firstname">First name</Label>
 							<Input
+								data-test-id="firstname"
 								id="firstname"
 								placeholder="Tyler"
 								type="text"
@@ -137,6 +137,7 @@ export default function Join() {
 						<LabelInputContainer>
 							<Label htmlFor="lastname">Last name</Label>
 							<Input
+								data-test-id="lastname"
 								id="lastname"
 								placeholder="Durden"
 								type="text"

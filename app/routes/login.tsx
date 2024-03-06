@@ -188,6 +188,7 @@ export default function LoginPage() {
 									pathname: "/join",
 									search: searchParams.toString(),
 								}}
+								data-test-id="join"
 							>
 								{t("login.signUp")}
 							</Link>

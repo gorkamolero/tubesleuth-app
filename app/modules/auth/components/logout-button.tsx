@@ -6,7 +6,13 @@ import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
 
 // TODO: CHECK THIS FOR ACTIONS
-export function LogoutButton({ isCollapsed }: { isCollapsed?: boolean }) {
+export function LogoutButton({
+	isCollapsed,
+	onClick,
+}: {
+	isCollapsed?: boolean;
+	onClick?: () => void;
+}) {
 	const { t } = useTranslation("auth");
 
 	return (
@@ -19,6 +25,7 @@ export function LogoutButton({ isCollapsed }: { isCollapsed?: boolean }) {
 					isCollapsed && "justify-center p-0 max-w-full",
 				)}
 				variant="outline"
+				onClick={onClick}
 			>
 				<div className="flex items-center gap-2">
 					<LogOut className="size-4" />

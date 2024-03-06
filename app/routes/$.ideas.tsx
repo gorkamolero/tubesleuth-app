@@ -1,10 +1,5 @@
-import type {
-	LoaderFunctionArgs,
-	ActionFunction} from "@remix-run/node";
-import {
-	json,
-	redirect,
-} from "@remix-run/node";
+import type { LoaderFunctionArgs, ActionFunction } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
 import {
 	useLoaderData,
 	Form,
@@ -29,8 +24,7 @@ import { Input } from "~/components/ui/input-gradient";
 import { Label } from "~/components/ui/label";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { requireAuthSession, commitAuthSession } from "~/modules/auth";
-import type {
-	ideaSchema} from "~/modules/ideas";
+import type { ideaSchema } from "~/modules/ideas";
 import {
 	getIdeas,
 	createIdea,
@@ -186,7 +180,7 @@ const IdeaForm = ({
 			<Form
 				method="post"
 				name="ideaForm"
-				className="grid items-start gap-4"
+				className="grid items-start gap-4 w-full"
 			>
 				<div className="grid gap-2">
 					<Input
@@ -215,6 +209,7 @@ const IdeaForm = ({
 								name="intent"
 								value="delete"
 								type="submit"
+								data-test-id="delete-idea"
 							>
 								Delete
 							</Button>
@@ -223,6 +218,7 @@ const IdeaForm = ({
 								disabled={disabled}
 								name="intent"
 								value="update"
+								data-test-id="update-idea"
 							>
 								Save changes
 							</Button>

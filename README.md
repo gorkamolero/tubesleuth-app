@@ -52,7 +52,7 @@ SUPABASE_ANON_PUBLIC="{ANON_PUBLIC}"
 SUPABASE_SERVICE_ROLE="{SERVICE_ROLE}"
 SUPABASE_URL="https://{STAGING_YOUR_INSTANCE_NAME}.supabase.co"
 SESSION_SECRET="super-duper-s3cret"
-SERVER_URL="http://localhost:3000"
+SERVER_URL="http://localhost:83000"
 ```
 
 -   This step only applies if you've opted out of having the CLI install dependencies for you:
@@ -243,8 +243,8 @@ In order to make the register/login with magic link work, you will need to add s
 You need to add the site url as well as the redirect urls of your local, test and live app that will be used for oauth
 To do that navigate to Authentication > URL configiration and add the folowing values:
 
--   https://localhost:3000/oauth/callback
--   https://localhost:3000/reset-password
+-   https://localhost:83000/oauth/callback
+-   https://localhost:83000/reset-password
 -   https://staging-domain.com/oauth/callback
 -   https://staging-domain.com/reset-password
 -   https://live-domain.com/oauth/callback

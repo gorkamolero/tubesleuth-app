@@ -36,8 +36,7 @@ import {
 import { VOICEMODELS } from "~/database/enums";
 import { capitalize } from "~/lib/utils";
 import { commitAuthSession, requireAuthSession } from "~/modules/auth";
-import type {
-	channelSchema} from "~/modules/channel";
+import type { channelSchema } from "~/modules/channel";
 import {
 	getChannels,
 	updateChannel,
@@ -215,7 +214,7 @@ const ChannelForm = ({
 			<Form
 				method="post"
 				name="channelForm"
-				className="grid items-start gap-4"
+				className="grid items-start gap-4 w-full"
 			>
 				<div className="grid gap-2">
 					<Label htmlFor="name">Channel name</Label>

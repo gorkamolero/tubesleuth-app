@@ -18,7 +18,6 @@ import { requireAuthSession } from "~/modules/auth";
 import { createIdea } from "~/modules/ideas";
 import { assertIsPost, isFormProcessing, notFound } from "~/utils";
 
-
 export async function loader({ request }: LoaderFunctionArgs) {
 	const { email } = await requireAuthSession(request);
 
@@ -71,7 +70,11 @@ export default function NewIdea() {
 				/>
 
 				<div className="flex justify-end">
-					<Button type="submit" disabled={disabled}>
+					<Button
+						type="submit"
+						disabled={disabled}
+						data-test-id="create-idea"
+					>
 						<LightbulbIcon className="mr-2 size-4" />
 						Create Idea
 					</Button>
