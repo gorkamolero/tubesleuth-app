@@ -11,10 +11,10 @@ import {
 } from "~/modules/auth";
 import type { AuthSession } from "~/modules/auth";
 
-
 import { getChannelNames } from "../channel";
 import { getIdeas } from "../ideas";
 import { getVideos } from "../videos";
+import { getInvitation } from "../invitations";
 
 export const userSchema = createInsertSchema(users);
 
@@ -31,12 +31,14 @@ export async function getUserByEmail(email: string) {
 export async function getCompleteUserByEmail(email: string) {
 	const user = await getUserByEmail(email);
 	if (!user) return null;
+	const userInvitation = await getInvitation(email);
 	const userIdeas = await getIdeas({ userId: user.id });
 	const userChannels = await getChannelNames({ userId: user.id });
 	const userVideos = await getVideos({ userId: user.id });
 
 	return {
 		...user,
+		invitation: userInvitation,
 		ideas: userIdeas,
 		channels: userChannels,
 		videos: userVideos,

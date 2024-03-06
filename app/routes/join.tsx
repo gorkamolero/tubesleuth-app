@@ -18,7 +18,6 @@ import { Input } from "~/components/ui/input-gradient";
 import { Label } from "~/components/ui/label-gradient";
 import { i18nextServer } from "~/integrations/i18n";
 import { createAuthSession, getAuthSession } from "~/modules/auth";
-import { getInvitation, updateInvitation } from "~/modules/invitations";
 import { getUserByEmail, createUserAccount } from "~/modules/user";
 import { assertIsPost, isFormProcessing } from "~/utils";
 
@@ -59,14 +58,6 @@ export async function action({ request }: ActionFunctionArgs) {
 		);
 	}
 
-	const invitation = await getInvitation(emailFromForm);
-	if (!invitation) {
-		return jsonWithError(null, {
-			message: "Invitation only!",
-			description: "The app is still in alpha. Contact us",
-		});
-	}
-
 	const { firstName, lastName, email, password, redirectTo } = result.data;
 
 	const existingUser = await getUserByEmail(email);
@@ -90,15 +81,6 @@ export async function action({ request }: ActionFunctionArgs) {
 			"Unable to create user",
 		);
 	}
-
-	await updateInvitation({
-		email,
-		data: {
-			accepted: true,
-			updatedAt: new Date(),
-			userId: authSession.userId,
-		},
-	});
 
 	return createAuthSession({
 		request,

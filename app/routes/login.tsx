@@ -13,7 +13,6 @@ import { z } from "zod";
 
 import { LabelInputContainer } from "~/components/LabelInputContainer";
 import { BottomGradient } from "~/components/ui/bottom-gradient";
-import { Button } from "~/components/ui/button";
 import { GradientSeparator } from "~/components/ui/gradient-separator";
 import { Input } from "~/components/ui/input-gradient";
 import { Label } from "~/components/ui/label-gradient";
@@ -25,6 +24,7 @@ import {
 	ContinueWithEmailForm,
 } from "~/modules/auth";
 import { assertIsPost, isFormProcessing } from "~/utils";
+import { updateInvitation } from "~/modules/invitations";
 
 export async function loader({ request }: LoaderFunctionArgs) {
 	const authSession = await getAuthSession(request);
@@ -70,10 +70,19 @@ export async function action({ request }: ActionFunctionArgs) {
 		);
 	}
 
+	await updateInvitation({
+		email,
+		data: {
+			accepted: true,
+			updatedAt: new Date(),
+			userId: authSession.userId,
+		},
+	});
+
 	return createAuthSession({
 		request,
 		authSession,
-		redirectTo: redirectTo || "/home",
+		redirectTo: redirectTo || "/",
 	});
 }
 
